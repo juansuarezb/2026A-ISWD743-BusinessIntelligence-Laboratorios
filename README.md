@@ -20,7 +20,11 @@
 >[!NOTE]
 >
 > Objetivos específicos:
-> * 
+> * Crear la tabla staging.productos_ferreteria_raw en PostgreSQL y cargar los datos originales
+> * Diseñar una transformación ETL en Pentaho que estandarice las categorías de productos.
+> * Eliminar símbolos innecesarios ($) del campo precio_unitario.
+> * Unificar los distintos formatos de unidad de medida
+> * Cargar los datos limpios en la tabla staging.productos_ferreteria_clean.
 
 ---
 
