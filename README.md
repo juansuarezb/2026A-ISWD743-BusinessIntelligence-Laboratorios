@@ -12,7 +12,8 @@
 
 >[!NOTE]
 >
-> Este repositorio.....
+> Este repositorio contiene el desarrollo del trabajo grupal de la Práctica 2 de Business Intelligence, correspondiente al caso de estudio "Ferretería El Tornillo Feliz".<br>
+> Se implementa un proceso ETL(Extract, Transform, Load) utilizando Pentaho Data Integration para limpiar y consolidar el catálogo de productos de la ferretería en una base de datos central PostgreSQL.
 
 ---
 
