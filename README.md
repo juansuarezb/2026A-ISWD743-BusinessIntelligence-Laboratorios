@@ -28,3 +28,64 @@
 
 ---
 
+## 🛠️ Detalle de los Pasos de Transformación (Transform)
+Se diseño el siguiente flujo para transformar los datos.
+
+![Flujo ETL](capturas/flujoETL.png)
+
+A continuación, se detalla la configuración de cada componente del flujo de tranformación:
+
+### 1. Normalización de Cadenas
+* **Tipo de Transformación:** `String operations`
+* **Nombre del paso:** `Normalizar datos`
+* **Configuración:**
+    * **Campo `categoria y unidad_medidad`**: Se aplicó la función `Lower` (minúsculas) y se eliminaron espacios en blanco con `Trim type: both`. Esto reduce las variaciones.
+
+![Normalizacion](capturas/normalizar.png)  
+
+### 2. Homologación de Categorías
+* **Tipo de Transformación:** `Value mapper`
+* **Nombre del paso:** `Limpieza de Categorías`
+* **Configuración:**
+    * **Campo origen:** `categoria`
+    * **Mapeo:** Se establecieron reglas para consolidar sinónimos y abreviaturas en términos estándar.
+        * *Ejemplo:* `htas`, `herram`, `herramientas` se transforman en **Herramienta**.
+        * *Ejemplo:* `electr`, `electric.` se transforman en **Electricidad**.
+    * **Valor por defecto:** Se definió como `REVISAR` para capturar cualquier categoría nueva que no cumpla con los filtros establecidos.
+
+![LimpiezaCategorias](capturas/limpiarcategorias.png)
+
+### 3. Estandarización de Unidades de Medida
+* **Tipo de Transformación:** `Replace in string`
+* **Nombre del paso:** `Estandarizar Unidad de Medida`
+* **Configuración:**
+    * **Uso de RegEx:** Se activó la opción `Use regular expression` para realizar búsquedas avanzadas.
+    * **Lógica:** Se configuraron expresiones para identificar variaciones de unidades (Unidad, Litro, Caja, Rollo, Set, Frasco, Tubo, Metro, Par, Hoja).
+    * **Case Sensitive:** Configurado en `N` para ignorar mayúsculas.
+
+![EstandarizarUnidades](capturas/estadarizarunidad.png)
+
+
+### 4. Limpieza de Formato de Precios
+* **Tipo de Transformación:** `Replace in string`
+* **Nombre del paso:** `Limpieza de Precios`
+* **Configuración:**
+    * **Campo:** `precio_unitario`
+    * **Búsqueda:** Se localiza el símbolo especial `$` (símbolo de moneda).
+    * **Reemplazo:** Se deja vacío (cadena de longitud cero) para purificar el dato y permitir su conversión a formato numérico.
+
+![LimpiezaPrecio](capturas/limpiezaprecio.png)
+
+### 5. Definición de Metadatos y Tipado Final
+* **Tipo de Transformación:** `Select values` (Pestaña Meta-data)
+* **Nombre del paso:** `Cambiar tipo de dato`
+* **Configuración:**
+    * **precio_unitario**: Conversión formal de String a **Number**, definiendo una precisión de `2` decimales.
+    * **Ajuste de Longitud**: Se estandarizaron las longitudes de los campos para la base de datos:
+        * `id_producto`: 10
+        * `nombre_producto`: 100
+        * `categoria`: 50
+        * `unidad_medida`: 20
+
+![CambiarTipo](capturas/cambiotipo.png)
+
