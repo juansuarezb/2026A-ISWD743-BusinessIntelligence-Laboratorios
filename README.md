@@ -81,11 +81,6 @@ A continuación, se detalla la configuración de cada componente del flujo de tr
 * **Nombre del paso:** `Cambiar tipo de dato`
 * **Configuración:**
     * **precio_unitario**: Conversión formal de String a **Number**, definiendo una precisión de `2` decimales.
-    * **Ajuste de Longitud**: Se estandarizaron las longitudes de los campos para la base de datos:
-        * `id_producto`: 10
-        * `nombre_producto`: 100
-        * `categoria`: 50
-        * `unidad_medida`: 20
 
 ![CambiarTipo](capturas/cambiotipo.png)
 
