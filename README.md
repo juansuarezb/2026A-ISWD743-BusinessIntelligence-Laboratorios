@@ -28,6 +28,78 @@
 
 ---
 
+## 📝 Descripción del Caso de Estudio
+
+### Contexto de la Empresa
+
+La **Ferretería El Tornillo Feliz** es una cadena nacional que cuenta con varios 
+puntos de venta en distintas ciudades. Cada sucursal mantiene su propio registro 
+de productos, elaborado manualmente y con poca estandarización.
+
+El departamento administrativo desea integrar toda la información en una base de 
+datos corporativa para mejorar la gestión del inventario, los pedidos y el control 
+de existencias.
+
+---
+
+### Problemática Actual en los Datos
+
+Los reportes de inventario provenientes de las sucursales presentan tres problemas 
+principales que impiden su uso directo en un sistema corporativo:
+
+| Problema | Variantes encontradas | Ejemplo correcto esperado |
+|---|---|---|
+| **Categorías no uniformes** | `Herramientas`, `herramientas`, `HERRAMIENTAS`, `Htas.`, `htas`, `Herramienta`, `herram.` | `Herramienta` |
+|  **Precios en formato texto** | `$8.50`, `$3.25`, `$45.00` | `8.50` |
+|  **Unidades de medida mezcladas** | `1 und`, `1 unidad`, `1u`, `1 Lt`, `1L`, `1 litro`, `1 rl`, `1 rollo` | `1 Unidad` |
+---
+###  Solución Propuesta
+
+Para resolver los problemas identificados, se desarrollará un **Proceso ETL** que permita limpiar, unificar y centralizar los datos de productos; utilizando Pentaho Data Integration como herramienta principal y PostgreSQL como base de datos destino.
+
+El proceso se divide en tres etapas:
+
+| Etapa | Descripción |
+|---|---|
+| **Extract** | Conexión a PostgreSQL y lectura de la tabla RAW mediante Table Input. |
+| **Transform** | Limpieza de categorías, eliminación del símbolo `$` y estandarización de unidades. |
+| **Load** | Escritura de los datos limpios en la tabla `productos_ferreteria_clean` mediante Table Output. |
+
+## 📊 Estructura de la tabla Raw
+Para centralizar los datos, se creó una nueva base de datos llamada `Datawarehouse`,un esquema `staging` y la tabla de datos crudos `productos_ferreteria_raw`.
+
+### Paso 1 — Creación de la base de datos Datawarehouse
+| ![Creación de database](capturas/creacionDatabase.png)|
+| :---: |
+| *Figura 1: Configuración de la nueva base de datos en PostgreSQL* |
+
+### Paso 2 — Creación de esquema y tabla
+| ![Creación de esquema y tabla](capturas/creacionEquemaYTabla.png)|
+| :---: |
+| *Figura 2: Query SQL para crear el esquema y la tabla* |
+
+### Paso 3 — Carga de datos originales en la tabla staging.productos_ferreteria_raw
+|![insercionDatos](capturas/insercionDatos.png)|
+| :---: |
+| *Figura 3: Query SQL de inserción de datos* |
+
+### Paso 4 — Verificación de la carga de datos en la tabla
+|![Verificación de datos](capturas/verificacionDatos.png)|
+| :---: |
+| *Figura 4: Query SQL Select para visualización de datos cargados* |
+
+---
+
+
+
+
+
+
+
+
+
+---
+
 ## 🛠️ Detalle de los Pasos de Transformación (Transform)
 Se diseño el siguiente flujo para transformar los datos.
 
