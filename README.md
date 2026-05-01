@@ -5,7 +5,7 @@
 </div>
 
 [![Andrea Chicaiza](https://img.shields.io/badge/Andrea_Chicaiza-andrea--m11-181717?style=for-the-badge&logo=github)](https://github.com/andrea-m11)<br><br>
-[![Andreina](https://img.shields.io/badge/Andreina-Andreina--P-181717?style=for-the-badge&logo=github)](https://github.com/Andreina-P)<br><br>
+[![Andreina Pallo](https://img.shields.io/badge/Andreina_Pallo-Andreina--P-181717?style=for-the-badge&logo=github)](https://github.com/Andreina-P)<br><br>
 [![Jose Arias](https://img.shields.io/badge/Jose_Arias-JoseDA0721-181717?style=for-the-badge&logo=github)](https://github.com/JoseDA0721)<br><br>
 [![Juan Mateo Quisilema](https://img.shields.io/badge/Juan_Mateo-JuanMateoQ-181717?style=for-the-badge&logo=github)](https://github.com/JuanMateoQ)<br><br>
 [![Juan Suarez](https://img.shields.io/badge/Juan_Suarez-juansuarezb-181717?style=for-the-badge&logo=github)](https://github.com/juansuarezb)<br><br>
@@ -90,13 +90,88 @@ Para centralizar los datos, se creó una nueva base de datos llamada `Datawareho
 
 ---
 
+## ⚙️ Proceso Extract: Conexión a PostgreSQL y Table Input
+
+El proceso **Extract** es la primera fase del flujo ETL. Su objetivo es establecer 
+la conexión con la fuente de datos y recuperar todos los registros en su estado 
+original, sin realizar ninguna modificación, para que los pasos posteriores puedan 
+procesarlos.
+
+Esta fase se compone de dos elementos esenciales:
+- Configuración de la **conexión** a PostgreSQL.
+- Configuración del step **Table Input** para leer la tabla fuente.
+
+---
+
+### Paso 1 — Configuración de la conexión a PostgreSQL
+
+Para que Pentaho pueda comunicarse con PostgreSQL, se debe crear una conexión de 
+base de datos. Esta se configura desde:
+
+> **File → New → Database Connection**
+
+| ![Paso para crear una conexión](capturas\rutaDBConexion.png) |
+| :---: |
+| *Figura 5: Pasos para crear una Database Connection* |
 
 
+Los parámetros utilizados fueron los siguientes:
+
+| Parámetro | Valor |
+|---|---|
+| **Connection Name** | `PostgreSQL_Ferreteria` |
+| **Connection Type** | `PostgreSQL` |
+| **Host Name** | `localhost` |
+| **Database Name** | `Datawarehouse` |
+| **Port** | `5432` |
+| **Username** | `postgres` |
+
+Una vez completados los campos, se utilizó el botón **Test** para verificar la 
+conectividad. El sistema respondió con el mensaje `Connection  tested successfully`.
+
+| ![Configuración de la conexión JDBC](capturas/conexionJDBC.png) |
+| :---: |
+| *Figura 6: Configuración de la conexión a PostgreSQL en Pentaho* |
 
 
+### Paso 2 — Creación de la transformación
+
+Con la conexión lista, se creó una nueva transformación en Pentaho Spoon:
+
+> **File → New → Transformation**
+
+La transformación fue guardada con el nombre `Practica2_Tornillo`. 
 
 
+### Paso 3 — Configuración del step Table Input
 
+Se abre la carpeta Input, se busca el paso **Table Input** y se arrastra al área de trabajo.
+
+| ![Table Input](capturas/tableInput.png) |
+| :---: |
+| *Figura 7: Selección de Table Input* |
+
+En la opción Edit dentro de este paso, se configuró los siguientes parámetros:
+
+| Parámetro | Valor |
+|---|---|
+| **Connection** | `PostgreSQL_Ferreteria` |
+| **SQL** | `SELECT * FROM staging.productos_ferreteria_raw` |
+
+Siendo este último párametro la consulta que se ejecutará para ver los datos extraídos desde la BD.
+
+| ![Edición de Table Input](capturas/editTableInput.png) |
+| :---: |
+| *Figura 8: Cuadro de edición de Table Input* |
+
+Luego, se da clic en la opción **Preview** para confirmar que los datos se están leyendo correctamente. Al ejecutarla, se visualizan los 
+registros con sus valores originales sin limpiar:
+
+| ![Preview de datos extraídos](capturas/previewTableInput.png) |
+| :---: |
+| *Figura 9: Preview de los datos extraídos desde PostgreSQL* |
+
+Los datos extraídos presentan los problemas de calidad esperados, como se mencionó en la problemática al inicio.
 
 ---
 
