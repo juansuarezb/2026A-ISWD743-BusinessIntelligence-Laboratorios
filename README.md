@@ -178,7 +178,9 @@ Los datos extraídos presentan los problemas de calidad esperados, como se menci
 ## 🛠️ Detalle de los Pasos de Transformación (Transform)
 Se diseño el siguiente flujo para transformar los datos.
 
-![Flujo ETL](capturas/flujoETL.png)
+| ![Flujo ETL](capturas/flujoETL.png) |
+| :---: |
+| *Figura 10: Vista general del flujo ETL en Pentaho* |
 
 A continuación, se detalla la configuración de cada componente del flujo de tranformación:
 
@@ -188,7 +190,9 @@ A continuación, se detalla la configuración de cada componente del flujo de tr
 * **Configuración:**
     * **Campo `categoria y unidad_medidad`**: Se aplicó la función `Lower` (minúsculas) y se eliminaron espacios en blanco con `Trim type: both`. Esto reduce las variaciones.
 
-![Normalizacion](capturas/normalizar.png)  
+| ![Normalizacion](capturas/normalizar.png) |
+| :---: |
+| *Figura 11: Normalización mediante String Operations* |
 
 ### 2. Homologación de Categorías
 * **Tipo de Transformación:** `Value mapper`
@@ -200,7 +204,9 @@ A continuación, se detalla la configuración de cada componente del flujo de tr
         * *Ejemplo:* `electr`, `electric.` se transforman en **Electricidad**.
     * **Valor por defecto:** Se definió como `REVISAR` para capturar cualquier categoría nueva que no cumpla con los filtros establecidos.
 
-![LimpiezaCategorias](capturas/limpiarcategorias.png)
+| ![LimpiezaCategorias](capturas/limpiarcategorias.png) |
+| :---: |
+| *Figura 12: Limpieza de Categorías* |
 
 ### 3. Estandarización de Unidades de Medida
 * **Tipo de Transformación:** `Replace in string`
@@ -210,7 +216,9 @@ A continuación, se detalla la configuración de cada componente del flujo de tr
     * **Lógica:** Se configuraron expresiones para identificar variaciones de unidades (Unidad, Litro, Caja, Rollo, Set, Frasco, Tubo, Metro, Par, Hoja).
     * **Case Sensitive:** Configurado en `N` para ignorar mayúsculas.
 
-![EstandarizarUnidades](capturas/estadarizarunidad.png)
+| ![EstandarizarUnidades](capturas/estadarizarunidad.png) |
+| :---: |
+| *Figura 13: Estandarización de Unidades de Medida* |
 
 
 ### 4. Limpieza de Formato de Precios
@@ -221,7 +229,9 @@ A continuación, se detalla la configuración de cada componente del flujo de tr
     * **Búsqueda:** Se localiza el símbolo especial `$` (símbolo de moneda).
     * **Reemplazo:** Se deja vacío (cadena de longitud cero) para purificar el dato y permitir su conversión a formato numérico.
 
-![LimpiezaPrecio](capturas/limpiezaprecio.png)
+| ![LimpiezaPrecio](capturas/limpiezaprecio.png) |
+| :---: |
+| *Figura 14: Limpieza de Precios* |
 
 ### 5. Definición de Metadatos y Tipado Final
 * **Tipo de Transformación:** `Select values` (Pestaña Meta-data)
@@ -229,5 +239,7 @@ A continuación, se detalla la configuración de cada componente del flujo de tr
 * **Configuración:**
     * **precio_unitario**: Conversión formal de String a **Number**, definiendo una precisión de `2` decimales.
 
-![CambiarTipo](capturas/cambiotipo.png)
+| ![CambiarTipo](capturas/cambiotipo.png) |
+| :---: |
+| *Figura 15: Cambio de tipos de datos* |
 
