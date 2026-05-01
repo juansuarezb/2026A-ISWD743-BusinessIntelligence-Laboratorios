@@ -110,7 +110,7 @@ base de datos. Esta se configura desde:
 
 > **File → New → Database Connection**
 
-| ![Paso para crear una conexión](capturas\rutaDBConexion.png) |
+| ![Paso para crear una conexión](capturas/rutaConexion.png) |
 | :---: |
 | *Figura 5: Pasos para crear una Database Connection* |
 
@@ -127,7 +127,7 @@ Los parámetros utilizados fueron los siguientes:
 | **Username** | `postgres` |
 
 Una vez completados los campos, se utilizó el botón **Test** para verificar la 
-conectividad. El sistema respondió con el mensaje `Connection  tested successfully`.
+conectividad. El sistema respondió con el mensaje `Connection tested successfully`.
 
 | ![Configuración de la conexión JDBC](capturas/conexionJDBC.png) |
 | :---: |
