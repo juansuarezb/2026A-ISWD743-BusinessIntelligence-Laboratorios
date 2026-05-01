@@ -28,7 +28,7 @@
 
 ---
 
-## 📝 Descripción del Caso de Estudio
+## Descripción del Caso de Estudio
 
 ### Contexto de la Empresa
 
@@ -65,7 +65,7 @@ El proceso se divide en tres etapas:
 | **Transform** | Limpieza de categorías, eliminación del símbolo `$` y estandarización de unidades. |
 | **Load** | Escritura de los datos limpios en la tabla `productos_ferreteria_clean` mediante Table Output. |
 
-## 📊 Estructura de la tabla Raw
+##  Estructura de la tabla Raw
 Para centralizar los datos, se creó una nueva base de datos llamada `Datawarehouse`,un esquema `staging` y la tabla de datos crudos `productos_ferreteria_raw`.
 
 ### Paso 1 — Creación de la base de datos Datawarehouse
@@ -90,7 +90,7 @@ Para centralizar los datos, se creó una nueva base de datos llamada `Datawareho
 
 ---
 
-## ⚙️ Proceso Extract: Conexión a PostgreSQL y Table Input
+##  Proceso Extract: Conexión a PostgreSQL y Table Input
 
 El proceso **Extract** es la primera fase del flujo ETL. Su objetivo es establecer 
 la conexión con la fuente de datos y recuperar todos los registros en su estado 
@@ -175,7 +175,7 @@ Los datos extraídos presentan los problemas de calidad esperados, como se menci
 
 ---
 
-## 🛠️ Detalle de los Pasos de Transformación (Transform)
+## Detalle de los Pasos de Transformación (Transform)
 Se diseño el siguiente flujo para transformar los datos.
 
 | ![Flujo ETL](capturas/flujoETL.png) |
@@ -252,9 +252,9 @@ A continuación, se detalla la configuración de cada componente del flujo de tr
 
 Una vez configurados todos los pasos del proceso ETL en Pentaho, se ejecutó la transformación completa, logrando procesar correctamente los datos provenientes de la tabla `staging.productos_ferreteria_raw`.
 
-| ![Ejecución ETL](capturas/ejecucionETL.png) |
+| ![Ejecución Pentaho](capturas/ejecucionPentaho.png) |
 | :---: |
-| *Figura 16: Ejecución exitosa de la transformación en Pentaho Spoon* |
+| *Figura XX: Ejecución exitosa de la transformación en Pentaho Spoon* |
 
 En la consola de ejecución se observaron los siguientes resultados:
 
@@ -273,3 +273,23 @@ Posteriormente, se verificó la carga de los datos en la tabla destino `staging.
 
 ```sql
 SELECT * FROM staging.productos_ferreteria_clean;
+```
+
+
+---
+ ![Ejecución ETL](capturas/ejecucionETL.png) |
+ | :---: |
+| *Figura XX: Confirmación de la ejecución del ETL* |
+
+---
+
+###  Comparación de datos antes y después del proceso ETL
+- **Antes:** htas, herram, HERRAMIENTAS.<br>
+**Después:** Herramienta.<br>
+- **Antes:** $8.50, $3.25, $45.00.<br>
+**Después:** 8.50, 3.25, 45.00.<br>
+- **Antes:** 1 und, 1 unidad, 1u.<br>
+**Después:** 1 Unidad.<br>
+
+### Conclusión
+El proceso ETL implementado permitió limpiar y unificar los datos del catálogo de productos de la Ferretería El Tornillo Feliz, logrando una base de datos más consistente y preparada para su uso en sistemas corporativos. La estandarización de categorías, la limpieza de precios y la unificación de unidades de medida son pasos fundamentales para mejorar la calidad de los datos y facilitar su análisis posterior.
