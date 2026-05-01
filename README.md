@@ -243,3 +243,33 @@ A continuación, se detalla la configuración de cada componente del flujo de tr
 | :---: |
 | *Figura 15: Cambio de tipos de datos* |
 
+
+---
+
+##  Resultados Finales
+
+###  Ejecución de la transformación ETL
+
+Una vez configurados todos los pasos del proceso ETL en Pentaho, se ejecutó la transformación completa, logrando procesar correctamente los datos provenientes de la tabla `staging.productos_ferreteria_raw`.
+
+| ![Ejecución ETL](capturas/ejecucionETL.png) |
+| :---: |
+| *Figura 16: Ejecución exitosa de la transformación en Pentaho Spoon* |
+
+En la consola de ejecución se observaron los siguientes resultados:
+
+- **Filas leídas (Input):** 100  
+- **Filas procesadas (Transform):** 100  
+- **Filas cargadas (Output):** 100  
+- **Errores:** 0  
+
+Esto confirma que el flujo ETL se ejecutó correctamente sin inconvenientes.
+
+---
+
+###  Verificación de datos en PostgreSQL
+
+Posteriormente, se verificó la carga de los datos en la tabla destino `staging.productos_ferreteria_clean` mediante la siguiente consulta:
+
+```sql
+SELECT * FROM staging.productos_ferreteria_clean;
