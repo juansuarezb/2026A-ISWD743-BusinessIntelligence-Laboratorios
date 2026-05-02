@@ -243,6 +243,50 @@ A continuación, se detalla la configuración de cada componente del flujo de tr
 | :---: |
 | *Figura 15: Cambio de tipos de datos* |
 
+## Proceso Load: Configuración del Table Output
+
+El proceso **Load** es la fase final del flujo ETL, donde los datos que ya han sido limpiados y transformados se escriben en la base de datos destino. Para esto, se utilizó el paso **Table Output** (Salida de Tabla), configurándolo para insertar los registros en la tabla `productos_ferreteria_clean` de nuestro esquema `staging`.
+
+A continuación, se detallan los pasos para su configuración:
+
+### Paso 1 — Configuración Principal (Main options)
+
+En la pestaña principal del paso, se establecieron los parámetros de conexión y el destino de los datos. Se marcó la opción `Specify database fields` para tener control exacto sobre qué campos se insertan en qué columnas.
+
+Los parámetros utilizados fueron:
+
+| Parámetro | Valor |
+|---|---|
+| **Nombre paso** | `Salida Tabla` |
+| **Conexión** | `PostgreSQL_Ferreteria` |
+| **Esquema destino** | `staging` |
+| **Tabla destino** | `productos_ferreteria_clean` |
+| **Tamaño transacción (commit)** | `1000` |
+| **Specify database fields** | `Marcado (Sí)` |
+
+| ![Configuración principal de Salida de Tabla](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab2/capturas/ConfiguracionPrincipalSalida.png?raw=true) |
+| :---: |
+| *Figura 16: Pestaña Main options del paso Table Output* |
+
+### Paso 2 — Mapeo de Campos (Database fields)
+
+Al activar la especificación de campos en el paso anterior, se habilitó la pestaña **Database fields**. Aquí se utilizó el botón `Get fields` para cargar automáticamente las columnas de la tabla destino y emparejarlas con los campos del flujo de datos (Stream field) provenientes de la transformación.
+
+Se verificó que los campos `id_producto`, `nombre_producto`, `categoria`, `unidad_medida`, `precio_unitario` y `proveedor` estuvieran correctamente mapeados uno a uno.
+
+| ![Mapeo de campos en Database fields](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab2/capturas/Mapeode%20camposSalida.png?raw=true) |
+| :---: |
+| *Figura 17: Mapeo de columnas entre el flujo de datos y la tabla destino* |
+
+### Paso 3 — Generación y Ejecución del script SQL
+
+Antes de finalizar, es necesario asegurarse de que la tabla destino exista en la base de datos con la estructura de datos correcta (tipos de datos que definimos en el paso *Select values*). 
+
+Para ello, se hizo clic en el botón **SQL** ubicado en la parte inferior de la ventana. Esto abre un editor (Simple SQL editor) que genera automáticamente la sentencia DDL (`CREATE TABLE` o `ALTER TABLE`) necesaria para preparar la tabla `staging.productos_ferreteria_clean`. Se procedió a ejecutar (`Execute`) este script directamente desde Pentaho.
+
+| ![Ejecución de script SQL](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab2/capturas/EjecuciónDeScriptSQL.png?raw=true) |
+| :---: |
+| *Figura 18: Generación y ejecución del script SQL para la tabla destino* |
 
 ---
 
@@ -254,7 +298,7 @@ Una vez configurados todos los pasos del proceso ETL en Pentaho, se ejecutó la 
 
 | ![Ejecución Pentaho](capturas/ejecucionPentaho.png) |
 | :---: |
-| *Figura XX: Ejecución exitosa de la transformación en Pentaho Spoon* |
+| *Figura 19: Ejecución exitosa de la transformación en Pentaho Spoon* |
 
 En la consola de ejecución se observaron los siguientes resultados:
 
@@ -279,7 +323,7 @@ SELECT * FROM staging.productos_ferreteria_clean;
 ---
  ![Ejecución ETL](capturas/ejecucionETL.png) |
  | :---: |
-| *Figura XX: Confirmación de la ejecución del ETL* |
+| *Figura 20: Confirmación de la ejecución del ETL* |
 
 ---
 
