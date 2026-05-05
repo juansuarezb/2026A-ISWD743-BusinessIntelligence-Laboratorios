@@ -28,11 +28,85 @@
 
 ---
 
-## 
+## 1. Diagrama del modelo estrella en Power Pivot de `products.csv`
+
+### Contexto
+
+El modelo estrella fue implementado previamente en PostgreSQL, donde se normalizaron los datos del archivo `products.csv` en tres tablas: `dim_category`, `dim_subcategory` y `fact_products`. Las relaciones entre tablas fueron establecidas mediante claves foráneas (FK), garantizando integridad referencial.
+
+Para la visualización en Power Pivot, los datos de estas tablas fueron exportados directamente desde PostgreSQL a Excel, replicando la misma estructura normalizada. Esto permite construir el diagrama del modelo estrella en Power Pivot manteniendo las relaciones `N:1` entre la tabla de hechos y las dimensiones, tal como fueron definidas en la base de datos.
 
 ---
 
-## Diseño y diagrama del modelo estrella de `Tabla_Desnormalizada_Ventas.csv`
+### Paso 1 — Preparación de hojas en Excel
+
+Se creó una hoja por cada tabla del modelo: `fact_products`, `dim_category` y `dim_subcategory`.
+
+Dentro de PostgreSQL, se ejecutó una consulta `SELECT` para extraer los datos de cada tabla y se eligió la opción **Copy with headers** para copiar los resultados con encabezados.
+
+| ![Consulta y selección de datos de la tabla dim_subcategory](capturas/postgress-copia.png) |
+| :---: |
+| *Figura 1: Consulta y selección de datos de la tabla dim_subcategory* |
+
+---
+
+### Paso 2 — Conversión a tabla de Excel
+
+Una vez pegados los datos en la hoja correspondiente de Excel, se convirtió el rango en una tabla formal con **Ctrl + T**, marcando la opción **"La tabla tiene encabezados"**.
+
+| ![Creación de tabla en Excel](capturas/creacion-dim_subcategory.png) |
+| :---: |
+| *Figura 2: Creación de tabla dim_subcategory en Excel* |
+
+Se asignó el nombre de la tabla desde la pestaña de diseño, en el caso del ejemplo `dim_subcategory`.
+
+| ![Asignación de nombre de tabla dim_subcategory](capturas/nombre-tabla-excel.png) |
+| :---: |
+| *Figura 3: Asignación de nombre de tabla dim_subcategory* |
+
+---
+
+### Paso 3 — Repetición del proceso para todas las tablas
+
+El proceso se repitió para cada tabla del modelo, asegurando que cada una tenga un nombre único y descriptivo para facilitar su identificación en Power Pivot.
+
+| ![Creación tabla dim_category](capturas/creacion-dim_category.png) |
+| :---: |
+| *Figura 4: Creación de tabla dim_category* |
+
+| ![Creación tabla fact_products](capturas/creacion-fact_products.png) |
+| :---: |
+| *Figura 5: Creación de tabla fact_products* |
+
+---
+
+### Paso 4 — Carga en el modelo de datos de Power Pivot
+
+En la ventana de Power Pivot, se seleccionó cada tabla y se hizo clic en **"Agregar al modelo de datos"** para cargarla en el modelo.
+
+| ![Proceso de carga de tablas en Power Pivot](capturas/tablas-power-pivot.png) |
+| :---: |
+| *Figura 6: Proceso de carga de tablas en Power Pivot* |
+
+El proceso se repitió para cada tabla, asegurando que todas estén disponibles en Power Pivot.
+
+| ![Tablas en el modelo de datos de Power Pivot](capturas/tablas-modelo.png) |
+| :---: |
+| *Figura 7: Tablas en el modelo de datos de Power Pivot* |
+
+---
+
+### Paso 5 — Construcción del modelo estrella
+
+Finalmente, en la **vista de diagrama** de Power Pivot, se establecieron las relaciones entre tablas arrastrando las claves foráneas desde las tablas de dimensión hacia la tabla de hechos, construyendo así el modelo estrella.
+
+| ![Modelo estrella de productos](capturas/modelo-estrella-products.png) |
+| :---: |
+| *Figura 8: Modelo estrella de products.csv en Power Pivot* |
+
+---
+
+## 2. Diseño y diagrama del modelo estrella de `Tabla_Desnormalizada_Ventas.csv`
 
 ### Estructura del archivo original
 
