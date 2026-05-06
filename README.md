@@ -763,7 +763,7 @@ En esta consulta se incluye la columna `t.month` (el mes numérico del 1 al 12) 
 
 ### Consulta 5: ¿Cuánto se vendió por tamaño de producto y estado civil del cliente?
 
-
+#### Script SQL
 ```sql
 SELECT
     p.Size              AS tamano_producto,
