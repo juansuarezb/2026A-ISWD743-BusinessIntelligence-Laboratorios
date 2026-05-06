@@ -671,3 +671,89 @@ SUM(SUM(fs.SalesAmount)) OVER (PARTITION BY dc.Gender)
 | :---: |
 | *Figura 15: Resultados — ingreso por cliente y género* |
 
+### Consulta 3 — Cantidad Total Vendida por Producto
+
+#### Objetivo
+Determinar el volumen total de ventas en unidades para cada producto del catálogo. Esto permite identificar rápidamente los artículos con mayor rotación e impacto en el inventario.
+
+#### Tablas involucradas
+
+| Tabla | Rol |
+|---|---|
+| `fact_sales` | Tabla de hechos — métricas de venta (cantidades) |
+| `dim_product` | Dimensión — detalles y nombre del producto |
+
+#### Columnas del resultado
+
+| Columna | Descripción |
+|---|---|
+| `productname` | Nombre descriptivo del producto |
+| `cantidad_total_vendida` | Suma de todas las unidades vendidas de ese producto |
+
+#### Script SQL
+```sql
+SELECT 
+    p.ProductName, 
+    SUM(f.Quantity) AS cantidad_total_vendida
+FROM 
+    fact_sales f
+JOIN 
+    dim_product p ON f.ProductKey = p.ProductKey
+GROUP BY 
+    p.ProductName
+ORDER BY 
+    cantidad_total_vendida DESC;
+```
+
+#### Evidencia — Resultados obtenidos
+
+| ![Resultados Consulta 3](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/raw/Lab4/capturas/Consulta3.png) |
+| :---: |
+| *Figura 16: Resultados — cantidad total vendida por producto* |
+
+---
+
+### Consulta 4 — Cantidad Enviada por Mes de Envío
+
+#### Objetivo
+Analizar el volumen de productos despachados agrupados por el mes en el que salieron de bodega (`ShipDateKey`). Esto facilita la comprensión de la carga operativa y la estacionalidad de los despachos mensuales, independientemente de cuándo se realizó la compra.
+
+#### Tablas involucradas
+
+| Tabla | Rol |
+|---|---|
+| `fact_sales` | Tabla de hechos — métricas de envío (cantidades) |
+| `dim_ship_date` | Dimensión — detalles cronológicos de la fecha de envío |
+
+#### Columnas del resultado
+
+| Columna | Descripción |
+|---|---|
+| `mes_envio` | Nombre del mes en el que se realizó el envío |
+| `cantidad_total_enviada` | Total de unidades despachadas durante ese mes |
+
+#### Script SQL
+```sql
+SELECT 
+    t.monthName AS mes_envio, 
+    SUM(f.Quantity) AS cantidad_total_enviada
+FROM 
+    fact_sales f
+JOIN 
+    dim_ship_date t ON f.ShipDateKey = t.ShipDateKey
+GROUP BY 
+    t.monthName, 
+    t.month
+ORDER BY 
+    t.month ASC;
+```
+
+#### Detalle técnico — Ordenamiento cronológico
+
+En esta consulta se incluye la columna `t.month` (el mes numérico del 1 al 12) en la cláusula `GROUP BY` exclusivamente para poder utilizarla en el `ORDER BY`. De esta forma, el resultado se presenta en orden cronológico (Enero, Febrero, Marzo...) y no en orden alfabético por el nombre del mes.
+
+#### Evidencia — Resultados obtenidos
+
+| ![Resultados Consulta 4](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/raw/Lab4/capturas/Consulta4.png) |
+| :---: |
+| *Figura 17: Resultados — cantidad enviada por mes de envío* |
