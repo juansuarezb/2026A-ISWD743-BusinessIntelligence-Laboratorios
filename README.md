@@ -757,3 +757,38 @@ En esta consulta se incluye la columna `t.month` (el mes numérico del 1 al 12) 
 | ![Resultados Consulta 4](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/raw/Lab4/capturas/Consulta4.png) |
 | :---: |
 | *Figura 17: Resultados — cantidad enviada por mes de envío* |
+
+
+---
+
+### Consulta 5: ¿Cuánto se vendió por tamaño de producto y estado civil del cliente?
+
+
+```sql
+SELECT
+    p.Size              AS tamano_producto,
+    c.MaritalStatus     AS estado_civil,
+    SUM(f.SalesAmount)  AS total_vendido,
+    COUNT(*)            AS num_transacciones
+FROM fact_sales f
+JOIN dim_product  p ON f.ProductKey  = p.ProductKey
+JOIN dim_customer c ON f.CustomerKey = c.CustomerKey
+GROUP BY p.Size, c.MaritalStatus
+ORDER BY p.Size, c.MaritalStatus;
+```
+
+**Explicación:**
+
+| Cláusula | ¿Qué hace? |
+|---|---|
+| `JOIN dim_product` | Trae el atributo `Size` del producto |
+| `JOIN dim_customer` | Trae el atributo `Marital Status` del cliente |
+| `SUM(SalesAmount)` | Suma el monto total vendido para cada combinación tamaño × estado civil |
+| `COUNT(*)` | Cuenta cuántas transacciones hay en cada combinación |
+| `GROUP BY Size, Marital Status` | Crea una fila por cada par único (tamaño, estado civil) |
+
+> Esta consulta es la más compleja porque **cruza dos dimensiones al mismo tiempo**. El GROUP BY genera una fila por cada par (tamaño, estado civil), permitiendo comparar cuánto compraron clientes casados vs solteros en productos Small vs Large, por ejemplo.
+
+| ![Resultados Consulta 5](image.png) |
+| :---: |
+| *Figura 18: Resultados consulta 5* |
