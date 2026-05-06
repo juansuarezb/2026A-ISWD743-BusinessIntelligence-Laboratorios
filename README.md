@@ -184,7 +184,7 @@ Se repitió este proceso para las 5 tablas.
 
 | ![Tabla fact_sales](capturas/tablafactsales.png) |
 | :---: |
-| *Figura 1: Conversión de datos a una tabla de Excel* |
+| *Figura 9: Conversión de datos a una tabla de Excel* |
 
 #### Paso 2: Agregar las tablas al modelo de Power Pivot
 
@@ -192,11 +192,11 @@ Con cada tabla seleccionada, se fue a **Power Pivot → Agregar al modelo de dat
 
 | ![Tablas al modelo de datos](capturas/tablaModelo.png) |
 | :---: |
-| *Figura 2: Agregar las tablas al modelo de datos* |
+| *Figura 10: Agregar las tablas al modelo de datos* |
 
 | ![Tablas en power pivot](capturas/tablasPowerPivot.png) |
 | :---: |
-| *Figura 3: Cinco tablas en Power Pivot* |
+| *Figura 11: Cinco tablas en Power Pivot* |
 
 #### Paso 3: Crear las relaciones en Vista de Diagrama
 
@@ -210,7 +210,7 @@ Power Pivot muestra `1` del lado de la dimensión y `*` del lado de `fact_sales`
 
 | ![Diagrama Power Pivot ventas](capturas/modEstrellaVentas.png) |
 | :---: |
-| *Figura 4: Diagrama del modelo estrella de Tabla_Desnormalizada_Ventas en Power Pivot* |
+| *Figura 12: Diagrama del modelo estrella de Tabla_Desnormalizada_Ventas en Power Pivot* |
 
 ---
 ## 3. Implementación física del modelo estrella en PostgreSQL
