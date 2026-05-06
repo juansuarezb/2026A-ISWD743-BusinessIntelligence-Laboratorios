@@ -269,19 +269,19 @@ CREATE TABLE ventas (
 
 | ![Creación tabla ventas](capturas/creacion-ventas.png) |
 | :---: |
-| *Figura 5: Script de creación de la tabla ventas ejecutado* |
+| *Figura 13: Script de creación de la tabla ventas ejecutado* |
 
 #### Evidencia — Importación del CSV
 
 | ![Importación CSV a ventas](capturas/importacion-csv.png) |
 | :---: |
-| *Figura 6: Importación del archivo CSV a la tabla ventas* |
+| *Figura 14: Importación del archivo CSV a la tabla ventas* |
 
 #### Evidencia — Datos cargados en `ventas`
 
 | ![Datos en tabla ventas](capturas/ventas-datos.png) |
 | :---: |
-| *Figura 7: Registros cargados correctamente en la tabla ventas* |
+| *Figura 15: Registros cargados correctamente en la tabla ventas* |
 
 ---
 
@@ -318,7 +318,7 @@ WHERE "Product Code" IS NOT NULL;
 
 | ![Datos dim_product](capturas/datos-dim_product.png) |
 | :---: |
-| *Figura 8: Registros cargados en dim_product* |
+| *Figura 16: Registros cargados en dim_product* |
 
 ---
 
@@ -357,7 +357,7 @@ WHERE CustomerKey IS NOT NULL;
 
 | ![Datos dim_customer](capturas/datos-dim_customer.png) |
 | :---: |
-| *Figura 9: Registros cargados en dim_customer* |
+| *Figura 17: Registros cargados en dim_customer* |
 
 ---
 
@@ -396,7 +396,7 @@ WHERE "Order Date" IS NOT NULL;
 #### Evidencia — Creación e inserción `dim_order_date`
 | ![Datos dim_order_date](capturas/datos-dim_order_date.png) |
 | :---: |
-| *Figura 10: Registros cargados en dim_order_date* |
+| *Figura 18: Registros cargados en dim_order_date* |
 
 ---
 
@@ -437,7 +437,7 @@ WHERE "Ship Date" IS NOT NULL;
 
 | ![Datos dim_ship_date](capturas/datos-dim_ship_date.png) |
 | :---: |
-| *Figura 11: Registros cargados en dim_ship_date* |
+| *Figura 19: Registros cargados en dim_ship_date* |
 
 ---
 
@@ -497,7 +497,7 @@ INNER JOIN dim_product dp ON dp.ProductCode = v."Product Code";
 
 | ![Datos fact_sales](capturas/datos-fact_sales.png) |
 | :---: |
-| *Figura 12: Registros cargados en fact_sales* |
+| *Figura 20: Registros cargados en fact_sales* |
 
 ---
 
@@ -518,7 +518,7 @@ SELECT 'fact_sales',               COUNT(*)              FROM fact_sales;
 
 | ![Verificación conteo tablas](capturas/verificacion-conteo.png) |
 | :---: |
-| *Figura 13: Conteo de registros por tabla del modelo estrella* |
+| *Figura 21: Conteo de registros por tabla del modelo estrella* |
 
 ---
 
@@ -590,7 +590,7 @@ ORDER BY
 
 | ![Resultados Consulta 1](capturas/consulta1-resultados.png) |
 | :---: |
-| *Figura 14: Resultados — ventas por categoría y mes* |
+| *Figura 22: Resultados — ventas por categoría y mes* |
 
 
 ---
@@ -669,7 +669,7 @@ SUM(SUM(fs.SalesAmount)) OVER (PARTITION BY dc.Gender)
 
 | ![Resultados Consulta 2](capturas/consulta2-resultados.png) |
 | :---: |
-| *Figura 15: Resultados — ingreso por cliente y género* |
+| *Figura 23: Resultados — ingreso por cliente y género* |
 
 ### Consulta 3 — Cantidad Total Vendida por Producto
 
@@ -709,7 +709,7 @@ ORDER BY
 
 | ![Resultados Consulta 3](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/raw/Lab4/capturas/Consulta3.png) |
 | :---: |
-| *Figura 16: Resultados — cantidad total vendida por producto* |
+| *Figura 24: Resultados — cantidad total vendida por producto* |
 
 ---
 
@@ -756,7 +756,7 @@ En esta consulta se incluye la columna `t.month` (el mes numérico del 1 al 12) 
 
 | ![Resultados Consulta 4](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/raw/Lab4/capturas/Consulta4.png) |
 | :---: |
-| *Figura 17: Resultados — cantidad enviada por mes de envío* |
+| *Figura 25: Resultados — cantidad enviada por mes de envío* |
 
 
 ---
@@ -789,6 +789,6 @@ ORDER BY p.Size, c.MaritalStatus;
 
 > Esta consulta es la más compleja porque **cruza dos dimensiones al mismo tiempo**. El GROUP BY genera una fila por cada par (tamaño, estado civil), permitiendo comparar cuánto compraron clientes casados vs solteros en productos Small vs Large, por ejemplo.
 
-| ![Resultados Consulta 5](image.png) |
+| ![Resultados Consulta 5](capturas/consulta5.png) |
 | :---: |
-| *Figura 18: Resultados consulta 5* |
+| *Figura 26: Resultados consulta 5* |
