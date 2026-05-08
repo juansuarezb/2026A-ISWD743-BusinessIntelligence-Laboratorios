@@ -12,14 +12,17 @@
 
 >[!NOTE]
 >
-> Este repositorio contiene el desarrollo del trabajo grupal de la Práctica 3 de Business Intelligence, ...<br>
-> 
+> Este repositorio contiene el desarrollo del trabajo grupal de la Práctica 3 de Business Intelligence, en la que se implementa un modelo de datos tipo esquema estrella utilizando Microsoft Excel y Power Pivot. A partir de tablas de hechos y dimensiones relacionadas, se construyen tablas dinámicas que permiten responder preguntas comerciales clave sobre el rendimiento de ventas por producto, cliente, fecha y categoría.
 
 ---
 
 >[!NOTE]
 >
 > Objetivos específicos:
-> * Presentar
+> * Diseñar el esquema estrella identificando la tabla de hechos y las dimensiones del modelo de ventas.
+> * Configurar Power Pivot en Excel para gestionar el modelo de datos relacional.
+> * Establecer relaciones entre tablas mediante claves primarias y foráneas en Power Pivot.
+> * Construir tablas dinámicas que respondan las preguntas comerciales clave de la empresa.
+> * Interpretar los resultados obtenidos para apoyar la toma de decisiones sobre ventas y clientes.
 
 ---
