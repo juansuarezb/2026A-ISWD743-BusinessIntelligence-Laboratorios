@@ -26,3 +26,61 @@
 > * Interpretar los resultados obtenidos para apoyar la toma de decisiones sobre ventas y clientes.
 
 ---
+
+---
+
+## 1. Esquema estrella — identificación de tabla de hechos y dimensiones
+
+### Diagrama del esquema estrella 
+
+| ![Diagrama esquema estrella](capturas/diseño_modelo_estrella.png) |
+| :---: |
+| *Figura 1: Esquema estrella implementado en Power Pivot* |
+
+### Tabla de hechos — `fact_sales`
+
+La tabla de hechos es `fact_sales`. Se identificó como tabla de hechos porque:
+
+- Contiene las **métricas cuantitativas** que el negocio desea analizar: `Quantity`,
+  `UnitPrice`, `ProductCost` y `SalesAmount`.
+- Almacena las **claves foráneas (FK)** que la conectan con cada dimensión.
+- Cada fila representa **un evento de venta** ocurrido en un momento específico,
+  para un producto y cliente determinados.
+- No describe "quién es" o "qué es" algo, sino **cuánto, cuándo y cuánto costó**.
+
+---
+
+### Dimensiones identificadas
+---
+#### `dim_product` — ¿Qué se vendió? 
+
+Agrupa los atributos descriptivos del producto. Es una dimensión porque sus datos **no cambian con cada venta**. El nombre, color, categoría y precio de lista de un producto son constantes independientemente de cuántas veces se venda.
+
+
+---
+
+#### `dim_customer` — ¿Quién compró?
+
+Contiene el perfil demográfico de cada cliente. Es una dimensión porque los datos
+del cliente (género, edad, estado civil) son **atributos que describen a una
+persona**, no métricas de una transacción.
+
+---
+
+#### `dim_order_date` — ¿Cuándo se ordenó?
+
+Descompone la fecha de la orden en componentes temporales que permiten agrupar
+y filtrar ventas por año, mes, trimestre o día. Es una dimensión porque la fecha
+es un **contexto de tiempo** que no es una métrica en sí misma.
+
+
+---
+
+#### `dim_ship_date` — ¿Cuándo se envió?
+
+Tiene la misma estructura que `dim_order_date` pero registra la fecha de envío.
+Se mantiene como **tabla separada** porque cada venta tiene dos fechas distintas:
+la de pedido y la de despacho. Mantenerlas separadas permite calcular el tiempo
+de entrega y permite que ambas relaciones sean activas simultáneamente en Power Pivot.
+
+---
