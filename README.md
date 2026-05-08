@@ -35,7 +35,7 @@
 
 | ![Diagrama esquema estrella](capturas/diseño_modelo_estrella.png) |
 | :---: |
-| *Figura 1: Esquema estrella implementado en Power Pivot* |
+| *Figura 1: Esquema estrella* |
 
 ### Tabla de hechos — `fact_sales`
 
