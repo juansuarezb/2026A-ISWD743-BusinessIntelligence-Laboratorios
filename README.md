@@ -178,3 +178,63 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 ### Pregunta 2
 
 * **¿Cuál es el ingreso total (ventas) por cliente y género?**
+
+### Pregunta 4
+
+* **¿Cuál fue la cantidad enviada por mes de envío?**
+
+1. En la hoja `Preguntas`, ir a **Insert → PivotTable → From Data Model**
+2. Seleccionar **Existing Worksheet** → **OK**
+3. En el panel **PivotTable Fields** configurar los siguientes campos:
+
+| Área | Campo | Tabla origen |
+|---|---|---|
+| **Rows** | `MonthName` | `dim_date` |
+| **Values** | `Quantity` | `fact_sales` |
+
+>[!NOTE]
+> Para que esta tabla dinámica use la fecha de envío y no la de orden, se debe activar la relación `DateKey → ShipDateKey` en Power Pivot (por defecto está inactiva).
+
+---
+
+### Resultado — Pregunta 4
+
+| ![Resultado tabla dinámica Pregunta 4](capturas/resultadoPregunta4.png) |
+| :---: |
+| *Figura X: Tabla dinámica con cantidad enviada por mes de envío* |
+
+**Interpretación de resultados:**
+
+- El mes con mayor cantidad de unidades enviadas fue **Junio** con **47 unidades**.
+- El mes con menor actividad de envíos fue **Agosto** con únicamente **5 unidades**.
+- En total se enviaron **296 unidades** durante el período analizado.
+
+---
+
+### Pregunta 5
+
+* **¿Cuánto se vendió por tamaño de producto y por estado civil del cliente?**
+
+1. En la hoja `Preguntas`, ir a **Insert → PivotTable → From Data Model**
+2. Seleccionar **Existing Worksheet** → **OK**
+3. En el panel **PivotTable Fields** configurar los siguientes campos:
+
+| Área | Campo | Tabla origen |
+|---|---|---|
+| **Rows** | `Size` | `dim_product` |
+| **Columns** | `Marital Status` | `dim_customer` |
+| **Values** | `SalesAmount` | `fact_sales` |
+
+---
+
+### Resultado — Pregunta 5
+
+| ![Resultado tabla dinámica Pregunta 5](capturas/resultadoPregunta5.png) |
+| :---: |
+| *Figura X: Tabla dinámica con ventas por tamaño de producto y estado civil* |
+
+**Interpretación de resultados:**
+
+- La combinación con mayor ingreso fue **Medium / Married** con **$23,714**.
+- Los clientes **Married** generaron más ventas en todos los tamaños de producto.
+- El tamaño **Small / Single** fue la combinación con menor ingreso con **$2,264**.
