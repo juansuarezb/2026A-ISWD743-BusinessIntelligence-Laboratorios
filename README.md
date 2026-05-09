@@ -67,20 +67,10 @@ persona**, no métricas de una transacción.
 
 ---
 
-#### `dim_order_date` — ¿Cuándo se ordenó?
+#### `dim_date` — ¿Cuándo ocurrió la venta o el envío?
 
-Descompone la fecha de la orden en componentes temporales que permiten agrupar
-y filtrar ventas por año, mes, trimestre o día. Es una dimensión porque la fecha
-es un **contexto de tiempo** que no es una métrica en sí misma.
+Agrupa los atributos temporales necesarios para analizar las ventas según fechas. 
+Incluye información como día, mes, nombre del mes y año, lo que permite realizar análisis temporales sobre las transacciones.
 
-
----
-
-#### `dim_ship_date` — ¿Cuándo se envió?
-
-Tiene la misma estructura que `dim_order_date` pero registra la fecha de envío.
-Se mantiene como **tabla separada** porque cada venta tiene dos fechas distintas:
-la de pedido y la de despacho. Mantenerlas separadas permite calcular el tiempo
-de entrega y permite que ambas relaciones sean activas simultáneamente en Power Pivot.
-
+Es una dimensión porque la fecha representa un contexto de tiempo y no una métrica de negocio. En este modelo, `dim_date` representa tanto la fecha en que se realizó el pedido como la fecha en que fue enviado.
 ---
