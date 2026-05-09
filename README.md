@@ -142,7 +142,7 @@ Para que Power Pivot pueda reconocer y cargar los datos correctamente, cada rang
 3. En el cuadro de diálogo, verificar que la opción **"La tabla tiene encabezados"** esté marcada.
 4. Hacer clic en **Aceptar**.
 
-| ![Cuadro de diálogo al aplicar Ctrl + T](capturas/CreacionTabla.png) |
+| ![Cuadro de diálogo al aplicar Ctrl + T](capturas/creacionTabla.png) |
 | :---: |
 | *Figura 8: Cuadro de diálogo al aplicar Ctrl + T* |
 
