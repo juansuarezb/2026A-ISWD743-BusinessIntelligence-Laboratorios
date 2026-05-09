@@ -33,7 +33,7 @@
 
 ### Diagrama del esquema estrella 
 
-| ![Diagrama esquema estrella](capturas/Captura%20de%20pantalla%202026-05-08%20203604.png) |
+| ![Diagrama esquema estrella](capturas/diseño_modelo_estrella.png) |
 | :---: |
 | *Figura 1: Esquema estrella* |
 
