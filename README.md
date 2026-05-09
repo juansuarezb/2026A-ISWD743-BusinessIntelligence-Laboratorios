@@ -327,16 +327,22 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 * **¿Cuál fue la cantidad enviada por mes de envío?**
 
 1. En la hoja `Preguntas`, ir a **Insert → PivotTable → From Data Model**
-2. Seleccionar **Existing Worksheet** → **OK**
-3. En el panel **PivotTable Fields** configurar los siguientes campos:
+2. Seleccionar **New Worksheet** → **OK**
+3. Crear una medida DAX en Power Pivot para activar la relación inactiva con ShipDateKey:
+
+En **Power Pivot → Manage**, clic derecho en fact_sales → **Add Measure**:
+
+| Campo | Valor |
+|---|---|
+| **Nombre** | `CantidadEnviada` |
+| **Fórmula** | `=CALCULATE(SUM(fact_sales[Quantity]), USERELATIONSHIP(fact_sales[ShipDateKey], dim_date[DateKey]))` |
+
+4. En el panel **PivotTable Fields** configurar:
 
 | Área | Campo | Tabla origen |
 |---|---|---|
 | **Rows** | `MonthName` | `dim_date` |
-| **Values** | `Quantity` | `fact_sales` |
-
->[!NOTE]
-> Para que esta tabla dinámica use la fecha de envío y no la de orden, se debe activar la relación `DateKey → ShipDateKey` en Power Pivot (por defecto está inactiva).
+| **Values** | `CantidadEnviada` | `fact_sales` (medida) |
 
 ---
 
