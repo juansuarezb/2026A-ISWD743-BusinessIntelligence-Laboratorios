@@ -121,7 +121,7 @@ Power Pivot solo permite una relación activa entre dos tablas, por lo que la re
 ---
 ---
 
-## 4 — Creación de la tabla dinámica para las Preguntas
+## 4 — Creación de tablas dinámicas para las preguntas
 ---
 ### Pregunta 1
 
@@ -177,4 +177,4 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 ---
 ### Pregunta 2
 
-* **2. ¿Cuál es el ingreso total (ventas) por cliente y género?**
+* **¿Cuál es el ingreso total (ventas) por cliente y género?**
