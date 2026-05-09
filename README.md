@@ -70,7 +70,6 @@ persona**, no métricas de una transacción.
 #### `dim_date` — ¿Cuándo ocurrió la venta o el envío?
 
 Agrupa los atributos temporales necesarios para analizar las ventas según fechas. 
-Incluye información como día, mes, nombre del mes y año, lo que permite realizar análisis temporales sobre las transacciones.
+Incluye información como día, mes, nombre del mes y año, lo que permite realizar análisis temporales sobre las transacciones. Es una dimensión porque la fecha representa un contexto de tiempo y no una métrica de negocio. En este modelo, `dim_date` representa tanto la fecha en que se realizó el pedido como la fecha en que fue enviado.
 
-Es una dimensión porque la fecha representa un contexto de tiempo y no una métrica de negocio. En este modelo, `dim_date` representa tanto la fecha en que se realizó el pedido como la fecha en que fue enviado.
 ---
