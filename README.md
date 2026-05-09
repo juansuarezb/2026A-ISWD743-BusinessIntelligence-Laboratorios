@@ -317,73 +317,78 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 - El mes con mayor cantidad de ventas fue **Junio** con **52 unidades** entre ambas categorías.
 - El mes con menor actividad fue **Agosto** con únicamente **2 unidades** vendidas.
 
----
 ### Pregunta 2
 
 * **¿Cuál es el ingreso total (ventas) por cliente y género?**
 
-1. En la hoja `Preguntas`, ir a **Insert → PivotTable → From Data Model**
-2. Seleccionar **Existing Worksheet** → **OK**
-3. En el panel **PivotTable Fields** configurar los siguientes campos:
+Para resolver esta interrogante se utilizó una tabla dinámica basada en el modelo de datos, permitiendo cruzar la información demográfica de los clientes con los montos financieros de la tabla de hechos. El proceso fue el siguiente:
+
+1. En la hoja `Preguntas`, se insertó una nueva **PivotTable → From Data Model**.
+
+| ![Configuración de campos Pregunta 2](capturas/ConfiguracionCamposPregunta2P3.png) |
+| :---: |
+| *Figura 27: Configuración de campos para ingresos por cliente y género* |
+
+2. Se seleccionó la ubicación contigua a la tabla anterior para mantener el orden del reporte.
+
+3. Se arrastraron los campos a las siguientes áreas del panel **PivotTable Fields**:
 
 | Área | Campo | Tabla origen |
 |---|---|---|
 | **Rows** | `CustomerKey` | `dim_customer` |
-| **Columns** | `Gender` | `dim_customer` |
+| **Rows** | `Gender` | `dim_customer` |
 | **Values** | `SalesAmount` | `fact_sales` |
 
-| ![Configuración de campos Pregunta 2](capturas/configuracionCamposP2.png) |
-| :---: |
-| *Figura 27: Campos configurados para la Pregunta 2* |
-
 ---
-#### Resultado — Pregunta 2
 
-| ![Resultado tabla dinámica Pregunta 2](capturas/resultadoPregunta2.png) |
+### Resultado — Pregunta 2
+
+| ![Resultado tabla dinámica Pregunta 2](capturas/ResultadoPregunta2P3.png) |
 | :---: |
-| *Figura 28: Tabla dinámica con ingreso total por cliente y género* |
+| *Figura 28: Tabla dinámica con ingresos totales por cliente y género* |
 
 **Interpretación de resultados:**
 
-- Las clientes de género **F** generaron un ingreso total de **\$38,836**, superando a los clientes de género **M** con **\$30,711**.
-- El cliente con mayor ingreso fue el **1022 (M)** con **\$11,656**.
-- El ingreso total entre todos los clientes fue de **\$69,547**.
-
->[!NOTE]
-> Los valores vacíos indican que cada cliente pertenece a un único género, por lo que solo aparece valor en la columna correspondiente.
+- El ingreso total generado por las ventas registradas asciende a **$69,547.00**.
+- El cliente con el mayor aporte económico es el **ID 1022 (Masculino)** con un total de **$11,656.00**.
+- El segundo cliente con mayores compras es el **ID 1007 (Femenino)** con **$9,928.00**.
+- Se observa una distribución importante en el top de ingresos proveniente tanto de clientes de género masculino como femenino.
 
 ---
+
 ### Pregunta 3
 
 * **¿Cuál es la cantidad total vendida por producto?**
 
-1. En la hoja `Preguntas`, ir a **Insert → PivotTable → From Data Model**
-2. Seleccionar **Existing Worksheet** → **OK**
-3. En el panel **PivotTable Fields** configurar los siguientes campos:
+Esta pregunta busca identificar la rotación de inventario. Se configuró una tabla dinámica para agrupar las unidades físicas vendidas por cada nombre de producto disponible en el catálogo.
+
+1. Se insertó la **PivotTable** desde el **Data Model** en la ubicación seleccionada dentro de la hoja `Preguntas`.
+
+2. Se configuraron los campos de la siguiente manera:
 
 | Área | Campo | Tabla origen |
 |---|---|---|
 | **Rows** | `Product Name` | `dim_product` |
 | **Values** | `Quantity` | `fact_sales` |
 
-| ![Configuración de campos Pregunta 3](capturas/configuracionCamposP3.png) |
+| ![Configuración de campos Pregunta 3](capturas/ConfiguracionPregunta3P3.png) |
 | :---: |
-| *Figura 29: Campos configurados para la Pregunta 3* |
+| *Figura 29: Configuración de campos para cantidad vendida por producto* |
 
 ---
-#### Resultado — Pregunta 3
 
-| ![Resultado tabla dinámica Pregunta 3](capturas/resultadoPregunta3.png) |
+### Resultado — Pregunta 3
+
+| ![Resultado tabla dinámica Pregunta 3](capturas/ResultadoPregunta3P3.png) |
 | :---: |
-| *Figura 30: Tabla dinámica con cantidad total vendida por producto* |
+| *Figura 30: Tabla dinámica de unidades vendidas por producto ordenada de mayor a menor* |
 
 **Interpretación de resultados:**
 
-- El producto más vendido fue **Product 19** con **60 unidades**.
-- El producto con menor volumen de ventas fue **Product 5** con **16 unidades**.
-- La cantidad total vendida entre todos los productos fue de **296 unidades**.
-
----
+- Se han vendido un total de **296 unidades** entre todos los productos registrados en el modelo.
+- El producto de mayor rotación es el **Product 19**, con un total de **60 unidades** vendidas.
+- El segundo producto más vendido es el **Product 41**, con **41 unidades**.
+- El producto con menor demanda en el periodo analizado es el **Product 5**, registrando únicamente **16 unidades** vendidas.
 
 ### Pregunta 4
 
