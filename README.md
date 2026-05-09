@@ -73,3 +73,108 @@ Agrupa los atributos temporales necesarios para analizar las ventas según fecha
 Incluye información como día, mes, nombre del mes y año, lo que permite realizar análisis temporales sobre las transacciones. Es una dimensión porque la fecha representa un contexto de tiempo y no una métrica de negocio. En este modelo, `dim_date` representa tanto la fecha en que se realizó el pedido como la fecha en que fue enviado.
 
 ---
+---
+
+## 2.
+
+---
+---
+
+## 3. Carga de tablas al modelo de datos
+
+Con las 4 tablas formateadas y nombradas, se procedió a cargarlas al modelo de datos de Power Pivot. Este paso es fundamental para poder crear relaciones entre tablas y construir las tablas dinámicas.
+
+Por cada tabla se repitió el siguiente proceso:
+
+1. Clic en cualquier celda dentro de la tabla
+2. Ir a la pestaña **Power Pivot** en la cinta superior
+3. Clic en **Add to Data Model**
+
+| ![Pestaña Power Pivot con Add to Data Model](capturas/powerPivotAddModel.png) |
+| :---: |
+| *Figura 8: Opción Add to Data Model en la pestaña Power Pivot* |
+
+Al abrir Power Pivot (**Power Pivot → Manage**) se verificó que las tablas se fueran cargando correctamente. A continuación se muestra `dim_product` como segunda tabla cargada:
+
+| ![dim_product cargada en Power Pivot](capturas/powerPivotDimProduct.png) |
+| :---: |
+| *Figura 9: Tabla dim_product cargada en el modelo de Power Pivot* |
+
+Se fue repitiendo el mismo proceso tabla por tabla hasta completar la carga de las 4. En la figura 10 se puede observar `dim_date` como última tabla cargada, y en las pestañas inferiores se confirma la presencia de todas las tablas del modelo (`fact_sales`, `dim_product`, `dim_customer` y `dim_date`):
+
+| ![dim_date cargada en Power Pivot](capturas/powerPivotDimDate.png) |
+| :---: |
+| *Figura 10: Todas las tablas cargadas en el modelo de Power Pivot, visualizando dim_date como última incorporada* |
+
+Una vez cargadas todas las tablas, se procedió a crear las relaciones entre ellas en la vista de diagrama de Power Pivot, obteniendo el siguiente modelo estrella, igual al que se realizó al inicio:
+
+| ![Modelo estrella en Power Pivot](capturas/powerPivotModelo.png) |
+| :---: |
+| *Figura 11: Modelo estrella completo con todas las relaciones establecidas en Power Pivot* |
+
+Cabe recalcar que la relación entre `dim_date` y `fact_sales` se estableció de forma doble:
+- `DateKey` → `OrderDateKey`: relación **activa** (línea sólida), utilizada por defecto en las tablas dinámicas para analizar ventas por fecha de orden.
+- `DateKey` → `ShipDateKey`: relación **inactiva** (línea punteada), disponible para análisis por fecha de envío cuando se requiera.
+
+Power Pivot solo permite una relación activa entre dos tablas, por lo que la relación con `ShipDateKey` queda inactiva y debe activarse explícitamente mediante DAX cuando sea necesario.
+
+---
+---
+
+## 4 — Creación de la tabla dinámica para las Preguntas
+---
+### Pregunta 1
+
+* **¿Cuántas ventas se realizaron por categoría de producto y mes?**
+
+Para responder esta pregunta se creó una tabla dinámica conectada al modelo de datos de Power Pivot. El proceso fue el siguiente:
+
+1. En una hoja nueva llamada `Preguntas`, ir a **Insert → PivotTable → From Data Model**
+
+| ![Insertar tabla dinámica desde Data Model](capturas/insertarTablaDinamica.png) |
+| :---: |
+| *Figura 12: Selección de PivotTable From Data Model* |
+
+2. Seleccionar **Existing Worksheet** con ubicación en este caso  `Preguntas!$A$4` → **OK**
+
+| ![Cuadro de diálogo PivotTable from Data Model](capturas/tablaDinamicaDataModel.png) |
+| :---: |
+| *Figura 13: Configuración de ubicación de la tabla dinámica* |
+
+3. En el panel **PivotTable Fields** se visualizan las 4 tablas del modelo disponibles
+
+| ![Panel PivotTable Fields vacío](capturas/camposTablaDinamica.png) |
+| :---: |
+| *Figura 14: Panel PivotTable Fields con las tablas del modelo de datos* |
+
+4. Se arrastraron los campos a las siguientes áreas:
+
+| Área | Campo | Tabla origen |
+|---|---|---|
+| **Rows** | `Category` | `dim_product` |
+| **Columns** | `MonthName` | `dim_date` |
+| **Values** | `Quantity` | `fact_sales` |
+
+| ![Configuración de campos en PivotTable Fields](capturas/configuracionCampos.png) |
+| :---: |
+| *Figura 15: Campos configurados en el panel PivotTable Fields* |
+
+---
+
+### Resultado — Pregunta 1
+
+| ![Resultado tabla dinámica Pregunta 1](capturas/resultadoPregunta1.png) |
+| :---: |
+| *Figura 16: Tabla dinámica con ventas por categoría de producto y mes* |
+
+**Interpretación de resultados:**
+
+- La categoría **Electronics** registró el mayor volumen de ventas con **174 unidades** en total.
+- La categoría **Accessories** vendió **122 unidades** en total.
+- El mes con mayor cantidad de ventas fue **Junio** con **52 unidades** entre ambas categorías.
+- El mes con menor actividad fue **Agosto** con únicamente **2 unidades** vendidas.
+
+---
+### Pregunta 2
+
+* **2. ¿Cuál es el ingreso total (ventas) por cliente y género?**
