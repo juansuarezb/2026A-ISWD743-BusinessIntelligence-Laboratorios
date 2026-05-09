@@ -330,12 +330,21 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 2. Seleccionar **New Worksheet** → **OK**
 3. Crear una medida DAX en Power Pivot para activar la relación inactiva con ShipDateKey:
 
+Esta pregunta requiere analizar las ventas por fecha de **envío** (`ShipDateKey`), sin embargo Power Pivot solo permite una relación activa entre dos tablas. La relación activa de `dim_date` está configurada con `OrderDateKey`, por lo que la relación con `ShipDateKey` quedó **inactiva**. 
+
+Al usar directamente el campo `Quantity` en la tabla dinámica, Power Pivot utiliza por defecto la relación activa (`OrderDateKey`), devolviendo resultados por mes de **orden** y no de **envío**. Para solucionar esto se creó una medida DAX con `USERELATIONSHIP()`, que activa temporalmente la relación inactiva durante el cálculo.
+
+
 En **Power Pivot → Manage**, clic derecho en fact_sales → **Add Measure**:
 
 | Campo | Valor |
 |---|---|
 | **Nombre** | `CantidadEnviada` |
 | **Fórmula** | `=CALCULATE(SUM(fact_sales[Quantity]), USERELATIONSHIP(fact_sales[ShipDateKey], dim_date[DateKey]))` |
+
+| ![Creación de medida DAX](capturas/medidaDAX.png) |
+| :---: |
+| *Figura 29: Configuración de la medida DAX con USERELATIONSHIP* |
 
 4. En el panel **PivotTable Fields** configurar:
 
@@ -350,7 +359,7 @@ En **Power Pivot → Manage**, clic derecho en fact_sales → **Add Measure**:
 
 | ![Resultado tabla dinámica Pregunta 4](capturas/resultadoPregunta4.png) |
 | :---: |
-| *Figura 27: Tabla dinámica con cantidad enviada por mes de envío* |
+| *Figura 30: Tabla dinámica con cantidad enviada por mes de envío* |
 
 **Interpretación de resultados:**
 
@@ -380,7 +389,7 @@ En **Power Pivot → Manage**, clic derecho en fact_sales → **Add Measure**:
 
 | ![Resultado tabla dinámica Pregunta 5](capturas/resultadoPregunta5.png) |
 | :---: |
-| *Figura 28: Tabla dinámica con ventas por tamaño de producto y estado civil* |
+| *Figura 31: Tabla dinámica con ventas por tamaño de producto y estado civil* |
 
 **Interpretación de resultados:**
 
