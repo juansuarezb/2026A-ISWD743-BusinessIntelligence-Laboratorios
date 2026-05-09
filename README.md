@@ -75,7 +75,150 @@ Incluye información como día, mes, nombre del mes y año, lo que permite reali
 ---
 ---
 
-## 2.
+## 2. Configuración del Modelo Estrella en Power Pivot
+
+### 2.1 Habilitación de Power Pivot en Excel
+
+Power Pivot es un complemento de Excel que permite crear modelos de datos relacionales y realizar análisis avanzados. Para habilitarlo se siguieron los siguientes pasos:
+
+1. Abrir Microsoft Excel.
+2. Ir a **Archivo → Opciones**.
+
+| ![Sección Archivo en Excel](capturas/archivoExcel.png) |
+| :---: |
+| *Figura 2: Sección Archivo en Excel en Barra de Herramientas* |
+
+| ![Sección Opciones dentro de Excel](capturas/opcionesExcel.png) |
+| :---: |
+| *Figura 3: Sección Opciones dentro de Excel* |
+
+
+3. Seleccionar la sección **Complementos** en el panel izquierdo.
+4. En la parte inferior, en el campo **Administrar**, seleccionar **Complementos COM** y hacer clic en **Ir...**.
+
+| ![Opción Complementos COM](capturas/complementosCOM.png) |
+| :---: |
+| *Figura 4: Opción Complementos COM* |
+
+5. Marcar la casilla **Microsoft Power Pivot for Excel**.
+6. Hacer clic en **Aceptar**.
+
+| ![Configuración de Power Pivot](capturas/configuracionPowerPivot.png) |
+| :---: |
+| *Figura 5: Configuración de Power Pivot en Complementos COM* |
+
+7. Verificar que la pestaña **Power Pivot** aparece en la cinta superior de Excel.
+
+| ![Ventana de Complementos COM con Power Pivot activado](capturas/ventanaComplementosCOM.png) |
+| :---: |
+| *Figura 6: Ventana de Complementos COM con Power Pivot activado* |
+
+---
+### 2.2. Creación de Hojas de Trabajo
+
+Se creó una hoja de Excel por cada tabla del modelo, siguiendo estos pasos:
+
+1. Hacer clic derecho sobre una pestaña de hoja en la parte inferior → **Hoja Nueva**.
+2. Nombrar cada hoja con el nombre de la tabla correspondiente.
+3. En cada hoja insertar los datos con sus encabezados en la fila 1
+Las cuatro hojas creadas fueron:
+
+- `dim_product`
+- `dim_customer`
+- `dim_date`
+- `fact_sales`
+
+| ![Hojas de trabajo creadas en Excel](capturas/hojasTrabajo.png) |
+| :---: |
+| *Figura 7: Hojas de trabajo creadas en Excel* |
+
+---
+### 2.3. Conversión a Tabla de Excel (Ctrl + T)
+
+Para que Power Pivot pueda reconocer y cargar los datos correctamente, cada rango de datos fue convertido en una **tabla de Excel**. El proceso se repitió en cada una de las 4 hojas:
+
+1. Seleccionar el rango de datos incluyendo los encabezados.
+2. Presionar **Ctrl + T**.
+3. En el cuadro de diálogo, verificar que la opción **"La tabla tiene encabezados"** esté marcada.
+4. Hacer clic en **Aceptar**.
+
+| ![Cuadro de diálogo al aplicar Ctrl + T](capturas/CreacionTabla.png) |
+| :---: |
+| *Figura 8: Cuadro de diálogo al aplicar Ctrl + T* |
+
+---
+### 2.4. Asignación de Nombres a las Tablas
+
+
+Luego de convertir cada rango en tabla, se asignó un nombre personalizado a cada una para facilitar su identificación en el modelo de datos:
+
+1. Hacer clic dentro de la tabla.
+2. Ir a la pestaña **Diseño de tabla** que aparece en la cinta superior.
+3. En el campo **Nombre de tabla** del extremo izquierdo se escribió el nombre adecuado para la tabla.
+4. Presionar **Enter** para confirmar.
+
+| ![Nombre de tabla dim_product](capturas/dim_product.png) |
+| :---: |
+| *Figura 9: Tabla con nombre asignado (dim_product)* |
+
+| ![Nombre de tabla dim_customer](capturas/dim_customer.png) |
+| :---: |
+| *Figura 10: Tabla con nombre asignado (dim_customer)* |
+
+| ![Nombre de tabla dim_date](capturas/dim_date.png) |
+| :---: |
+| *Figura 11: Tabla con nombre asignado (dim_date)* |
+| *Nota: para la tabla de dim_date, se generaron los datos utilizando funciones de Excel para descomponer en año, mes y nombre de mes.* |
+
+| ![Nombre de tabla fact_sales](capturas/fact_sales.png) |
+| :---: |
+| *Figura 12: Tabla con nombre asignado (fact_sales)* |
+
+---
+### 2.5. Eliminación de Duplicados en las Dimensiones
+
+
+Para garantizar la integridad del modelo, se eliminaron los registros duplicados en las tablas de dimensión, asegurando que cada llave primaria (PK) sea única. Este paso **no se aplica a la tabla de hechos (fact_sales)**.
+
+El proceso se realizó de la siguiente forma para cada tabla de dimensión:
+
+1. Hacer clic dentro de la tabla de dimensión.
+2. Ir a la pestaña **Datos** en la cinta superior.
+3. Hacer clic en **Quitar duplicados**.
+
+| ![Opción Quitar duplicados en Excel](capturas/quitarDuplicados.png) |
+| :---: |
+| *Figura 13: Opción Quitar duplicados en Excel* |
+
+4. En el cuadro de diálogo, seleccionar **únicamente la columna de la llave primaria** correspondiente.
+5. Hacer clic en **Aceptar**.
+
+| ![Cuadro de diálogo Quitar duplicados](capturas/cuadroQuitarDuplicados.png) |
+| :---: |
+| *Figura 14: Cuadro de diálogo Quitar duplicados* |
+
+6. Excel muestra un mensaje indicando cuántos duplicados fueron eliminados.
+
+Las columnas utilizadas para eliminar duplicados por tabla fueron:
+
+| Tabla | Columna utilizada |
+|---|---|
+| dim_product | `ProductKey` |
+| dim_customer | `CustomerKey` |
+| dim_date | `DateKey` |
+
+| ![Eliminación de duplicados dim_product](capturas/duplicados-dim_product.png) |
+| :---: |
+| *Figura 15: Eliminación de duplicados dim_product* |
+
+| ![Eliminación de duplicados dim_customer](capturas/duplicados-dim_customer.png) |
+| :---: |
+| *Figura 16: Eliminación de duplicados dim_customer* |
+
+| ![Eliminación de duplicados dim_date](capturas/duplicados-dim_date.png) |
+| :---: |
+| *Figura 17: Eliminación de duplicados dim_date* |
+
 
 ---
 ---
@@ -92,25 +235,25 @@ Por cada tabla se repitió el siguiente proceso:
 
 | ![Pestaña Power Pivot con Add to Data Model](capturas/powerPivotAddModel.png) |
 | :---: |
-| *Figura 8: Opción Add to Data Model en la pestaña Power Pivot* |
+| *Figura 18: Opción Add to Data Model en la pestaña Power Pivot* |
 
 Al abrir Power Pivot (**Power Pivot → Manage**) se verificó que las tablas se fueran cargando correctamente. A continuación se muestra `dim_product` como segunda tabla cargada:
 
 | ![dim_product cargada en Power Pivot](capturas/powerPivotDimProduct.png) |
 | :---: |
-| *Figura 9: Tabla dim_product cargada en el modelo de Power Pivot* |
+| *Figura 19: Tabla dim_product cargada en el modelo de Power Pivot* |
 
 Se fue repitiendo el mismo proceso tabla por tabla hasta completar la carga de las 4. En la figura 10 se puede observar `dim_date` como última tabla cargada, y en las pestañas inferiores se confirma la presencia de todas las tablas del modelo (`fact_sales`, `dim_product`, `dim_customer` y `dim_date`):
 
 | ![dim_date cargada en Power Pivot](capturas/powerPivotDimDate.png) |
 | :---: |
-| *Figura 10: Todas las tablas cargadas en el modelo de Power Pivot, visualizando dim_date como última incorporada* |
+| *Figura 20: Todas las tablas cargadas en el modelo de Power Pivot, visualizando dim_date como última incorporada* |
 
 Una vez cargadas todas las tablas, se procedió a crear las relaciones entre ellas en la vista de diagrama de Power Pivot, obteniendo el siguiente modelo estrella, igual al que se realizó al inicio:
 
 | ![Modelo estrella en Power Pivot](capturas/powerPivotModelo.png) |
 | :---: |
-| *Figura 11: Modelo estrella completo con todas las relaciones establecidas en Power Pivot* |
+| *Figura 21: Modelo estrella completo con todas las relaciones establecidas en Power Pivot* |
 
 Cabe recalcar que la relación entre `dim_date` y `fact_sales` se estableció de forma doble:
 - `DateKey` → `OrderDateKey`: relación **activa** (línea sólida), utilizada por defecto en las tablas dinámicas para analizar ventas por fecha de orden.
@@ -133,19 +276,19 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 
 | ![Insertar tabla dinámica desde Data Model](capturas/insertarTablaDinamica.png) |
 | :---: |
-| *Figura 12: Selección de PivotTable From Data Model* |
+| *Figura 22: Selección de PivotTable From Data Model* |
 
 2. Seleccionar **Existing Worksheet** con ubicación en este caso  `Preguntas!$A$4` → **OK**
 
 | ![Cuadro de diálogo PivotTable from Data Model](capturas/tablaDinamicaDataModel.png) |
 | :---: |
-| *Figura 13: Configuración de ubicación de la tabla dinámica* |
+| *Figura 23: Configuración de ubicación de la tabla dinámica* |
 
 3. En el panel **PivotTable Fields** se visualizan las 4 tablas del modelo disponibles
 
 | ![Panel PivotTable Fields vacío](capturas/camposTablaDinamica.png) |
 | :---: |
-| *Figura 14: Panel PivotTable Fields con las tablas del modelo de datos* |
+| *Figura 24: Panel PivotTable Fields con las tablas del modelo de datos* |
 
 4. Se arrastraron los campos a las siguientes áreas:
 
@@ -157,7 +300,7 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 
 | ![Configuración de campos en PivotTable Fields](capturas/configuracionCampos.png) |
 | :---: |
-| *Figura 15: Campos configurados en el panel PivotTable Fields* |
+| *Figura 25: Campos configurados en el panel PivotTable Fields* |
 
 ---
 
@@ -165,7 +308,7 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 
 | ![Resultado tabla dinámica Pregunta 1](capturas/resultadoPregunta1.png) |
 | :---: |
-| *Figura 16: Tabla dinámica con ventas por categoría de producto y mes* |
+| *Figura 26: Tabla dinámica con ventas por categoría de producto y mes* |
 
 **Interpretación de resultados:**
 
@@ -201,7 +344,7 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 
 | ![Resultado tabla dinámica Pregunta 4](capturas/resultadoPregunta4.png) |
 | :---: |
-| *Figura X: Tabla dinámica con cantidad enviada por mes de envío* |
+| *Figura 27: Tabla dinámica con cantidad enviada por mes de envío* |
 
 **Interpretación de resultados:**
 
@@ -231,7 +374,7 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 
 | ![Resultado tabla dinámica Pregunta 5](capturas/resultadoPregunta5.png) |
 | :---: |
-| *Figura X: Tabla dinámica con ventas por tamaño de producto y estado civil* |
+| *Figura 28: Tabla dinámica con ventas por tamaño de producto y estado civil* |
 
 **Interpretación de resultados:**
 
