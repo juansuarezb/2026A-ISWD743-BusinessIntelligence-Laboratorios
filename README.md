@@ -322,6 +322,69 @@ Para responder esta pregunta se creó una tabla dinámica conectada al modelo de
 
 * **¿Cuál es el ingreso total (ventas) por cliente y género?**
 
+1. En la hoja `Preguntas`, ir a **Insert → PivotTable → From Data Model**
+2. Seleccionar **Existing Worksheet** → **OK**
+3. En el panel **PivotTable Fields** configurar los siguientes campos:
+
+| Área | Campo | Tabla origen |
+|---|---|---|
+| **Rows** | `CustomerKey` | `dim_customer` |
+| **Columns** | `Gender` | `dim_customer` |
+| **Values** | `SalesAmount` | `fact_sales` |
+
+| ![Configuración de campos Pregunta 2](capturas/configuracionCamposP2.png) |
+| :---: |
+| *Figura 27: Campos configurados para la Pregunta 2* |
+
+---
+#### Resultado — Pregunta 2
+
+| ![Resultado tabla dinámica Pregunta 2](capturas/resultadoPregunta2.png) |
+| :---: |
+| *Figura 28: Tabla dinámica con ingreso total por cliente y género* |
+
+**Interpretación de resultados:**
+
+- Las clientes de género **F** generaron un ingreso total de **\$38,836**, superando a los clientes de género **M** con **\$30,711**.
+- El cliente con mayor ingreso fue el **1022 (M)** con **\$11,656**.
+- El ingreso total entre todos los clientes fue de **\$69,547**.
+
+>[!NOTE]
+> Los valores vacíos indican que cada cliente pertenece a un único género, por lo que solo aparece valor en la columna correspondiente.
+
+---
+### Pregunta 3
+
+* **¿Cuál es la cantidad total vendida por producto?**
+
+1. En la hoja `Preguntas`, ir a **Insert → PivotTable → From Data Model**
+2. Seleccionar **Existing Worksheet** → **OK**
+3. En el panel **PivotTable Fields** configurar los siguientes campos:
+
+| Área | Campo | Tabla origen |
+|---|---|---|
+| **Rows** | `Product Name` | `dim_product` |
+| **Values** | `Quantity` | `fact_sales` |
+
+| ![Configuración de campos Pregunta 3](capturas/configuracionCamposP3.png) |
+| :---: |
+| *Figura 29: Campos configurados para la Pregunta 3* |
+
+---
+#### Resultado — Pregunta 3
+
+| ![Resultado tabla dinámica Pregunta 3](capturas/resultadoPregunta3.png) |
+| :---: |
+| *Figura 30: Tabla dinámica con cantidad total vendida por producto* |
+
+**Interpretación de resultados:**
+
+- El producto más vendido fue **Product 19** con **60 unidades**.
+- El producto con menor volumen de ventas fue **Product 5** con **16 unidades**.
+- La cantidad total vendida entre todos los productos fue de **296 unidades**.
+
+---
+
 ### Pregunta 4
 
 * **¿Cuál fue la cantidad enviada por mes de envío?**
@@ -344,7 +407,7 @@ En **Power Pivot → Manage**, clic derecho en fact_sales → **Add Measure**:
 
 | ![Creación de medida DAX](capturas/medidaDAX.png) |
 | :---: |
-| *Figura 29: Configuración de la medida DAX con USERELATIONSHIP* |
+| *Figura 31: Configuración de la medida DAX con USERELATIONSHIP* |
 
 4. En el panel **PivotTable Fields** configurar:
 
@@ -359,7 +422,7 @@ En **Power Pivot → Manage**, clic derecho en fact_sales → **Add Measure**:
 
 | ![Resultado tabla dinámica Pregunta 4](capturas/resultadoPregunta4.png) |
 | :---: |
-| *Figura 30: Tabla dinámica con cantidad enviada por mes de envío* |
+| *Figura 32: Tabla dinámica con cantidad enviada por mes de envío* |
 
 **Interpretación de resultados:**
 
@@ -389,7 +452,7 @@ En **Power Pivot → Manage**, clic derecho en fact_sales → **Add Measure**:
 
 | ![Resultado tabla dinámica Pregunta 5](capturas/resultadoPregunta5.png) |
 | :---: |
-| *Figura 31: Tabla dinámica con ventas por tamaño de producto y estado civil* |
+| *Figura 33: Tabla dinámica con ventas por tamaño de producto y estado civil* |
 
 **Interpretación de resultados:**
 
