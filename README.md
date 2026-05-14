@@ -1,6 +1,6 @@
-# 2026A-ISWD743-practica4
-### Fecha: 05/05/2026
-### Práctica Modelo Conceptual Lógico Físico Estrella
+# 2026A-ISWD743-practica5
+### Fecha: 14/05/2026
+### Práctica Creación Data warehouse - Desnutrición Infantil
   
 </div>
 
@@ -26,11 +26,10 @@ Respondiendo las siguientes preguntas:
 > * Crear tabla de hechos y dimensionales en PostgreSQL
 > * Realizar el proceso de ETL en Pentaho
 > * Generar consultas SQL para responder las preguntas.
-> * 
 
 ---
 
-## 1. Modelo Estrella: Diseño e creacion de tablas en PostgreSQL
+## 1. Modelo Estrella: Diseño e creación de tablas en PostgreSQL
 
 Para la practica se desarrollo el siguiente concepto de modelo estrella que permita responder las preguntas solicitas.
 
@@ -145,3 +144,11 @@ CREATE TABLE fact_cases_desnutrition (
 | *Figura 2: Tablas creadas en PostgreSQL* |
 
 ---
+## 2. Proceso en Pentaho
+
+---
+## 3.
+
+--
+## 4. Resolución de Preguntas
+
