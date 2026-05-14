@@ -32,7 +32,7 @@ Respondiendo las siguientes preguntas:
 
 ## 1. Modelo Estrella: Diseño e creacion de tablas en PostgreSQL
 
-Para el desarrollo de la practica se desarrollo el siguiente concepto de modelo estrella que permita responder las preguntas solicitas.
+Para la practica se desarrollo el siguiente concepto de modelo estrella que permita responder las preguntas solicitas.
 
 | ![Diagrama modelo estrella](capturas/diseño_modelo_estrella.png) |
 | :---: |
