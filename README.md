@@ -140,7 +140,7 @@ CREATE TABLE fact_cases_desnutrition (
 );
 ```
 
-| ![Tablas creadas](capturas/tablas_creadas.png) |
+| ![Tablas creadas](capturas/tablas_creadas1.png) |
 | :---: |
 | *Figura 2: Tablas creadas en PostgreSQL* |
 
