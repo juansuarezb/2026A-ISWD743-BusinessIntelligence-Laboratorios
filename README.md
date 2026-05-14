@@ -12,7 +12,7 @@
 
 >[!NOTE]
 >
-> Este repositorio contiene el desarrollo del trabajo grupal de la Práctica 5 de Business Intelligence, correspondiente a la creacion de un datawarehouse para el análisis la desnutrición infantil en distintas regiones del país. 
+> Este repositorio contiene el desarrollo del trabajo grupal de la Práctica 5 de Business Intelligence, correspondiente a la creación de un datawarehouse para el análisis la desnutrición infantil en distintas regiones del país. 
 Respondiendo las siguientes preguntas:
 > * ¿Cuál es el tipo de desnutrición más común por región?
 > * ¿Cómo varía la desnutrición por edad y género?
@@ -144,11 +144,249 @@ CREATE TABLE fact_cases_desnutrition (
 | *Figura 2: Tablas creadas en PostgreSQL* |
 
 ---
-## 2. Proceso en Pentaho
+## 2. Proceso ETL en Pentaho
+
+El proceso ETL (*Extract, Transform, Load*) se implementó siguiendo una arquitectura de transformaciones independientes que luego son ejecutadas en un job maestro. El orden de ejecución es crítico: primero se carga el staging, luego las dimensiones, y finalmente la tabla de hechos, ya que esta última depende de las claves generadas por las dimensiones.
+
+### Configuración de la conexión a PostgreSQL
+
+Antes de construir las transformaciones se configuró una conexión a la base de datos que fue reutilizada en todos los steps de tipo `Table Input` y `Table Output` a lo largo del proceso ETL.
+
+| Campo | Valor |
+|---|---|
+| **Connection name** | `ConnectionDB` |
+| **Connection type** | `PostgreSQL` |
+| **Host Name** | `localhost` |
+| **Database Name** | `Datawarehouse` |
+| **Port Number** | `5432` |
+| **Username** | `postgres` |
+
+| ![conexion](capturas/pentaho_conexion_db.png) |
+| :---: |
+| *Figura 3: Conexión a PostgreSQL verificada exitosamente* |
 
 ---
-## 3.
 
---
+### Transformación 1 — `load_csv_desnutricion.ktr` (Carga al Staging)
+
+Lee el archivo CSV fuente y lo carga sin transformación a la tabla `desnutricion_infantil`. Esta tabla actúa como zona de staging: preserva los datos originales y sirve como única fuente para todas las transformaciones posteriores.
+
+**Steps utilizados:**  `CSV File Input` → `Table Output`
+
+- **CSV File Input** → Lee el archivo `desnutricion_infantil.csv` detectando automáticamente los campos y tipos de datos.
+- **Table Output** → Inserta las 500 filas en la tabla `desnutricion_infantil` de PostgreSQL.
+
+| ![load_csv](capturas/pentaho_load_staging.png) |
+| :---: |
+| *Figura 4: Transformación de carga al staging* |
+
+| ![tranf1](capturas/transf1_tabla.png) |
+| :---: |
+| *Figura 5: Resultado en PostgreSQL de Transformación ejecutada* |
+
+---
+
+### Transformación 2 — `dim_date_desnutricion.ktr`
+
+Extrae las fechas únicas del staging y las descompone en sus atributos temporales mediante el step **Calculator**, que permite derivar año, mes y día directamente desde un campo de tipo fecha.
+
+**Steps:** `Table Input` → `Calculator` → `Select values` → `Table Output`
+
+- **Table Input** → Lee fechas únicas del staging:
+  ```sql
+  SELECT DISTINCT date_measured 
+  FROM desnutricion_infantil 
+  ORDER BY date_measured;
+  ```
+- **Calculator** → Deriva los atributos `year`, `month` y `day` a partir de `date_measured` usando las funciones *Year of date A*, *Month of date A* y *Day of month of date A*.
+- **Select values** → Selecciona únicamente los campos necesarios: `date_measured`, `year`, `month`, `day`.
+- **Table Output** → Inserta en `dim_date`. El campo `date_id` es generado automáticamente por PostgreSQL (`SERIAL`).
+
+| ![dim_date](capturas/pentaho_dim_date.png) |
+| :---: |
+| *Figura 6: Transformación dim_date — 353 fechas únicas cargadas* |
+
+| ![tranf2](capturas/transf2_tabla.png) |
+| :---: |
+| *Figura 7: Resultado en PostgreSQL de Transformación ejecutada* |
+
+---
+
+### Transformación 3 — `dim_child_desnutricion.ktr`
+
+Es la transformación más relevante del proceso. Además de cargar los datos del niño, deriva el atributo `age_group` mediante el step **Modified JavaScript Value**, que no fue visto en clase pero permite aplicar lógica condicional directamente sobre el stream de datos, algo que el Calculator estándar no soporta.
+
+**Steps utilizados:** `Table Input` → `Agregar age_group` → `Select values` → `Table Output`
+
+- **Table Input** → Lee niños únicos del staging:
+  ```sql
+  SELECT DISTINCT child_id, gender, age_months
+  FROM desnutricion_infantil;
+  ```
+- **Modified JavaScript Value** — Permite escribir código JavaScript que se ejecuta fila por fila sobre el stream. Se declara la variable `age_group` en la tabla **Fields** del step (tipo String, longitud 10) para que Pentaho la agregue al stream como campo nuevo:
+
+```javascript
+var age_group;
+if      (age_months <= 11) { age_group = "0-11";  }
+else if (age_months <= 23) { age_group = "12-23"; }
+else if (age_months <= 35) { age_group = "24-35"; }
+else if (age_months <= 47) { age_group = "36-47"; }
+else                       { age_group = "48-59"; }
+```
+
+| ![javascript](capturas/pentaho_javascript_config.png) |
+| :---: |
+| *Figura 8: Configuración del Modified JavaScript Value con la lógica de age_group* |
+
+- **Select values** → Selecciona: `child_id`, `gender`, `age_months`, `age_group`.
+- **Table Output** → Inserta en `dim_child`.
+
+| ![dim_child](capturas/pentaho_dim_child.png) |
+| :---: |
+| *Figura 9: Transformación dim_child — 500 niños con age_group derivado* |
+
+| ![tranf3](capturas/transf3_tabla.png) |
+| :---: |
+| *Figura 10: Resultado en PostgreSQL de Transformación ejecutada* |
+---
+
+### Transformación 4 — `dim_institution_desnutricion.ktr`
+
+Extrae los valores únicos de institución del staging y los carga en `dim_institution`.
+
+**Steps utilizados:** `Table Input` → `Unique rows` → `Table Output`
+
+- **Table Input** :
+```sql
+SELECT DISTINCT institution FROM desnutricion_infantil;
+```
+
+- **Unique rows** → Elimina posibles duplicados comparando por `institution`.
+- **Table Output** → Inserta en `dim_institution`. El campo `institution_id` es generado por PostgreSQL (`SERIAL`).
+
+| ![dim_institution](capturas/pentaho_dim_institution.png) |
+| :---: |
+| *Figura 11: Transformación dim_institution — 3 instituciones cargadas* |
+
+| ![tranf4](capturas/transf4_tabla.png) |
+| :---: |
+| *Figura 12: Resultado en PostgreSQL de Transformación ejecutada* |
+
+---
+
+### Transformación 5 — `dim_region_desnutricion.ktr`
+
+Mismo patrón que `dim_institution`, aplicado a las regiones geográficas.
+
+**Steps utilizados:** `Table Input` → `Unique rows` → `Table Output`
+- **Table Input** → 
+```sql
+SELECT DISTINCT region FROM desnutricion_infantil;
+```
+
+- **Unique rows** → Compara por `region`.
+- **Table Output** → Inserta en `dim_region`.
+
+| ![dim_region](capturas/pentaho_dim_region.png) |
+| :---: |
+| *Figura 13: Transformación dim_region — 3 regiones cargadas* |
+
+| ![tranf5](capturas/transf5_tabla.png) |
+| :---: |
+| *Figura 14: Resultado en PostgreSQL de Transformación ejecutada* |
+---
+
+### Transformación 6 — `fact_cases_desnutrition.ktr`
+
+Es la transformación más compleja. Lee todos los campos necesarios del staging y resuelve las tres claves foráneas (`date_id`, `region_id`, `institution_id`) mediante **Stream Lookup**.
+
+**Steps utilizados:**  `Table Input` → `Stream Lookup date_id` → `Stream Lookup region_id` → `Stream Lookup institution_id` → `Select values` → `Table Output`
+
+- **Table Input (principal)** → Lee todos los campos necesarios del staging:
+  ```sql
+  SELECT child_id, date_measured, region, institution,
+         weight_kg, height_cm, nutritional_status
+  FROM desnutricion_infantil;
+  ```
+
+Cada Stream Lookup requiere su propio `Table Input` lateral que alimenta la dimensión de referencia:
+
+| Lookup | Table Input lateral | Campo del stream | Campo dimensión | FK resuelta |
+|---|---|---|---|---|
+| #1 | `SELECT date_id, date_measured FROM dim_date` | `date_measured` | `date_measured` | `date_id` |
+| #2 | `SELECT region_id, region FROM dim_region` | `region` | `region` | `region_id` |
+| #3 | `SELECT institution_id, institution FROM dim_institution` | `institution` | `institution` | `institution_id` |
+
+- **Stream Lookup #1** → Resuelve `date_id` cruzando `date_measured` con `dim_date`.
+- **Stream Lookup #2** → Resuelve `region_id` cruzando `region` con `dim_region`.
+- **Stream Lookup #3** → Resuelve `institution_id` cruzando `institution` con `dim_institution`.
+- **Select values** → Conserva únicamente los 7 campos que recibe la fact: `date_id`, `child_id`, `region_id`, `institution_id`, `weight_kg`, `height_cm`, `nutritional_status`.
+- **Table Output** → Inserta en `fact_cases_desnutrition`.
+
+| ![fact](capturas/pentaho_fact.png) |
+| :---: |
+| *Figura 15: Transformación de la tabla de hechos con Stream Lookups* |
+
+| ![tranf6](capturas/transf6_tabla.png) |
+| :---: |
+| *Figura 16: Resultado en PostgreSQL de Transformación ejecutada* |
+
+---
+
+### Job maestro — `p5_job_desnutrition.kjb`
+
+El job orquesta la ejecución de las 6 transformaciones en el orden correcto, garantizando que las dimensiones estén pobladas antes de cargar la tabla de hechos.
+
+```
+load_csv → load dim_date → load dim_child 
+      → load dim_institution → load dim_region → load fact_cases_desnutrition
+```
+
+| ![job](capturas/pentaho_job.png) |
+| :---: |
+| *Figura 17: Job maestro con todas las transformaciones ejecutadas exitosamente* |
+
+---
+
+### Verificación final del ETL
+
+Tras la ejecución completa del job se verificó la integridad de la carga con la siguiente consulta:
+
+```sql
+SELECT 'dim_date'              AS tabla, COUNT(*) FROM dim_date
+UNION ALL SELECT 'dim_child',           COUNT(*) FROM dim_child
+UNION ALL SELECT 'dim_institution',     COUNT(*) FROM dim_institution
+UNION ALL SELECT 'dim_region',          COUNT(*) FROM dim_region
+UNION ALL SELECT 'fact_cases_desnutrition', COUNT(*) FROM fact_cases_desnutrition;
+```
+
+| Tabla | Registros |
+|---|---|
+| `dim_date` | 353 |
+| `dim_child` | 500 |
+| `dim_institution` | 3 |
+| `dim_region` | 3 |
+| `fact_cases_desnutrition` | 500 |
+
+| ![verificacion](capturas/verificacion_final.png) |
+| :---: |
+| *Figura 18: Verificación final — conteo de registros por tabla* |
+
+
+---
+## 3. Modelo estrella en Power Pivot
+
+---
 ## 4. Resolución de Preguntas
+
+### Pregunta 1
+* **¿Cuál es el tipo de desnutrición más común por región?**
+
+---
+### Pregunta 2
+* **¿Cómo varía la desnutrición por edad y género?**
+
+---
+### Pregunta 3
+* **¿Qué instituciones atienden más casos?**
 
