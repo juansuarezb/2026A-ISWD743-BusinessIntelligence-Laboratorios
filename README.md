@@ -61,7 +61,13 @@ Describe las características del niño o niña evaluado. Se crea como dimensió
 
 ### Dimensión — `dim_institution`
 
-Describe el centro de atención médica donde se realizó la evaluación. Incluye el atributo `region` directamente, lo que elimina la necesidad de una dimensión geográfica adicional: en este dataset cada institución pertenece a una única región (relación 1 a 1), por lo que crear una `dim_region` separada introduciría redundancia sin aportar flexibilidad analítica.
+Describe el centro de atención médica donde se realizó la evaluación.
+
+---
+
+### Dimensión — `dim_region`
+
+Describe la región geográfica donde fue atendido cada caso.
 
 ---
 
@@ -107,19 +113,30 @@ CREATE TABLE dim_child (
 
 CREATE TABLE dim_institution (
     institution_id  SERIAL        PRIMARY KEY,
-    institution     VARCHAR(100)  NOT NULL UNIQUE,
-    region          VARCHAR(50)   NOT NULL
+    institution     VARCHAR(100)  NOT NULL UNIQUE
+);
+
+CREATE TABLE dim_region (
+    region_id  SERIAL       PRIMARY KEY,
+    region     VARCHAR(50)  NOT NULL UNIQUE
 );
 
 CREATE TABLE fact_cases_desnutrition (
-    id_case            SERIAL        PRIMARY KEY,
-    date_id            INT           NOT NULL REFERENCES dim_date(date_id),
-    child_id           VARCHAR(10)   NOT NULL REFERENCES dim_child(child_id),
-    institution_id     INT           NOT NULL REFERENCES dim_institution(institution_id),
-    weight_kg          NUMERIC(5,2)  NOT NULL CHECK (weight_kg > 0),
-    height_cm          NUMERIC(5,1)  NOT NULL CHECK (height_cm > 0),
-    nutritional_status VARCHAR(20)   NOT NULL
-                       CHECK (nutritional_status IN ('Aguda','Cronica','Global'))
+    id_case            SERIAL         PRIMARY KEY,
+    date_id            INT            NOT NULL
+                                      REFERENCES dim_date(date_id),
+    child_id           VARCHAR(10)    NOT NULL
+                                      REFERENCES dim_child(child_id),
+    region_id		   INT            NOT NULL 
+    								  REFERENCES dim_region(region_id),
+    institution_id     INT            NOT NULL
+                                      REFERENCES dim_institution(institution_id),
+    weight_kg          NUMERIC(5,2)   NOT NULL  CHECK (weight_kg > 0),
+    height_cm          NUMERIC(5,1)   NOT NULL  CHECK (height_cm > 0),
+    nutritional_status VARCHAR(20)    NOT NULL
+                                      CHECK (nutritional_status IN (
+                                          'Aguda','Cronica','Global'
+                                      ))
 );
 ```
 
