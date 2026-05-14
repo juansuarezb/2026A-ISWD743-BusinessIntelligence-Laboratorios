@@ -374,7 +374,159 @@ UNION ALL SELECT 'fact_cases_desnutrition', COUNT(*) FROM fact_cases_desnutritio
 
 
 ---
-## 3. Modelo estrella en Power Pivot
+## 3. Preparación del Modelo de Datos en Excel y Power Pivot
+
+### 3.1 Creación del libro Excel y pegado de datos
+
+Se abrió un libro nuevo en **Microsoft Excel** y se crearon cinco hojas, renombrando cada 
+pestaña con el nombre de la tabla correspondiente: `dim_date`, `dim_child`, `dim_institution`, 
+`dim_region` y `fact_cases_desnutrition`.
+
+| ![Creación de Hojas en Excel](capturas/hojas_excel.png) |
+| :---: |
+| *Figura 19: Creación de hojas en Excel* |
+
+---
+### 3.2 Exportación de datos desde PostgreSQL
+
+Para obtener los datos de cada tabla, se ejecutó en pgAdmin la consulta `SELECT *` 
+sobre cada tabla del DataWarehouse. Luego se seleccionaron todos los resultados, se hizo 
+clic derecho y se eligió la opción **"Copy with Headers"** (Copiar con encabezados).
+
+Las consultas ejecutadas fueron las siguientes:
+
+```sql
+SELECT * FROM dim_date;
+SELECT * FROM dim_child;
+SELECT * FROM dim_institution;
+SELECT * FROM dim_region;
+SELECT * FROM fact_cases_desnutrition;
+```
+| ![Query de selección de tabla dim_date](capturas/copiar_tablas.png) |
+| :---: |
+| *Figura 20: Query de selección de tabla dim_date* |
+
+---
+
+#### Hoja dim_date
+
+Se hizo clic en la celda **A1** de la hoja `dim_date` y se pegaron los datos copiados desde 
+PostgreSQL con **Ctrl + V**. Los encabezados (`date_id`, `date_measured`, `year`, `month`, `day`) 
+quedaron en la primera fila y los registros en las filas siguientes.
+
+| ![Datos de dim_date pegados en Excel](capturas/datos_excel.png) |
+| :---: |
+| *Figura 21: Datos de dim_date pegados en Excel* |
+
+
+El mismo paso se repitió para las hojas restantes, pegando en cada una los datos copiados desde su respectiva consulta en PostgreSQL.
+
+---
+
+### 3.3 Aplicación de formato de tabla (Ctrl+T)
+
+Con los datos pegados en la hoja `dim_date`, se hizo clic en cualquier celda dentro del 
+rango de datos y se presionó **Ctrl + T**. En el cuadro de diálogo que apareció, se verificó 
+que el rango fuera correcto y que la opción *"La tabla tiene encabezados"* estuviera marcada. 
+Se confirmó con **Aceptar**.
+
+| ![Cuadro de diálogo de formato de tabla dim_date](capturas/creacion_tabla.png) |
+| :---: |
+| *Figura 22: Cuadro de diálogo de formato de tabla dim_date* |
+
+El mismo paso se repitió para las demás hojas, aplicando el formato de tabla con **Ctrl + T** en cada una.
+
+---
+
+### 3.4 Asignación de nombre a cada tabla
+
+Con la tabla `dim_date` seleccionada, se accedió a la pestaña **Diseño de tabla** y en el 
+campo **"Nombre de tabla"** ubicado en la esquina superior izquierda de la cinta, se reemplazó 
+el nombre genérico por `dim_date`.
+
+| ![Pestaña de diseño de tabla dim_date con nombre asignado](capturas/dim_date.png) |
+| :---: |
+| *Figura 23: Tabla dim_date con nombre asignado* |
+
+El mismo paso se repitió para las tablas restantes, asignando los nombres `dim_child`, 
+`dim_institution`, `dim_region` y `fact_cases_desnutrition` respectivamente.
+
+| ![Pestaña de diseño de tabla dim_child con nombre asignado](capturas/dim_child.png) |
+| :---: |
+| *Figura 24: Tabla dim_child con nombre asignado* |
+
+| ![Pestaña de diseño de tabla dim_institution con nombre asignado](capturas/dim_institution.png) |
+| :---: |
+| *Figura 25: Tabla dim_institution con nombre asignado* |
+
+| ![Pestaña de diseño de tabla dim_region con nombre asignado](capturas/dim_region.png) |
+| :---: |
+| *Figura 26: Tabla dim_region con nombre asignado* |
+
+| ![Pestaña de diseño de tabla fact_cases_desnutrition con nombre asignado](capturas/fact_cases_desnutrition.png) |
+| :---: |
+| *Figura 27: Tabla fact_cases_desnutrition con nombre asignado* |
+
+---
+
+### 3.5 Eliminación de duplicados
+
+No fue necesario ejecutar la eliminación de duplicados en Excel, dado que el proceso ETL 
+en Pentaho ya garantizó la unicidad de los datos desde el origen mediante el uso de 
+`SELECT DISTINCT` y el step **Unique rows** en cada transformación, sumado a las 
+restricciones `UNIQUE` definidas en las claves primarias de PostgreSQL.
+
+---
+
+### 3.6 Habilitación del complemento Power Pivot
+
+Se accedió a **Archivo → Opciones → Complementos**. En la parte inferior de la ventana, 
+en el menú *Administrar*, se seleccionó **Complementos COM** y se hizo clic en **Ir**. 
+En la lista de complementos disponibles se marcó la casilla **Microsoft Power Pivot para Excel** 
+y se confirmó con **Aceptar**. La pestaña **Power Pivot** quedó visible en la cinta de Excel.
+
+| ![Habilitación del complemento Power Pivot](capturas/PowerPivot.png) |
+| :---: |
+| *Figura 28: Complemento Power Pivot habilitado* |
+
+---
+
+### 3.7 Carga de tablas al modelo de datos
+
+Se hizo clic dentro de la tabla `dim_date` y se navegó a **Power Pivot → Agregar al modelo 
+de datos**. Excel confirmó que la tabla fue incorporada al modelo.
+
+| ![Carga de dim_date al modelo de datos](capturas/modelo_dim_date.png) |
+| :---: |
+| *Figura 29: Carga de dim_date al modelo de datos* |
+
+El mismo paso se repitió para las otras tablas, agregando cada una al modelo de datos desde la pestaña Power Pivot.
+
+---
+
+### 3.8 Verificación del modelo de datos
+
+Se abrió la ventana de Power Pivot mediante **Power Pivot → Administrar**. En la parte 
+inferior de la ventana se verificó la presencia de las cinco pestañas correspondientes a 
+cada tabla cargada: `dim_date`, `dim_child`, `dim_institution`, `dim_region` y 
+`fact_cases_desnutrition`, confirmando que el modelo de datos quedó correctamente constituido.
+
+| ![Tablas dentro del modelo de datos](capturas/modelo_datos.png) |
+| :---: |
+| *Figura 30: Tablas dentro del modelo de datos* |
+
+### 3.9 Creación de relaciones entre tablas
+Se accedió a la **Vista de diagrama** en Power Pivot y se establecieron las relaciones entre la tabla de hechos y cada una de las dimensiones arrastrando los campos de clave foránea hacia las claves primarias correspondientes.
+
+| ![Configuración de relaciones](capturas/relaciones_modelo.png) |
+| :---: |
+| *Figura 31: Configuración de relaciones* |
+
+Finalmente, el modelo de datos quedó configurado con las relaciones necesarias para realizar análisis multidimensionales y responder las preguntas planteadas.
+
+| ![Modelo Estrella en Power Pivot](capturas/modelo_estrella.png) |
+| :---: |
+| *Figura 32: Modelo Estrella configurado en Power Pivot* |
 
 ---
 ## 4. Resolución de Preguntas
