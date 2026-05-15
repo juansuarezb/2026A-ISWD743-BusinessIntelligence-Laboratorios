@@ -568,11 +568,11 @@ ORDER BY r.region, casos DESC;
 
 **Respuesta:**
 Al observar los resultados consolidados de la base de datos, se identificó la siguiente distribución:
-* **Amazonía:** El tipo de desnutrición predominante es la **Aguda** con **71** casos, seguida de la desnutrición Crónica con 44 casos y la Global con 21.
-* **Costa:** La desnutrición **Aguda** es la más común con **105** casos registrados. En segundo lugar está la Crónica con 65 casos, y finalmente la Global con 36 casos.
-* **Sierra:** La mayor cantidad de casos corresponde a desnutrición **Aguda** con un total de **85**, seguida por 48 incidencias de desnutrición Crónica y 25 de Global.
+* **Amazonía:** El tipo de desnutrición predominante es la **Crónica y Global** con **57** casos, seguida de la desnutrición Aguda con 56 casos.
+* **Costa:** La desnutrición **Global** es la más común con **69** casos registrados. En segundo lugar está la Aguda con 54 casos, y finalmente la Crónca con 47 casos.
+* **Sierra:** La mayor cantidad de casos corresponde a desnutrición **Global** con un total de **59**, seguida por 55 incidencias de desnutrición Crónica y 46 de Aguda.
 
-> **Conclusión:** A nivel nacional, la región **Costa** concentra la mayor cantidad de alertas médicas (sumando 206 casos totales), siendo la desnutrición **Aguda** el patrón más severo y recurrente en las tres regiones del país, abarcando más de la mitad de los casos totales evaluados (261 diagnósticos a nivel nacional).
+> **Conclusión:** A nivel nacional, la región **Amazoñia y Costa** concentra la mayor cantidad de alertas médicas (sumando 340 casos totales), siendo la desnutrición **Global** el patrón más severo y recurrente en las tres regiones del país, abarcando más de la mitad de los casos totales evaluados (185 diagnósticos a nivel nacional).
 
 ---
 ### Pregunta 2
