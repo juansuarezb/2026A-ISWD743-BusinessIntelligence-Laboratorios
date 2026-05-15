@@ -530,21 +530,41 @@ Finalmente, el modelo de datos quedó configurado con las relaciones necesarias 
 
 ---
 ## 4. Resolución de Preguntas
-Una vez consolidado el modelo de datos en Power Pivot, se utilizaron Tablas Dinámicas y Gráficos Dinámicos para explorar el esquema estrella y dar respuesta a las interrogantes analíticas de la práctica.
+Una vez consolidado el modelo de datos en Power Pivot, se utilizaron Tablas Dinámicas para explorar el esquema estrella y dar respuesta a las interrogantes analíticas de la práctica.
+
+Para responder las preguntas de negocio se creó la medida DAX `Casos` en la tabla de hechos:
+
+```dax
+Casos := COUNTROWS(fact_cases_desnutrition)
+```
+
+Esta medida permite contar correctamente el número de registros en cualquier tabla dinámica, evitando que Power Pivot sume los valores numéricos del campo `id_case` en lugar de contarlos.
 
 ### Pregunta 1
 * **¿Cuál es el tipo de desnutrición más común por región?**
+
+**Consulta SQL:**
+
+```sql
+SELECT 
+    r.region,
+    f.nutritional_status,
+    COUNT(*) AS casos
+FROM fact_cases_desnutrition f
+JOIN dim_region r ON f.region_id = r.region_id
+GROUP BY r.region, f.nutritional_status
+ORDER BY r.region, casos DESC;
+```
 
 **Proceso de creación en Excel:**
 1. Se insertó una Tabla Dinámica conectada al modelo de datos de Power Pivot.
 2. En el área de **Filas**, se colocó el campo `region` (proveniente de la dimensión `dim_region`).
 3. En el área de **Columnas**, se ubicó el campo `nutritional_status` (proveniente de la tabla de hechos `fact_cases_desnutrition`).
 4. En el área de **Valores**, se agregó el recuento del campo `id_case` de la tabla de hechos para cuantificar los registros.
-5. Se acompañó la tabla con un Gráfico Dinámico para facilitar la interpretación visual de la distribución geográfica.
 
 | ![Resolución Pregunta 1](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab5/capturas/Practica05P1.png?raw=true) |
 | :---: |
-| *Figura 20: Análisis de los tipos de desnutrición segmentados por región* |
+| *Figura 33: Análisis de los tipos de desnutrición segmentados por región* |
 
 **Respuesta:**
 Al observar los resultados consolidados de la base de datos, se identificó la siguiente distribución:
@@ -553,19 +573,34 @@ Al observar los resultados consolidados de la base de datos, se identificó la s
 * **Sierra:** La mayor cantidad de casos corresponde a desnutrición **Aguda** con un total de **85**, seguida por 48 incidencias de desnutrición Crónica y 25 de Global.
 
 > **Conclusión:** A nivel nacional, la región **Costa** concentra la mayor cantidad de alertas médicas (sumando 206 casos totales), siendo la desnutrición **Aguda** el patrón más severo y recurrente en las tres regiones del país, abarcando más de la mitad de los casos totales evaluados (261 diagnósticos a nivel nacional).
+
 ---
 ### Pregunta 2
 * **¿Cómo varía la desnutrición por edad y género?**
+
+**Consulta SQL:**
+
+```sql
+SELECT 
+    c.age_group,
+    c.gender,
+    COUNT(*) AS casos
+FROM fact_cases_desnutrition f
+JOIN dim_child c ON f.child_id = c.child_id
+GROUP BY c.age_group, c.gender
+ORDER BY c.age_group, c.gender;
+```
+
 **Proceso de creación en Excel:**
 1. Se generó una segunda Tabla Dinámica vinculada al modelo.
 2. En el área de **Filas**, se construyó una jerarquía colocando primero el campo `age_group` (para agrupar por los rangos de meses) y debajo el campo `gender` (ambos de la dimensión `dim_child`).
 3. En el área de **Columnas**, se mantuvo el campo `nutritional_status`.
 4. En el área de **Valores**, se utilizó el recuento de `id_case`.
-5. Se incluyó un gráfico dinámico que contrasta los diagnósticos según la franja etaria y el sexo del infante.
+
 
 | ![Resolución Pregunta 2](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab5/capturas/Practica05P2.png?raw=true) |
 | :---: |
-| *Figura 21: Variación de la desnutrición según el grupo de edad y género del infante* |
+| *Figura 34: Variación de la desnutrición según el grupo de edad y género del infante* |
 
 **Respuesta:**
 El análisis segmentado por las franjas etarias de la OMS y el género revela las siguientes variaciones:
@@ -594,25 +629,32 @@ GROUP BY i.institution
 ORDER BY casos_atendidos DESC;
 ```
 
-Análisis en Power Pivot
+* Análisis en Power Pivot
 Para obtener el mismo resultado mediante Power Pivot, se insertó una tabla dinámica siguiendo estos pasos:
 
-Se accedió a Insertar → Tabla dinámica y se seleccionó la opción "Usar el modelo de datos de este libro".
+    * Se accedió a Insertar → Tabla dinámica y se seleccionó la opción "Usar el modelo de datos de este libro".
+
 En el panel de campos de la tabla dinámica:
 
-Se arrastró el campo institution de dim_institution hacia Filas.
-Se arrastró el campo id_case de fact_cases_desnutrition hacia Valores.
+* Se arrastró el campo institution de dim_institution hacia Filas.
+
+* Se arrastró el campo id_case de fact_cases_desnutrition hacia Valores.
 
 
-En el área de Valores, se hizo clic en la flecha desplegable de id_case y se seleccionó Configuración de campo de valor → Cuenta para contar la cantidad de casos por institución.
+En el área de **Valores**, se usó `Casos`.
+
 Se ordenó la tabla de mayor a menor haciendo clic derecho sobre los valores y seleccionando Ordenar → De mayor a menor.
-![ResultadoP3](capturas/resultado.png)
 
-Interpretación
+| ![ResultadoP3](capturas/resultado.png) |
+| :---: |
+| *Figura 35: Tabla dinámica — casos por institución* |
+
+* Interpretación
 Los resultados muestran que Centro B es la institución que atiende la mayor cantidad de casos de desnutrición infantil con 182 casos (36.4% del total), seguida por Clínica C con 163 casos (32.6%) y Hospital A con 155 casos (31%).
 La distribución es relativamente equilibrada entre las tres instituciones, con una diferencia de apenas 27 casos entre la que más atiende y la que menos atiende, lo que sugiere que la carga de atención está distribuida de manera proporcionada en el sistema de salud regional.
 
-Conclusiones
+--- 
+### Conclusiones
 
 - El proceso ETL implementado en Pentaho permitió transformar datos crudos en un modelo estrella funcional, siguiendo las mejores prácticas de Data Warehousing: separación clara entre staging, dimensiones y tabla de hechos.
 - La creación de la dimensión dim_child con el atributo derivado age_group mediante Modified JavaScript Value demuestra que Pentaho permite aplicar lógica de negocio compleja durante la transformación, eliminando la necesidad de recalcular estos valores en cada consulta posterior.
