@@ -530,14 +530,43 @@ Finalmente, el modelo de datos quedó configurado con las relaciones necesarias 
 
 ---
 ## 4. Resolución de Preguntas
+Una vez consolidado el modelo de datos en Power Pivot, se utilizaron Tablas Dinámicas y Gráficos Dinámicos para explorar el esquema estrella y dar respuesta a las interrogantes analíticas de la práctica.
 
 ### Pregunta 1
 * **¿Cuál es el tipo de desnutrición más común por región?**
 
+**Proceso de creación en Excel:**
+1. Se insertó una Tabla Dinámica conectada al modelo de datos de Power Pivot.
+2. En el área de **Filas**, se colocó el campo `region` (proveniente de la dimensión `dim_region`).
+3. En el área de **Columnas**, se ubicó el campo `nutritional_status` (proveniente de la tabla de hechos `fact_cases_desnutrition`).
+4. En el área de **Valores**, se agregó el recuento del campo `id_case` de la tabla de hechos para cuantificar los registros.
+5. Se acompañó la tabla con un Gráfico Dinámico para facilitar la interpretación visual de la distribución geográfica.
+
+| ![Resolución Pregunta 1](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab5/capturas/Practica_05_Pregunta1.png?raw=true) |
+| :---: |
+| *Figura 20: Análisis de los tipos de desnutrición segmentados por región* |
+
+**Respuesta:**
+Al observar los resultados consolidados, se evidencia que en la región **[Región con mayor valor, ej. Costa]**, el tipo de desnutrición predominante es la **[Tipo de desnutrición]** con **[X]** casos. De manera global en el territorio analizado, el diagnóstico más común es la desnutrición **[Tipo más frecuente en el total general]**, representando la mayor carga hospitalaria en este ámbito.
+
 ---
 ### Pregunta 2
 * **¿Cómo varía la desnutrición por edad y género?**
+**Proceso de creación en Excel:**
+1. Se generó una segunda Tabla Dinámica vinculada al modelo.
+2. En el área de **Filas**, se construyó una jerarquía colocando primero el campo `age_group` (para agrupar por los rangos de meses) y debajo el campo `gender` (ambos de la dimensión `dim_child`).
+3. En el área de **Columnas**, se mantuvo el campo `nutritional_status`.
+4. En el área de **Valores**, se utilizó nuevamente el recuento de `id_case`.
+5. Se generó un gráfico dinámico de columnas que permite contrastar los diagnósticos según la franja etaria y el sexo del infante.
 
+| ![Resolución Pregunta 2](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab5/capturas/Practica_05_pregunta2.png?raw=true) |
+| :---: |
+| *Figura 21: Variación de la desnutrición según el grupo de edad y género del infante* |
+
+**Respuesta:**
+El análisis multivariado demuestra que la desnutrición tiene variaciones marcadas según la etapa de crecimiento. El grupo más vulnerable corresponde a los infantes de **[Rango de edad, ej. 12-23]** meses, donde se concentra la mayor cantidad de alertas, predominando los cuadros de desnutrición **[Tipo]**. 
+
+Al analizar la variable de género, se observa que la incidencia afecta de manera **[ligeramente mayor / equitativa]** a los niños (M) en comparación con las niñas (F). El pico más crítico de todo el conjunto se da en **[niños/niñas]** del grupo de **[Rango de edad]** meses con diagnósticos **[Tipo]**.
 
 ---
 ### Pregunta 3
