@@ -542,13 +542,17 @@ Una vez consolidado el modelo de datos en Power Pivot, se utilizaron Tablas Din�
 4. En el área de **Valores**, se agregó el recuento del campo `id_case` de la tabla de hechos para cuantificar los registros.
 5. Se acompañó la tabla con un Gráfico Dinámico para facilitar la interpretación visual de la distribución geográfica.
 
-| ![Resolución Pregunta 1](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab5/capturas/Practica_05_Pregunta1.png?raw=true) |
+| ![Resolución Pregunta 1](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab5/capturas/Practica05P1.png?raw=true) |
 | :---: |
 | *Figura 20: Análisis de los tipos de desnutrición segmentados por región* |
 
 **Respuesta:**
-Al observar los resultados consolidados, se evidencia que en la región **[Región con mayor valor, ej. Costa]**, el tipo de desnutrición predominante es la **[Tipo de desnutrición]** con **[X]** casos. De manera global en el territorio analizado, el diagnóstico más común es la desnutrición **[Tipo más frecuente en el total general]**, representando la mayor carga hospitalaria en este ámbito.
+Al observar los resultados consolidados de la base de datos, se identificó la siguiente distribución:
+* **Amazonía:** El tipo de desnutrición predominante es la **Aguda** con **71** casos, seguida de la desnutrición Crónica con 44 casos y la Global con 21.
+* **Costa:** La desnutrición **Aguda** es la más común con **105** casos registrados. En segundo lugar está la Crónica con 65 casos, y finalmente la Global con 36 casos.
+* **Sierra:** La mayor cantidad de casos corresponde a desnutrición **Aguda** con un total de **85**, seguida por 48 incidencias de desnutrición Crónica y 25 de Global.
 
+> **Conclusión:** A nivel nacional, la región **Costa** concentra la mayor cantidad de alertas médicas (sumando 206 casos totales), siendo la desnutrición **Aguda** el patrón más severo y recurrente en las tres regiones del país, abarcando más de la mitad de los casos totales evaluados (261 diagnósticos a nivel nacional).
 ---
 ### Pregunta 2
 * **¿Cómo varía la desnutrición por edad y género?**
@@ -556,17 +560,23 @@ Al observar los resultados consolidados, se evidencia que en la región **[Regi�
 1. Se generó una segunda Tabla Dinámica vinculada al modelo.
 2. En el área de **Filas**, se construyó una jerarquía colocando primero el campo `age_group` (para agrupar por los rangos de meses) y debajo el campo `gender` (ambos de la dimensión `dim_child`).
 3. En el área de **Columnas**, se mantuvo el campo `nutritional_status`.
-4. En el área de **Valores**, se utilizó nuevamente el recuento de `id_case`.
-5. Se generó un gráfico dinámico de columnas que permite contrastar los diagnósticos según la franja etaria y el sexo del infante.
+4. En el área de **Valores**, se utilizó el recuento de `id_case`.
+5. Se incluyó un gráfico dinámico que contrasta los diagnósticos según la franja etaria y el sexo del infante.
 
-| ![Resolución Pregunta 2](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab5/capturas/Practica_05_pregunta2.png?raw=true) |
+| ![Resolución Pregunta 2](https://github.com/juansuarezb/2026A-ISWD743-BusinessIntelligence-Laboratorios/blob/Lab5/capturas/Practica05P2.png?raw=true) |
 | :---: |
 | *Figura 21: Variación de la desnutrición según el grupo de edad y género del infante* |
 
 **Respuesta:**
-El análisis multivariado demuestra que la desnutrición tiene variaciones marcadas según la etapa de crecimiento. El grupo más vulnerable corresponde a los infantes de **[Rango de edad, ej. 12-23]** meses, donde se concentra la mayor cantidad de alertas, predominando los cuadros de desnutrición **[Tipo]**. 
+El análisis segmentado por las franjas etarias de la OMS y el género revela las siguientes variaciones:
 
-Al analizar la variable de género, se observa que la incidencia afecta de manera **[ligeramente mayor / equitativa]** a los niños (M) en comparación con las niñas (F). El pico más crítico de todo el conjunto se da en **[niños/niñas]** del grupo de **[Rango de edad]** meses con diagnósticos **[Tipo]**.
+* **Análisis por Grupo de Edad:** * El grupo etario con mayor concentración de casos es el de **48 a 59** meses, acumulando un total de **121** diagnósticos. Dentro de esta franja, la desnutrición **aguda** es la condición más crítica.
+  * Por el contrario, los infantes en el rango de **0 a 11** meses presentan la menor incidencia, con **57** casos registrados.
+
+* **Análisis por Género:** * Al evaluar la distribución, se observa que la desnutrición afecta a **238** niños (M) frente a **262** niñas (F), mostrando una **tendencia hacia el lado femenino**.
+
+> **Conclusión:** El cruce de variables demuestra que el punto de mayor vulnerabilidad nutricional ocurre en **niñas** en el rango de **48 a 59** meses, siendo el diagnóstico de desnutrición **aguda** el más frecuente. Esto indica una ventana de desarrollo donde las intervenciones de salud deberían priorizarse.
+
 
 ---
 ### Pregunta 3
