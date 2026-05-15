@@ -538,7 +538,46 @@ Finalmente, el modelo de datos quedó configurado con las relaciones necesarias 
 ### Pregunta 2
 * **¿Cómo varía la desnutrición por edad y género?**
 
+
 ---
 ### Pregunta 3
 * **¿Qué instituciones atienden más casos?**
 
+Consulta SQL en PostgreSQL<br>
+Para responder esta pregunta se ejecutó la siguiente consulta que une la tabla de hechos con la dimensión de instituciones y cuenta los casos por institución:
+```sql
+SELECT 
+    i.institution,
+    COUNT(*) AS casos_atendidos
+FROM fact_cases_desnutrition f
+JOIN dim_institution i ON f.institution_id = i.institution_id
+GROUP BY i.institution
+ORDER BY casos_atendidos DESC;
+```
+Resultado:
+
+
+Análisis en Power Pivot
+Para obtener el mismo resultado mediante Power Pivot, se insertó una tabla dinámica siguiendo estos pasos:
+
+Se accedió a Insertar → Tabla dinámica y se seleccionó la opción "Usar el modelo de datos de este libro".
+En el panel de campos de la tabla dinámica:
+
+Se arrastró el campo institution de dim_institution hacia Filas.
+Se arrastró el campo id_case de fact_cases_desnutrition hacia Valores.
+
+
+En el área de Valores, se hizo clic en la flecha desplegable de id_case y se seleccionó Configuración de campo de valor → Cuenta para contar la cantidad de casos por institución.
+Se ordenó la tabla de mayor a menor haciendo clic derecho sobre los valores y seleccionando Ordenar → De mayor a menor.
+
+Interpretación
+Los resultados muestran que Centro B es la institución que atiende la mayor cantidad de casos de desnutrición infantil con 182 casos (36.4% del total), seguida por Clínica C con 163 casos (32.6%) y Hospital A con 155 casos (31%).
+La distribución es relativamente equilibrada entre las tres instituciones, con una diferencia de apenas 27 casos entre la que más atiende y la que menos atiende, lo que sugiere que la carga de atención está distribuida de manera proporcionada en el sistema de salud regional.
+
+Conclusiones
+
+- El proceso ETL implementado en Pentaho permitió transformar datos crudos en un modelo estrella funcional, siguiendo las mejores prácticas de Data Warehousing: separación clara entre staging, dimensiones y tabla de hechos.
+- La creación de la dimensión dim_child con el atributo derivado age_group mediante Modified JavaScript Value demuestra que Pentaho permite aplicar lógica de negocio compleja durante la transformación, eliminando la necesidad de recalcular estos valores en cada consulta posterior.
+- El uso de Stream Lookup en lugar de JOINs tradicionales es el patrón estándar en ETL de flujo continuo, permitiendo resolver claves foráneas de manera eficiente durante la carga de la tabla de hechos.
+- El modelo estrella configurado en Power Pivot replica fielmente la estructura del Data Warehouse en PostgreSQL, permitiendo realizar análisis multidimensionales sin necesidad de escribir SQL, gracias al motor interno de relaciones.
+- Las tres preguntas planteadas fueron respondidas exitosamente tanto mediante consultas SQL directas en PostgreSQL como mediante tablas dinámicas en Power Pivot, validando la correcta implementación del modelo de datos y confirmando que ambos enfoques son complementarios: SQL para análisis ad-hoc y Power Pivot para análisis visual e interactivo.
