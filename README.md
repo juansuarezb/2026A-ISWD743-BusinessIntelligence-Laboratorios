@@ -554,8 +554,6 @@ JOIN dim_institution i ON f.institution_id = i.institution_id
 GROUP BY i.institution
 ORDER BY casos_atendidos DESC;
 ```
-Resultado:
-
 
 Análisis en Power Pivot
 Para obtener el mismo resultado mediante Power Pivot, se insertó una tabla dinámica siguiendo estos pasos:
@@ -569,6 +567,7 @@ Se arrastró el campo id_case de fact_cases_desnutrition hacia Valores.
 
 En el área de Valores, se hizo clic en la flecha desplegable de id_case y se seleccionó Configuración de campo de valor → Cuenta para contar la cantidad de casos por institución.
 Se ordenó la tabla de mayor a menor haciendo clic derecho sobre los valores y seleccionando Ordenar → De mayor a menor.
+![ResultadoP3](capturas/resultado.png)
 
 Interpretación
 Los resultados muestran que Centro B es la institución que atiende la mayor cantidad de casos de desnutrición infantil con 182 casos (36.4% del total), seguida por Clínica C con 163 casos (32.6%) y Hospital A con 155 casos (31%).
