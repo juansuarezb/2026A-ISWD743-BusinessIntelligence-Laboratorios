@@ -405,4 +405,4 @@ Posteriormente se calculó el promedio de ventas considerando todos los años di
 
 **Resultado:**
 
-> Promedio anual de ventas de Archivadores en Santiago: **XXXX**
+> Promedio anual de ventas de Archivadores en Santiago: **$128.315,66**
