@@ -156,6 +156,108 @@ Una vez vinculados todos los datos en la hoja Cubo, se aplicó formato visual un
 
 ---
 
+
+### Paso 8 – Copiar y Pegar como Imagen Vinculada
+
+Con las tres tablas ya formateadas en la hoja **'Cubo'**, el siguiente paso consiste en copiar partes específicas de cada tabla como **imagen vinculada**. Esto permite que las imágenes se actualicen automáticamente al cambiar los datos de origen, y habilita la aplicación del efecto 3D del siguiente paso.
+
+**8.a – Primera tabla: solo productos y valores por ciudad (sin encabezado de columnas)**
+
+Se selecciona únicamente el rango de datos de la **Tabla 1 (Producto × Ciudad)**, excluyendo la fila de encabezado de columnas (los nombres de las ciudades). Es decir, se seleccionan solo las filas de productos con sus valores numéricos.
+
+Pasos:
+1. Seleccionar el rango de datos de la Tabla 1 **sin incluir la fila de ciudades**.
+2. Ir a **Inicio → Copiar** (o `Ctrl+C`).
+3. Posicionarse en la celda de destino dentro de la hoja Cubo donde irá la cara frontal del cubo.
+4. Ir a **Inicio → Pegar → Como imagen vinculada** (el ícono de imagen con el símbolo de cadena).
+
+| ![Selección del rango de la Tabla 1 sin encabezado de ciudades](capturas/p8a_seleccion_tabla1.png) |
+|:--:|
+| *Figura 12: Selección del rango de la Tabla 1 excluyendo la fila de encabezados de ciudad* |
+
+| ![Opción "Pegar como imagen vinculada" en el menú Inicio](capturas/p8a_pegar_imagen_vinculada.png) |
+|:--:|
+| *Figura 13: Opción "Pegar como imagen vinculada" en la cinta de opciones* |
+
+| ![Resultado: imagen vinculada de la Tabla 1 pegada en la hoja Cubo](capturas/p8a_resultado_imagen1.png) |
+|:--:|
+| *Figura 14: Imagen vinculada de la Tabla 1 insertada en la hoja Cubo* |
+
+---
+
+**8.b – Segunda tabla: completa (encabezado + datos)**
+
+Se selecciona la **Tabla 2 (Fecha × Ciudad)** completa, incluyendo la fila de encabezado de ciudades y todas las filas de años.
+
+Pasos:
+1. Seleccionar **todo el rango** de la Tabla 2 (encabezados + datos).
+2. Ir a **Inicio → Copiar** (o `Ctrl+C`).
+3. Posicionarse en la celda de destino correspondiente a la cara superior del cubo.
+4. Ir a **Inicio → Pegar → Como imagen vinculada**.
+
+| ![Selección del rango completo de la Tabla 2](capturas/p8b_seleccion_tabla2.png) |
+|:--:|
+| *Figura 15: Selección completa de la Tabla 2 — Fecha × Ciudad* |
+
+| ![Resultado: imagen vinculada de la Tabla 2 pegada en la hoja Cubo](capturas/p8b_resultado_imagen2.png) |
+|:--:|
+| *Figura 16: Imagen vinculada de la Tabla 2 insertada en la hoja Cubo* |
+
+---
+
+**8.c – Tercera tabla: solo los valores (sin encabezados de filas ni columnas)**
+
+Se selecciona únicamente el bloque de valores numéricos de la **Tabla 3 (Fecha × Producto)**, omitiendo tanto la columna de etiquetas de fila (años) como la fila de encabezados de columna (productos).
+
+Pasos:
+1. Seleccionar **solo el bloque de valores numéricos** de la Tabla 3.
+2. Ir a **Inicio → Copiar** (o `Ctrl+C`).
+3. Posicionarse en la celda de destino correspondiente a la cara lateral del cubo.
+4. Ir a **Inicio → Pegar → Como imagen vinculada**.
+
+| ![Selección solo de los valores de la Tabla 3](capturas/p8c_seleccion_tabla3.png) |
+|:--:|
+| *Figura 17: Selección únicamente del bloque de valores de la Tabla 3 — Fecha × Producto* |
+
+
+| ![Vista general de la hoja Cubo con las tres imágenes vinculadas insertadas](capturas/p8_vista_general_tres_imagenes.png) |
+|:--:|
+| *Figura 18: Vista general de la hoja Cubo con las tres imágenes vinculadas listas para el paso siguiente* |
+
+---
+
+
+### Paso 9 – Cubo con imágenes creadas
+
+**9.a – Creación del cubo**
+Se repite el siguiente procedimiento para **cada una de las tres imágenes vinculadas**:
+
+1. Dar clic sobre la imagen para seleccionarla.
+2. Ir a la pestaña **Formato de imagen** (aparece en la cinta al seleccionar la imagen).
+3. Hacer clic en **Efectos de la imagen**.
+4. Seleccionar **Giro 3D**.
+5. En el submenú, elegir un preajuste de perspectiva o ingresar manualmente los valores de rotación en los ejes X, Y y Z según la cara que representa la imagen:
+   - **Cara frontal** (Tabla 1): rotación que deja la imagen de frente al espectador.
+   - **Cara superior** (Tabla 2): rotación que inclina la imagen hacia arriba simulando la tapa del cubo.
+   - **Cara lateral** (Tabla 3): rotación que inclina la imagen hacia la derecha simulando el costado del cubo.
+
+| ![Menú Formato de imagen → Efectos de la imagen → Giro 3D](capturas/p9a_menu_giro3d.png) |
+|:--:|
+| *Figura 19: Ruta Formato de imagen → Efectos de la imagen → Giro 3D* |
+
+| ![Panel de opciones de Giro 3D con campos de ángulo X, Y, Z](capturas/p9a_panel_giro3d.png) |
+|:--:|
+| *Figura 20: 3D aplicado a las imagenes vinculadas de la tabla 2 y 3* |
+
+Una vez aplicado el giro a cada imagen, se arrastran y reposicionan manualmente para que las tres caras queden alineadas formando la figura del cubo: las aristas deben coincidir entre imagen e imagen.
+
+
+| ![Resultado final del cubo 3D formado por las tres imágenes vinculadas](capturas/p9b_cubo_final.png) |
+|:--:|
+| *Figura 21: Cubo de datos tridimensional finalizado en la hoja Cubo* |
+
+---
+
 ## Paso 13 – Prueba de Interactividad del Cubo
 
 Se verificó el correcto funcionamiento de los filtros interactivos implementados en el cubo multidimensional. Para la prueba se aplicaron filtros simultáneos sobre las tres dimensiones principales:
@@ -168,11 +270,11 @@ El objetivo fue comprobar que los cambios realizados en las segmentaciones de da
 
 | ![Prueba de filtros en la tabla dinámica](capturas/paso13_tabladinamica.png) |
 |:--:|
-| *Figura 12: Aplicación de filtros cruzados en la tabla dinámica.* |
+| *Figura 22: Aplicación de filtros cruzados en la tabla dinámica.* |
 
 | ![Prueba de filtros en el cubo](capturas/paso13_cubo.png) |
 |:--:|
-| *Figura 13: Resultado reflejado en el cubo multidimensional.* |
+| *Figura 23: Resultado reflejado en el cubo multidimensional.* |
 
 ---
 
@@ -190,11 +292,11 @@ Para responder esta consulta se aplicaron los filtros:
 
 | ![Pregunta 1 Tabla Dinámica](capturas/p1_tabla.png) |
 |:--:|
-| *Figura 14: Consulta realizada sobre la tabla dinámica.* |
+| *Figura 24: Consulta realizada sobre la tabla dinámica.* |
 
 | ![Pregunta 1 Cubo](capturas/p1_cubo.png) |
 |:--:|
-| *Figura 15: Consulta realizada sobre el cubo.* |
+| *Figura 25: Consulta realizada sobre el cubo.* |
 
 **Resultado:**
 
@@ -215,11 +317,11 @@ Posteriormente se compararon los valores obtenidos para cada ciudad.
 
 | ![Pregunta 2 Tabla Dinámica](capturas/p2_tabla.png) |
 |:--:|
-| *Figura 16: Consulta realizada sobre la tabla dinámica.* |
+| *Figura 26: Consulta realizada sobre la tabla dinámica.* |
 
 | ![Pregunta 2 Cubo](capturas/p2_cubo.png) |
 |:--:|
-| *Figura 17: Consulta realizada sobre el cubo.* |
+| *Figura 27: Consulta realizada sobre el cubo.* |
 
 **Resultado:**
 
@@ -241,11 +343,11 @@ Se procedió a sumar los valores correspondientes al período completo.
 
 | ![Pregunta 3 Tabla Dinámica](capturas/p3_tabla.png) |
 |:--:|
-| *Figura 18: Consulta realizada sobre la tabla dinámica.* |
+| *Figura 28: Consulta realizada sobre la tabla dinámica.* |
 
 | ![Pregunta 3 Cubo](capturas/p3_cubo.png) |
 |:--:|
-| *Figura 19: Consulta realizada sobre el cubo.* |
+| *Figura 29: Consulta realizada sobre el cubo.* |
 
 **Resultado:**
 
@@ -266,11 +368,11 @@ Luego se observaron los valores registrados para cada año.
 
 | ![Pregunta 4 Tabla Dinámica](capturas/p4_tabla.png) |
 |:--:|
-| *Figura 20: Consulta realizada sobre la tabla dinámica.* |
+| *Figura 30: Consulta realizada sobre la tabla dinámica.* |
 
 | ![Pregunta 4 Cubo](capturas/p4_cubo.png) |
 |:--:|
-| *Figura 21: Consulta realizada sobre el cubo.* |
+| *Figura 31: Consulta realizada sobre el cubo.* |
 
 **Resultado:**
 
@@ -295,11 +397,11 @@ Posteriormente se calculó el promedio de ventas considerando todos los años di
 
 | ![Pregunta 5 Tabla Dinámica](capturas/p5_tabla.png) |
 |:--:|
-| *Figura 22: Consulta realizada sobre la tabla dinámica.* |
+| *Figura 32: Consulta realizada sobre la tabla dinámica.* |
 
 | ![Pregunta 5 Cubo](capturas/p5_cubo.png) |
 |:--:|
-| *Figura 23: Consulta realizada sobre el cubo.* |
+| *Figura 33: Consulta realizada sobre el cubo.* |
 
 **Resultado:**
 
