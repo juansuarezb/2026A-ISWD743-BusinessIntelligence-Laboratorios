@@ -198,7 +198,7 @@ Para responder esta consulta se aplicaron los filtros:
 
 **Resultado:**
 
-> Ventas totales de Lápices en Santo Domingo durante 2016: **XXXX**
+> Ventas totales de Lápices en Santo Domingo durante 2016: **$ 354010,91**
 
 ---
 
