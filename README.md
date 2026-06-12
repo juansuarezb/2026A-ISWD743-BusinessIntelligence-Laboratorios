@@ -378,9 +378,9 @@ Luego se observaron los valores registrados para cada año.
 
 | Año | Ventas |
 |------|---------|
-| 2014 | XXXX |
-| 2015 | XXXX |
-| 2016 | XXXX |
+| 2014 | 482,79 |
+| 2015 | 3374,69|
+| 2016 | 389315,08 |
 
 ---
 
