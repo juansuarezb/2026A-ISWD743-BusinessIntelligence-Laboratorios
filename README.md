@@ -155,3 +155,152 @@ Una vez vinculados todos los datos en la hoja Cubo, se aplicó formato visual un
 | *Figura 11: Tablas con formato de bordes y estilo aplicado en la hoja 'Cubo'* |
 
 ---
+
+## Paso 13 – Prueba de Interactividad del Cubo
+
+Se verificó el correcto funcionamiento de los filtros interactivos implementados en el cubo multidimensional. Para la prueba se aplicaron filtros simultáneos sobre las tres dimensiones principales:
+
+- **Ciudad:** La Vega
+- **Fecha:** 2014
+- **Producto:** Archivadores
+
+El objetivo fue comprobar que los cambios realizados en las segmentaciones de datos actualizan automáticamente todas las vistas vinculadas al cubo, garantizando consistencia en la navegación analítica.
+
+| ![Prueba de filtros en la tabla dinámica](capturas/paso13_tabladinamica.png) |
+|:--:|
+| *Figura 12: Aplicación de filtros cruzados en la tabla dinámica.* |
+
+| ![Prueba de filtros en el cubo](capturas/paso13_cubo.png) |
+|:--:|
+| *Figura 13: Resultado reflejado en el cubo multidimensional.* |
+
+---
+
+## Paso 14 – Resolución Analítica de Consultas de Negocio
+
+### Pregunta 1
+
+#### ¿Cuál fue el valor total de ventas de los lápices en la ciudad de Santo Domingo en el año 2016?
+
+Para responder esta consulta se aplicaron los filtros:
+
+- Producto = Lápices
+- Ciudad = Santo Domingo
+- Fecha = 2016
+
+| ![Pregunta 1 Tabla Dinámica](capturas/p1_tabla.png) |
+|:--:|
+| *Figura 14: Consulta realizada sobre la tabla dinámica.* |
+
+| ![Pregunta 1 Cubo](capturas/p1_cubo.png) |
+|:--:|
+| *Figura 15: Consulta realizada sobre el cubo.* |
+
+**Resultado:**
+
+> Ventas totales de Lápices en Santo Domingo durante 2016: **XXXX**
+
+---
+
+### Pregunta 2
+
+#### ¿Qué ciudad tuvo mayores ventas de Carpetas en el año 2015?
+
+Para responder esta consulta se aplicaron los filtros:
+
+- Producto = Carpetas
+- Fecha = 2015
+
+Posteriormente se compararon los valores obtenidos para cada ciudad.
+
+| ![Pregunta 2 Tabla Dinámica](capturas/p2_tabla.png) |
+|:--:|
+| *Figura 16: Consulta realizada sobre la tabla dinámica.* |
+
+| ![Pregunta 2 Cubo](capturas/p2_cubo.png) |
+|:--:|
+| *Figura 17: Consulta realizada sobre el cubo.* |
+
+**Resultado:**
+
+> La ciudad con mayores ventas de Carpetas en 2015 fue: **XXXX**
+
+---
+
+### Pregunta 3
+
+#### ¿Cuál es el total acumulado de ventas de Bolígrafos entre 2014 y 2016 para todas las ciudades?
+
+Para responder esta consulta se seleccionó:
+
+- Producto = Bolígrafos
+- Fechas = 2014–2016
+- Todas las ciudades
+
+Se procedió a sumar los valores correspondientes al período completo.
+
+| ![Pregunta 3 Tabla Dinámica](capturas/p3_tabla.png) |
+|:--:|
+| *Figura 18: Consulta realizada sobre la tabla dinámica.* |
+
+| ![Pregunta 3 Cubo](capturas/p3_cubo.png) |
+|:--:|
+| *Figura 19: Consulta realizada sobre el cubo.* |
+
+**Resultado:**
+
+> Total acumulado de ventas de Bolígrafos entre 2014 y 2016: **XXXX**
+
+---
+
+### Pregunta 4
+
+#### ¿Cómo varían las ventas de Grapas por año en la ciudad de Moca?
+
+Para responder esta consulta se fijaron los siguientes filtros:
+
+- Producto = Grapas
+- Ciudad = Moca
+
+Luego se observaron los valores registrados para cada año.
+
+| ![Pregunta 4 Tabla Dinámica](capturas/p4_tabla.png) |
+|:--:|
+| *Figura 20: Consulta realizada sobre la tabla dinámica.* |
+
+| ![Pregunta 4 Cubo](capturas/p4_cubo.png) |
+|:--:|
+| *Figura 21: Consulta realizada sobre el cubo.* |
+
+**Resultado:**
+
+| Año | Ventas |
+|------|---------|
+| 2014 | XXXX |
+| 2015 | XXXX |
+| 2016 | XXXX |
+
+---
+
+### Pregunta 5
+
+#### ¿Cuál fue el promedio anual de ventas de Archivadores en Santiago durante los años registrados?
+
+Para resolver esta consulta se utilizaron los filtros:
+
+- Producto = Archivadores
+- Ciudad = Santiago
+
+Posteriormente se calculó el promedio de ventas considerando todos los años disponibles.
+
+| ![Pregunta 5 Tabla Dinámica](capturas/p5_tabla.png) |
+|:--:|
+| *Figura 22: Consulta realizada sobre la tabla dinámica.* |
+
+| ![Pregunta 5 Cubo](capturas/p5_cubo.png) |
+|:--:|
+| *Figura 23: Consulta realizada sobre el cubo.* |
+
+**Resultado:**
+
+> Promedio anual de ventas de Archivadores en Santiago: **XXXX**
