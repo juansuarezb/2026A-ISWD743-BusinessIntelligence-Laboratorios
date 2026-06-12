@@ -223,7 +223,7 @@ Posteriormente se compararon los valores obtenidos para cada ciudad.
 
 **Resultado:**
 
-> La ciudad con mayores ventas de Carpetas en 2015 fue: **XXXX**
+> La ciudad con mayores ventas de Carpetas en 2015 fue: **Santo Domingo**
 
 ---
 
@@ -249,7 +249,7 @@ Se procedió a sumar los valores correspondientes al período completo.
 
 **Resultado:**
 
-> Total acumulado de ventas de Bolígrafos entre 2014 y 2016: **XXXX**
+> Total acumulado de ventas de Bolígrafos entre 2014 y 2016: **$ 1.923.607,18**
 
 ---
 
