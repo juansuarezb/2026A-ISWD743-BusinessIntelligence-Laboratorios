@@ -257,50 +257,53 @@ Una vez aplicado el giro a cada imagen, se arrastran y reposicionan manualmente 
 | *Figura 21: Cubo de datos tridimensional finalizado en la hoja Cubo* |
 
 ---
-### Paso 10 – Inserción de Segmentación de Datos (Slicers)
+### Paso 10 – Insertar la segmentación de datos
 
-Para dotar al cubo multidimensional de capacidad interactiva y permitir el filtrado dinámico en tiempo real, se añadieron segmentadores de datos enfocados en las tres dimensiones clave del análisis de negocio.
+Para dotar al cubo de capacidad interactiva, se añadieron segmentadores de datos para las dimensiones clave de análisis.
 
 Pasos:
-1. Seleccionar cualquiera de las tablas dinámicas base dentro de la hoja de origen.
-2. Dirigirse a la barra de herramientas y acceder a la pestaña contextual **Analizar tabla dinámica → Insertar segmentación de datos**.
-3. En el cuadro de diálogo emergente, marcar las casillas correspondientes a las dimensiones del cubo: **Ciudad**, **Fecha** y **Producto**.
-4. Hacer clic en **Aceptar** para desplegar los paneles de filtrado interactivos en la hoja de trabajo.
+1. Seleccionar cualquiera de las tablas dinámicas creadas previamente en la hoja de origen.
+2. Ir a la pestaña **Analizar tabla dinámica → Insertar segmentación de datos**.
+3. En el cuadro de diálogo, seleccionar los campos correspondientes a las dimensiones del cubo (**Ciudad**, **Fecha** y **Productos**).
+4. Hacer clic en **Aceptar** para generar los paneles de segmentación.
 
 | ![Inserción de segmentadores de datos](capturas/Paso%2010%20Practica%2007.png) |
 |:--:|
-| *Figura 21a: Inserción de segmentadores de datos para las dimensiones principales* |
+| *Figura 21a: Inserción de segmentadores de datos (Ciudad, Fecha y Productos)* |
 
 ---
 
-### Paso 11 – Sincronización mediante Conexiones de Informes
+### Paso 11 – Cortar las segmentaciones desde la hoja de la tabla dinámica y pegarla en la tabla Cubo
 
-Por defecto, cada segmentador afecta únicamente a la tabla dinámica a partir de la cual fue generado. Para lograr que una sola selección actualice en cascada las tres caras que componen el cubo 3D de forma simultánea, se requirió establecer conexiones cruzadas.
+Para consolidar el panel de control interactivo junto al cubo tridimensional, se procedió a reubicar los segmentadores generados.
 
 Pasos:
-1. Hacer clic derecho sobre el primer segmentador (ej. *Ciudad*) y seleccionar la opción **Conexiones de informes...** (o seleccionarlo e ir a **Segmentación → Conexiones de informes** en la cinta de opciones).
-2. En la ventana flotante, marcar las casillas de verificación de las tres tablas dinámicas creadas en la práctica para enlazarlas al mismo filtro.
-3. Repetir este proceso de vinculación de manera estricta para los dos segmentadores restantes (**Fecha** y **Producto**).
+1. Seleccionar los tres segmentadores de datos creados en la hoja de las tablas dinámicas.
+2. Cortar los elementos (usando clic derecho y **Cortar** o `Ctrl+X`).
+3. Dirigirse a la hoja **'Cubo'** y pegar los segmentadores (`Ctrl+V`) a un costado de las imágenes vinculadas.
+4. Ajustar su tamaño y disposición visual para que el panel se vea ordenado y acompañe armónicamente a la figura del cubo.
 
-| ![Configuración de Conexiones de Informes](capturas/Paso%2011%20Practica07.png) |
+| ![Traslado de segmentadores al cubo](capturas/Paso%2011%20Practica07.png) |
 |:--:|
-| *Figura 21b: Vinculación y sincronización de las tres tablas dinámicas en el cuadro de diálogo* |
+| *Figura 21b: Segmentadores de datos reubicados y organizados en la hoja 'Cubo'* |
 
 ---
 
-### Paso 12 – Diseño, Estilo y Disposición del Panel de Control
+### Paso 12 – Conectar con las demás tablas
 
-Para consolidar la experiencia analítica y el acabado del cuadro de mando, los segmentadores de datos fueron trasladados y estilizados junto al cubo tridimensional estructurado previamente.
+Para lograr que una sola selección en la segmentación actualice en cascada y simultáneamente las tres vistas (caras) del cubo, se configuraron las conexiones de informes.
 
 Pasos:
-1. Seleccionar los tres segmentadores de datos sincronizados, cortarlos (`Ctrl+X`) de la hoja de origen y pegarlos (`Ctrl+V`) en la hoja **'Cubo'**.
-2. Organizar la disposición de los paneles alineándolos a un costado de las imágenes vinculadas que forman el cubo tridimensional, asegurando una composición limpia y simétrica.
-3. Modificar la estética visual de cada segmentador desde la pestaña **Segmentación → Estilos de segmentación de datos**, aplicando colores que armonicen con la paleta cromática asignada a las tablas dinámicas de origen para mantener la uniformidad del reporte.
+1. Hacer clic derecho sobre el primer segmentador (ej. *Ciudad*) y seleccionar **Conexiones de informes...** (o desde la pestaña *Segmentación → Conexiones de informes*).
+2. En la ventana emergente, marcar las casillas correspondientes a las tres tablas dinámicas generadas en la práctica.
+3. Hacer clic en **Aceptar**.
+4. Repetir este proceso estrictamente para los segmentadores restantes (**Fecha** y **Productos**), garantizando que los filtros actúen de forma cruzada y sincronizada sobre toda la estructura.
 
-| ![Organización estética de los segmentadores al lado del cubo 3D](capturas/Paso%2012%20Practica07.png) |
+| ![Conexiones de informes de los segmentadores](capturas/Paso%2012%20Practica07.png) |
 |:--:|
-| *Figura 21c: Panel de control interactivo y cubo analítico integrados en la hoja 'Cubo'* |
+| *Figura 21c: Configuración de conexiones de informes para enlazar simultáneamente las tres tablas* |
 
+---
 ---
 
 ## Paso 13 – Prueba de Interactividad del Cubo
