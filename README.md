@@ -1,16 +1,36 @@
-# 2026A-ISWD743-TAREA-MOLAP
-### Fecha: 19/06/2026
-### TAREA MOLAP
-
 <div align="center">
 
-[![Andrea Chicaiza](https://img.shields.io/badge/Andrea_Chicaiza-andrea--m11-181717?style=for-the-badge&logo=github)](https://github.com/andrea-m11)<br><br>
-[![Andreina Pallo](https://img.shields.io/badge/Andreina_Pallo-Andreina--P-181717?style=for-the-badge&logo=github)](https://github.com/Andreina-P)<br><br>
-[![Jose Arias](https://img.shields.io/badge/Jose_Arias-JoseDA0721-181717?style=for-the-badge&logo=github)](https://github.com/JoseDA0721)<br><br>
-[![Juan Mateo Quisilema](https://img.shields.io/badge/Juan_Mateo-JuanMateoQ-181717?style=for-the-badge&logo=github)](https://github.com/JuanMateoQ)<br><br>
-[![Juan Suarez](https://img.shields.io/badge/Juan_Suarez-juansuarezb-181717?style=for-the-badge&logo=github)](https://github.com/juansuarezb)<br><br>
+<img src="capturas/logo_epn.png" height="80" align="left"/>
+<img src="capturas/logo_fis.png" height="80" align="right"/>
+
+<h1><strong>Escuela Politécnica Nacional</strong></h1>
+
+### Facultad de Ingeniería de Sistemas
+
+**Business Intelligence (ISWD743) · GR2SW_2026-1**
+
+**TAREA MOLAP**
 
 </div>
+
+---
+
+**Fecha:**  
+19 de Junio, 2026
+
+**Integrantes:**  
+<div>
+
+[![Andrea Chicaiza](https://img.shields.io/badge/Andrea_Chicaiza-andrea--m11-181717?style=for-the-badge&logo=github)](https://github.com/andrea-m11)<br>
+[![Andreina Pallo](https://img.shields.io/badge/Andreina_Pallo-Andreina--P-181717?style=for-the-badge&logo=github)](https://github.com/Andreina-P)<br>
+[![Jose Arias](https://img.shields.io/badge/Jose_Arias-JoseDA0721-181717?style=for-the-badge&logo=github)](https://github.com/JoseDA0721)<br>
+[![Juan Mateo Quisilema](https://img.shields.io/badge/Juan_Mateo-JuanMateoQ-181717?style=for-the-badge&logo=github)](https://github.com/JuanMateoQ)<br>
+[![Juan Suarez](https://img.shields.io/badge/Juan_Suarez-juansuarezb-181717?style=for-the-badge&logo=github)](https://github.com/juansuarezb)<br>
+
+</div>
+
+---
+
 
 > [!NOTE]
 >
