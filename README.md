@@ -564,11 +564,6 @@ ORDER BY costo_total DESC;
 |:--:|
 | *Figura 1. Ejecución de la consulta Roll-Up sobre la vista materializada mv_visitas.* |
 
-### Resultado obtenido
-
-| ![](capturas/resultado1.png) |
-|:--:|
-| *Figura 2. Resultado de costo total agrupado por especialidad, ciudad y mes.* |
 
 ### Análisis
 
@@ -602,13 +597,7 @@ ORDER BY total_emergencias DESC;
 
 | ![](capturas/q2_consulta.png) |
 |:--:|
-| *Figura 3. Ejecución de la consulta Slice sobre la vista materializada mv_visitas.* |
-
-### Resultado obtenido
-
-| ![](capturas/resultado2.png) |
-|:--:|
-| *Figura 4. Total de emergencias por ciudad, mes y género.* |
+| *Figura 2. Ejecución de la consulta Slice sobre la vista materializada mv_visitas.* |
 
 ### Análisis
 
@@ -641,13 +630,7 @@ ORDER BY costo_promedio DESC;
 
 | ![](capturas/q3_consulta.png) |
 |:--:|
-| *Figura 5. Ejecución de la consulta Dice sobre la vista materializada mv_visitas.* |
-
-### Resultado obtenido
-
-| ![](capturas/resultado3.png) |
-|:--:|
-| *Figura 6. Costo promedio por diagnóstico, tipo de seguro y ciudad.* |
+| *Figura 3. Ejecución de la consulta Dice sobre la vista materializada mv_visitas.* |
 
 ### Análisis
 
