@@ -2,8 +2,9 @@
 
 <img src="capturas/logo_epn.png" height="80" align="left"/>
 <img src="capturas/logo_fis.png" height="80" align="right"/>
+<br clear="all"/>
 
-<p style="font-size: 4em; font-weight: bold; margin-top: 0;">Escuela Politécnica Nacional</p>
+<h1><strong>Escuela Politécnica Nacional</strong></h1>
 
 ### Facultad de Ingeniería de Sistemas
 
@@ -84,14 +85,19 @@ En el modelado de datos OLAP, los datos multidimensionales se representan como u
 Esta práctica implementa un flujo completo desde la carga de datos en staging hasta la ejecución de consultas MOLAP sobre una vista materializada en PostgreSQL, aplicado a un dataset de visitas médicas hospitalarias en Ecuador.
 
 **Herramientas utilizadas:**
-| *Tabla 1: Lista de Herramientas que se utilizaron en la práctica* |
-| :--- |
+
+
+<div align="center">
 
 | Etapa | Herramienta | Rol en la práctica |
-| :--- | :--- | :--- |
+| :---: | :---: | :--- |
 | **Fuente de Datos** | <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/Text-csv-text.svg" height="20"/> `salud.csv` | Dataset fuente con 100 registros de visitas médicas. |
 | **Almacenamiento** | <img src="https://www.postgresql.org/media/img/about/press/elephant.png" height="20"/> PostgreSQL | Motor de base de datos relacional para staging, dimensiones, tabla de hechos y vista materializada (Data Warehouse). |
 | **Procesamiento** | <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/SQL_Image.svg" height="20"/> SQL (DDL + DML) | Lenguaje estructurado para la creación de tablas, carga de datos, transformaciones e inserción de dimensiones. |
+
+*Tabla 1: Lista de Herramientas que se utilizaron en la práctica*
+
+</div>
 
 ---
 
@@ -101,12 +107,10 @@ El dataset fuente es el archivo 'salud.csv', que contiene 100 registros de visit
 
 La Tabla 2 resume las 18 columnas del dataset con su nombre, tipo de dato inferido y descripción.
 
-
-| *Tabla 2: Descripción de columnas del dataset salud.csv* |
-| :--- |
+<div align="center">
 
 | # | Columna | Tipo | Descripción |
-|---|---|---|---|
+|:---:|:---:|:---:|:---|
 | 1 | `visit_id` | INTEGER | Identificador único de la visita |
 | 2 | `visit_date` | TEXT (M/D/YYYY) | Fecha de la visita en formato mes/día/año |
 | 3 | `patient_id` | INTEGER | Identificador del paciente |
@@ -125,6 +129,10 @@ La Tabla 2 resume las 18 columnas del dataset con su nombre, tipo de dato inferi
 | 16 | `cost_procedure` | NUMERIC(10,2) | Costo del procedimiento en USD |
 | 17 | `total_cost` | NUMERIC(10,2) | Costo total = cost_medicine + cost_procedure |
 | 18 | `outcome` | VARCHAR | Resultado clínico de la visita |
+
+*Tabla 2: Descripción de columnas del dataset salud.csv*
+
+</div>
 
 
 ### 2.1 Correcciones de Calidad de Datos
