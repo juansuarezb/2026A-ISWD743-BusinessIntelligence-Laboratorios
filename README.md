@@ -163,13 +163,13 @@ Como regla ETL, se conservó el género de la primera visita registrada por 'vis
 
 ## 4. Implementación en PostgreSQL
 
-La implementación sigue el flujo definido en el diseño: primero se crea la base de datos y la tabla de staging para recibir el CSV sin transformaciones, luego se construyen las dimensiones extrayendo valores únicos desde el staging, y finalmente se crea y carga la tabla de hechos mediante JOINs con las ocho dimensiones.
+Para implementar el modelo se siguió un orden específico. Primero se preparó la base de datos con una tabla de staging donde se cargó el CSV tal como estaba, sin modificar nada. Después se crearon las ocho dimensiones tomando los valores únicos de esa tabla, y al final se armó la tabla de hechos conectándola con todas las dimensiones.
 
 ---
 
 ### 4.1 Base de Datos y Tabla Staging
 
-Se crea la base de datos dentro de PostgreSQL con el nombre `dbSalud`, como se observa en la siguiente figura.
+Lo primero que se haces es crear la base de datos dentro de PostgreSQL con el nombre `dbSalud`, como se observa en la siguiente figura.
 
 
 | ![Base de datos dbSalud en pgAdmin](capturas/fig_02.png) |
@@ -180,12 +180,12 @@ Se crea la base de datos dentro de PostgreSQL con el nombre `dbSalud`, como se o
 
 **Corrección previa del CSV**
 
-Antes de crear la tabla staging se corrigió una inconsistencia de calidad de datos detectada en el archivo `salud.csv`. Dos pacientes tenían géneros distintos registrados en visitas diferentes:
+Antes de crear la tabla staging se corrigió una inconsistencia de calidad de datos vista en el archivo `salud.csv`. Dos pacientes tenían géneros distintos registrados en visitas diferentes:
 
 - `patient_id = 142`: visita 24 → F, visita 35 → M
 - `patient_id = 260`: visita 78 → M, visita 93 → F
 
-Se corrigió directamente en el CSV dejando un único género por paciente, como se mencionó en la sección 2 de este informe:
+Se corrigió directamente en el CSV dejando un único género por paciente, como se mencionó en la sección 2 de este informe se dejó el género de la primera visita:
 
 - `patient_id = 142`: F
 - `patient_id = 260`: M
@@ -194,7 +194,7 @@ Se corrigió directamente en el CSV dejando un único género por paciente, como
 
 **Tabla staging**
 
-Se crea la tabla `salud` como área de staging. Contiene todos los datos del CSV. Los tipos de dato se definen con precisión desde esta etapa según el análisis del archivo fuente. La única excepción es `visit_date`, que se almacena como `VARCHAR(10)` porque el formato del CSV (`M/D/YYYY`) no es compatible con el tipo `DATE` de PostgreSQL durante la importación; la conversión se realiza en el ETL con `TO_DATE()`. La siguiente tabla detalla la justificación de cada tipo asignado.
+Esta se realiza mediante la creación de la tabla `salud`. Para definir los tipos de dato se revisó primero el archivo y se asignó el tipo más adecuado a cada columna. El único caso especial fue `visit_date`: como el CSV trae las fechas en formato `M/D/YYYY`, ponerla directamente como DATE daba error al importar en pgAdmin, así que se dejó como `VARCHAR(10)` y la conversión se hace después en el ETL usando TO_DATE().
 
 | Columna | Tipo PostgreSQL | Justificación |
 |---|---|---|
@@ -243,7 +243,7 @@ CREATE TABLE salud (
 );
 ```
 
-Una vez creada la tabla, se importó el archivo `salud.csv` mediante la función `Import/Export Data` de pgAdmin con las siguientes configuraciones: formato CSV, encabezado activado, delimitador coma y codificación UTF-8. La siguiente figura muestra los datos cargados en la tabla de staging.
+Una vez creada la tabla, se cargó el archivo `salud.csv` usando la opción `Import/Export` Data de pgAdmin. La configuración usada fue: formato CSV, con encabezado, delimitador coma y encoding UTF-8. La siguiente figura muestra los datos cargados en la tabla de staging.
 
 | ![Datos cargados en la tabla staging](capturas/llenadoDatosStaging.png) |
 |:--:|
@@ -253,7 +253,7 @@ Una vez creada la tabla, se importó el archivo `salud.csv` mediante la función
 
 ### 4.2 Tablas Dimensión
 
-Una vez cargada la tabla de staging, se crean las ocho tablas dimensión del modelo estrella y se poblan extrayendo valores únicos desde `salud`. Este proceso constituye el ETL: se extraen los datos del staging, se transforman aplicando `DISTINCT` y convirtiendo la fecha con `TO_DATE()`, y se cargan en cada dimensión con sus tipos definitivos.
+Con el staging listo se procedió a crear las ocho dimensiones. La idea fue sacar de la tabla `salud` los valores únicos de cada columna relevante usando `DISTINCT`. En el caso de la dimensión de tiempo también se convirtió la fecha con `TO_DATE()` ya que en staging estaba como texto. Este proceso es el ETL: extraer del staging, transformar lo necesario y cargar en cada tabla.
 
 ---
 
@@ -446,7 +446,7 @@ SELECT DISTINCT procedure_type FROM salud ORDER BY procedure_type;
 
 ### 4.3 Tabla de Hechos y Carga ETL
 
-La tabla `fact_visita` es el núcleo del modelo estrella. Contiene una fila por cada visita médica del dataset con las 8 claves foráneas hacia las dimensiones, 4 atributos degenerados y 4 medidas. Su clave primaria es `visit_id`, que proviene directamente del CSV y es única en los 100 registros, por lo que no requiere un surrogate key adicional.
+La tabla `fact_visita` es la central del modelo estrella. Tiene 100 filas, una por cada visita médica. Incluye las 8 claves foráneas que la conectan con cada dimensión, más 4 campos que quedaron directo en la fact porque no necesitaban tabla propia, y las 4 medidas numéricas. Como `visit_id` ya era único en el CSV, se usó directamente como PK sin necesidad de crear un ID nuevo.
 
 ```sql
 CREATE TABLE fact_visita (
@@ -522,10 +522,11 @@ JOIN dim_procedimiento pr ON pr.procedure_type      = s.procedure_type;
 
 **Verificación del modelo realizado en postgresql**
 
+Después de haber realizado dentro de postgresql la creación y el llenado de las dimensiones y la tabla de hechos que corresponde al modelo estrella la estructura de cómo queda esto se puede verificar en la siguiente figura.
+
 | ![Verificación del modelo estrella](capturas/estructura_postgresql.png) |
 |:--:|
 | *Figura 14: Verificación del modelo estrella mediante `fact_visita` y las dimensiones* |
-
 
 
 ---
