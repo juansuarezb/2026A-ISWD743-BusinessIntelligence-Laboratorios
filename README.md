@@ -537,7 +537,7 @@ Después de haber realizado dentro de postgresql la creación y el llenado de la
 
 ## 6. Consultas MOLAP y Preguntas de Negocio
 
-## Pregunta de Negocio 1
+### 6.1 Q1 — Costo Total por Especialidad, Ciudad y Mes
 
 ### ¿Cuál es el costo total de atención por especialidad, ciudad y mes?
 
@@ -571,7 +571,7 @@ A partir de los resultados obtenidos se puede identificar qué especialidades m�
 
 ---
 
-## Pregunta de Negocio 2
+### 6.2 Q2 — Emergencias por Ciudad, Mes y Género
 
 ### ¿Qué ciudad tuvo más emergencias por mes y género?
 
@@ -605,7 +605,7 @@ La consulta permite determinar qué ciudades concentran la mayor cantidad de ate
 
 ---
 
-## Pregunta de Negocio 3
+### 6.3 Q3 — Costo Promedio por Diagnóstico, Seguro y Ciudad
 
 ### ¿Por diagnóstico, tipo de seguro, cuál es el costo promedio por visita y en qué ciudad es más alto?
 
