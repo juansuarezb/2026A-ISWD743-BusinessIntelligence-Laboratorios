@@ -155,9 +155,69 @@ Como regla ETL, se conservó el género de la primera visita registrada por 'vis
 
 ### 3.1 Decisiones de Modelado
 
+Para construir el modelo estrella se revisó cada una de las 18 columnas del dataset `salud.csv` y se decidió, columna por columna, si correspondía a una **medida** (valor numérico agregable), a un **atributo dimensional** (descriptivo, reutilizable y de baja cardinalidad) o si debía quedarse como **atributo directo del hecho** (dimensión degenerada), por no contar con información adicional que justificara una tabla propia.
+
+| # | Columna original | Decisión | Destino | Justificación |
+|:---:|:---|:---|:---|:---|
+| 1 | `visit_id` | Identificador | `fact_visita` (PK) | Identificador único de cada visita; al ser ya único en el CSV se usó directamente como llave primaria del hecho. |
+| 2 | `visit_date` | Dimensión | `dim_tiempo` | Se transforma con `TO_DATE()` para habilitar análisis por año, mes y día. |
+| 3 | `patient_id` | Dimensión | `dim_paciente` (PK) | Identifica de forma única a cada paciente y se repite en varias visitas. |
+| 4 | `patient_age` | Medida/atributo del hecho | `fact_visita` | La edad puede variar entre visitas de un mismo paciente; no es un atributo estable, por lo que se mantiene en el hecho y no en `dim_paciente`. |
+| 5 | `patient_gender` | Atributo dimensional | `dim_paciente` | Atributo descriptivo estable del paciente (corregido en el ETL para los 2 casos inconsistentes). |
+| 6 | `city` | Dimensión | `dim_ciudad` | Atributo geográfico reutilizable, baja cardinalidad (5 valores). |
+| 7 | `hospital_department` | Dimensión | `dim_departamento` | Atributo organizacional reutilizable (5 valores). |
+| 8 | `doctor_id` | Atributo del hecho (dimensión degenerada) | `fact_visita` | No cuenta con atributos descriptivos adicionales (ver justificación de `dim_medico`). |
+| 9 | `specialty` | Dimensión | `dim_especialidad` | Atributo clínico reutilizable, baja cardinalidad (6 valores). |
+| 10 | `diagnosis_group` | Dimensión | `dim_diagnostico` | Ver justificación de separación frente a `dim_procedimiento`. |
+| 11 | `procedure_type` | Dimensión | `dim_procedimiento` | Ver justificación de separación frente a `dim_diagnostico`. |
+| 12 | `insurance_type` | Dimensión | `dim_seguro` | Atributo administrativo reutilizable, baja cardinalidad (4 valores). |
+| 13 | `is_emergency` | Atributo del hecho | `fact_visita` | Indicador binario (0/1) propio de cada visita, sin atributos adicionales que ameriten tabla propia. |
+| 14 | `length_of_stay_days` | Medida | `fact_visita` | Valor numérico cuantitativo, susceptible de agregaciones (SUM, AVG). |
+| 15 | `cost_medicine` | Medida | `fact_visita` | Valor monetario aditivo. |
+| 16 | `cost_procedure` | Medida | `fact_visita` | Valor monetario aditivo. |
+| 17 | `total_cost` | Medida calculada | `fact_visita` | Suma de `cost_medicine` + `cost_procedure`; medida aditiva principal del modelo. |
+| 18 | `outcome` | Atributo del hecho | `fact_visita` | Resultado clínico de baja cardinalidad pero sin atributos adicionales que enriquezcan una dimensión separada; se trata como dimensión degenerada. |
+
+*Tabla : Decisiones de modelado columna por columna del dataset `salud.csv`*
+
+---
+
+**¿Por qué `dim_diagnostico` y `dim_procedimiento` como dimensiones separadas?**
+
+Aunque diagnóstico y procedimiento están relacionados dentro de una misma visita médica, representan dos etapas distintas del proceso clínico: el diagnóstico identifica la condición del paciente, mientras que el procedimiento representa la intervención o tratamiento aplicado. Combinar ambos atributos en una sola dimensión generaría una tabla con todas las combinaciones posibles de diagnóstico-procedimiento, perdiendo la posibilidad de analizar cada eje de forma independiente (por ejemplo, costo promedio solo por diagnóstico, o solo por tipo de procedimiento). Mantenerlos como dimensiones separadas respeta el principio de modelado dimensional de representar conceptos de negocio distintos en tablas distintas, evitando una dimensión combinada de grano mixto y permitiendo mayor flexibilidad en las consultas MOLAP (Sección 6).
+
+**¿Por qué no se creó `dim_medico`?**
+
+Se evaluó crear una dimensión `dim_medico` a partir de la columna `doctor_id`, pero se descartó porque el dataset no incluye ningún atributo descriptivo adicional del médico (nombre, especialidad propia, departamento fijo, etc.); la única información disponible es el identificador numérico. Crear una tabla dimensión que contenga únicamente una llave primaria igual al dato original no aporta valor analítico ni reduce redundancia, ya que sería una tabla de una sola columna idéntica a la que ya existe en el hecho. Por esta razón, siguiendo la práctica estándar de modelado dimensional, `doctor_id` se mantuvo como **dimensión degenerada** directamente en `fact_visita`, junto con `patient_age`, `is_emergency` y `outcome`.
+
 ### 3.2 Diagrama del Modelo Estrella
 
+El modelo se diseñó primero de forma conceptual y luego se construyó el diagrama físico en **dbdiagram.io** a partir del código DBML (ver archivo `modelo_estrella.dbml` compartido aparte). El resultado es un esquema en estrella clásico, con `fact_visita` como tabla central conectada mediante 8 llaves foráneas a sus respectivas dimensiones.
+
+| ![Diagrama del modelo estrella](capturas/modelo_estrella.png) |
+|:--:|
+| *Figura 2: Diagrama del modelo estrella con `fact_visita` como tabla de hechos central y sus 8 dimensiones* |
+
+
 ### 3.3 Descripción de Tablas
+
+**`dim_tiempo`** agrupa cada fecha única de visita junto con su año, mes y día extraídos mediante `TO_DATE()`. Su llave primaria es un surrogate key (`id_tiempo`), ya que la fecha original venía como texto en `staging`. Contiene 55 registros, correspondientes a las fechas distintas dentro del rango enero-marzo 2023, y permite agrupar las consultas MOLAP por periodo temporal sin tener que repetir la conversión de fecha en cada query.
+
+**`dim_paciente`** identifica a cada paciente mediante `id_paciente` (el mismo `patient_id` del CSV) y conserva su género (`patient_gender`) ya corregido en el ETL. Tiene 97 registros, uno por cada paciente distinto que figura en las 100 visitas; no incluye edad porque ese dato varía entre visitas y por eso se dejó como medida del hecho.
+
+**`dim_especialidad`** lista las 6 especialidades médicas distintas (`specialty`) presentes en el dataset, con un identificador surrogate (`id_especialidad`). Permite analizar costos y volúmenes de atención agrupados por área clínica.
+
+**`dim_departamento`** recoge los 5 departamentos hospitalarios distintos (`hospital_department`), también con surrogate key. Es la dimensión organizacional que indica en qué unidad del hospital se atendió cada visita.
+
+**`dim_ciudad`** contiene las 5 ciudades del Ecuador (`city`) donde se ubican los hospitales del dataset, con su respectivo surrogate key. Es la dimensión geográfica del modelo, usada para todas las agrupaciones por ubicación.
+
+**`dim_seguro`** describe los 4 tipos de cobertura de seguro (`insurance_type`) que tienen los pacientes, con surrogate key. Permite analizar costos y emergencias según el tipo de aseguramiento.
+
+**`dim_diagnostico`** agrupa los 7 grupos diagnósticos distintos (`diagnosis_group`) registrados en las visitas, con su propio surrogate key. Representa la condición clínica del paciente, independiente del procedimiento aplicado.
+
+**`dim_procedimiento`** lista los 5 tipos de procedimiento médico distintos (`procedure_type`) realizados, también con surrogate key. Representa la intervención o tratamiento, separada del diagnóstico por las razones explicadas en la justificación anterior.
+
+**`fact_visita`** es la tabla central del modelo y tiene 100 filas, una por cada visita médica del CSV. Usa `visit_id` como llave primaria (ya era único en la fuente) y se conecta mediante 8 llaves foráneas a cada una de las dimensiones descritas arriba. Además de esas FK, incluye 4 atributos que se quedaron directo en el hecho por ser dimensiones degeneradas (`doctor_id`, `patient_age`, `is_emergency`, `outcome`) y las 4 medidas numéricas del modelo (`length_of_stay_days`, `cost_medicine`, `cost_procedure`, `total_cost`), siendo esta última la medida aditiva principal sobre la que se construyen las consultas MOLAP de la Sección 6.
 
 ---
 
