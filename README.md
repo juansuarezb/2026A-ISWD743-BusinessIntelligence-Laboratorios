@@ -710,6 +710,19 @@ Los resultados permiten identificar las combinaciones de diagnóstico y tipo de 
 
 ## 7. Conclusiones
 
+A partir del desarrollo completo de la práctica, desde la carga en staging hasta la ejecución de las consultas MOLAP, se evidencia que los tres objetivos específicos planteados al inicio de este informe se cumplieron:
+
+1. Se diseñó e implementó correctamente el modelo estrella en PostgreSQL. Se crearon las 8 dimensiones (`dim_tiempo`, `dim_paciente`, `dim_especialidad`, `dim_departamento`, `dim_ciudad`, `dim_seguro`, `dim_diagnostico`, `dim_procedimiento`) y la tabla de hechos `fact_visita`, esta última con 8 llaves foráneas (`REFERENCES`) que garantizan la integridad referencial del modelo. El ETL desde la tabla `salud` (staging) hacia las dimensiones mediante `SELECT DISTINCT` y hacia `fact_visita` mediante los 8 `JOIN` permitió cargar correctamente las 100 visitas médicas sin pérdida de datos ni duplicados, validado con `SELECT * FROM fact_visita`.
+2. Se construyó la vista materializada `mv_visitas`, consolidando el modelo estrella. Esta vista desnormaliza `fact_visita` y sus 8 dimensiones en una única estructura plana de 19 columnas, eliminando la necesidad de repetir los 8 `JOIN` en cada consulta analítica posterior. El uso de `DROP MATERIALIZED VIEW IF EXISTS` antes de la creación asegura que la vista pueda reconstruirse de forma segura cada vez que cambien los datos base, cumpliendo su rol de optimización del procesamiento analítico.
+3. Se desarrollaron las tres consultas MOLAP sobre `mv_visitas`, cubriendo costos, emergencias y diagnósticos, una por cada operación OLAP solicitada:
+   - **Roll-Up (Q1):** la agregación de `total_cost` por especialidad, ciudad y mes identificó que la especialidad con mayor costo total fue **Traumatología** en **Ambato** durante el mes 2, con **\$16 001.00**.
+   - **Slice (Q2):** al fijar `is_emergency = 1`, se determinó que la combinación con más emergencias fue **Quito**, mes 2, género **M**, con **5 emergencias**.
+   - **Dice (Q3):** al cruzar diagnóstico, tipo de seguro y ciudad, el costo promedio más alto correspondió al diagnóstico **Cáncer** con seguro **Mixto** en **Ambato**, con **\$4350.00** por visita.
+
+   Estos tres resultados muestran que el modelo permite responder preguntas de negocio concretas sobre costos, emergencias y diagnósticos directamente desde la vista materializada, sin necesidad de consultar las tablas base por separado.
+4. Una limitación relevante del dataset es que solo cubre el primer trimestre de 2023 (enero-marzo), es decir 3 meses de datos; esto impide realizar análisis estacionales completos o comparaciones interanuales, y restringe el alcance de `dim_tiempo` a un rango temporal muy acotado. A esto se suma el tamaño reducido (100 visitas, 97 pacientes distintos), que limita la representatividad estadística de hallazgos como el costo promedio por Cáncer-Mixto-Ambato, calculado posiblemente sobre muy pocos registros.
+5. El proceso completo, desde el diseño de las dimensiones hasta la ejecución de las tres consultas MOLAP, permitió comprobar en la práctica las ventajas del modelado dimensional frente al modelo relacional normalizado: las mismas preguntas de negocio habrían requerido consultas mucho más complejas sobre la tabla `salud` original sin pasar por el esquema estrella y la vista materializada.
+
 ---
 
 ## Referencias Bibliográficas
