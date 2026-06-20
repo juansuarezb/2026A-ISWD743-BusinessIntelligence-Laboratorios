@@ -695,7 +695,7 @@ ORDER BY costo_total DESC;
 
 | ![Q1](capturas/q1_resultado.png) |
 |:--:|
-| *Figura 16. Ejecución de la consulta Roll-Up sobre la vista materializada mv_visitas.* |
+| *Figura 18. Ejecución de la consulta Roll-Up sobre la vista materializada mv_visitas.* |
 
 ### Respuesta
 
@@ -734,7 +734,7 @@ ORDER BY total_emergencias DESC;
 
 | ![](capturas/q2_resultado.png) |
 |:--:|
-| *Figura 17. Ejecución de la consulta Slice sobre la vista materializada mv_visitas.* |
+| *Figura 19. Ejecución de la consulta Slice sobre la vista materializada mv_visitas.* |
 
 ### Respuesta
 
@@ -771,7 +771,7 @@ ORDER BY costo_promedio DESC;
 
 | ![](capturas/q3_resultado.png) |
 |:--:|
-| *Figura 18. Ejecución de la consulta Dice sobre la vista materializada mv_visitas.* |
+| *Figura 20. Ejecución de la consulta Dice sobre la vista materializada mv_visitas.* |
 
 ### Respuesta
 
