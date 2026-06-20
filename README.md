@@ -163,11 +163,370 @@ Como regla ETL, se conservó el género de la primera visita registrada por 'vis
 
 ## 4. Implementación en PostgreSQL
 
+La implementación sigue el flujo definido en el diseño: primero se crea la base de datos y la tabla de staging para recibir el CSV sin transformaciones, luego se construyen las dimensiones extrayendo valores únicos desde el staging, y finalmente se crea y carga la tabla de hechos mediante JOINs con las ocho dimensiones.
+
+---
+
 ### 4.1 Base de Datos y Tabla Staging
+
+Se crea la base de datos dentro de PostgreSQL con el nombre `dbSalud`, como se observa en la Figura 2.
+
+
+| ![Base de datos dbSalud en pgAdmin](capturas/fig_02.png) |
+|:--:|
+| *Figura 3: Base de datos `dbSalud` creada en pgAdmin* |
+
+---
+
+**Corrección previa del CSV**
+
+Antes de crear la tabla staging se corrigió una inconsistencia de calidad de datos detectada en el archivo `salud.csv`. Dos pacientes tenían géneros distintos registrados en visitas diferentes:
+
+- `patient_id = 142`: visita 24 → F, visita 35 → M
+- `patient_id = 260`: visita 78 → M, visita 93 → F
+
+Se corrigió directamente en el CSV dejando un único género por paciente, como se mencionó en la sección 2 de este informe:
+
+- `patient_id = 142`: F
+- `patient_id = 260`: M
+
+---
+
+**Tabla staging**
+
+Se crea la tabla `salud` como área de staging. Contiene todos los datos del CSV. Los tipos de dato se definen con precisión desde esta etapa según el análisis del archivo fuente. La única excepción es `visit_date`, que se almacena como `VARCHAR(10)` porque el formato del CSV (`M/D/YYYY`) no es compatible con el tipo `DATE` de PostgreSQL durante la importación; la conversión se realiza en el ETL con `TO_DATE()`. La Tabla 3 detalla la justificación de cada tipo asignado.
+
+| Columna | Tipo PostgreSQL | Justificación |
+|---|---|---|
+| `visit_id` | `INTEGER` | Enteros 1–100 |
+| `visit_date` | `VARCHAR(10)` | Formato M/D/YYYY, máx. 10 caracteres, se convierte a DATE en el ETL |
+| `patient_id` | `INTEGER` | Enteros 12–310 |
+| `patient_age` | `SMALLINT` | Enteros 4–82 |
+| `patient_gender` | `CHAR(1)` | Un solo carácter: F o M |
+| `city` | `VARCHAR(15)` | Máximo 9 caracteres |
+| `hospital_department` | `VARCHAR(20)` | Máximo 16 caracteres |
+| `doctor_id` | `SMALLINT` | Enteros 6–60 |
+| `specialty` | `VARCHAR(20)` | Máximo 16 caracteres |
+| `diagnosis_group` | `VARCHAR(20)` | Máximo 12 caracteres |
+| `procedure_type` | `VARCHAR(20)` | Máximo 15 caracteres |
+| `insurance_type` | `VARCHAR(15)` | Máximo 10 caracteres |
+| `is_emergency` | `SMALLINT` | Valores 0 o 1 |
+| `length_of_stay_days` | `SMALLINT` | Enteros 0–9 |
+| `cost_medicine` | `NUMERIC(8,2)` | Rango 12.00–150.00 |
+| `cost_procedure` | `NUMERIC(8,2)` | Rango 120.00–4800.00 |
+| `total_cost` | `NUMERIC(8,2)` | Rango 135.50–4930.00 |
+| `outcome` | `VARCHAR(15)` | Máximo 10 caracteres |
+
+| *Tabla 3: Tipos de datos definidos para la tabla staging `salud`* |
+| :--- |
+
+```sql
+CREATE TABLE salud (
+    visit_id             INTEGER,
+    visit_date           VARCHAR(10),
+    patient_id           INTEGER,
+    patient_age          SMALLINT,
+    patient_gender       CHAR(1),
+    city                 VARCHAR(15),
+    hospital_department  VARCHAR(20),
+    doctor_id            SMALLINT,
+    specialty            VARCHAR(20),
+    diagnosis_group      VARCHAR(20),
+    procedure_type       VARCHAR(20),
+    insurance_type       VARCHAR(15),
+    is_emergency         SMALLINT,
+    length_of_stay_days  SMALLINT,
+    cost_medicine        NUMERIC(8,2),
+    cost_procedure       NUMERIC(8,2),
+    total_cost           NUMERIC(8,2),
+    outcome              VARCHAR(15)
+);
+```
+
+Una vez creada la tabla, se importó el archivo `salud.csv` mediante la función `Import/Export Data` de pgAdmin con las siguientes configuraciones: formato CSV, encabezado activado, delimitador coma y codificación UTF-8. La siguiente figura muestra los datos cargados en la tabla de staging.
+
+| ![Datos cargados en la tabla staging](capturas/llenadoDatosStaging.png) |
+|:--:|
+| *Figura 4: Datos cargados en la tabla staging `salud`* |
+
+---
 
 ### 4.2 Tablas Dimensión
 
+Una vez cargada la tabla de staging, se crean las ocho tablas dimensión del modelo estrella y se poblan extrayendo valores únicos desde `salud`. Este proceso constituye el ETL: se extraen los datos del staging, se transforman aplicando `DISTINCT` y convirtiendo la fecha con `TO_DATE()`, y se cargan en cada dimensión con sus tipos definitivos.
+
+---
+
+**Dimensión de tiempo**
+
+```sql
+CREATE TABLE dim_tiempo (
+    id_tiempo  SERIAL    PRIMARY KEY,
+    fecha      DATE      NOT NULL UNIQUE,
+    anio       SMALLINT  NOT NULL,
+    mes        SMALLINT  NOT NULL,
+    dia        SMALLINT  NOT NULL
+);
+```
+
+```sql
+INSERT INTO dim_tiempo (fecha, anio, mes, dia)
+SELECT DISTINCT
+    TO_DATE(visit_date, 'MM/DD/YYYY')                               AS fecha,
+    EXTRACT(YEAR  FROM TO_DATE(visit_date, 'MM/DD/YYYY'))::SMALLINT AS anio,
+    EXTRACT(MONTH FROM TO_DATE(visit_date, 'MM/DD/YYYY'))::SMALLINT AS mes,
+    EXTRACT(DAY   FROM TO_DATE(visit_date, 'MM/DD/YYYY'))::SMALLINT AS dia
+FROM salud
+ORDER BY fecha;
+```
+
+| ![Contenido de dim_tiempo](capturas/dim_tiempo.png) |
+|:--:|
+| *Figura 5: Contenido de `dim_tiempo` con 55 fechas únicas convertidas a tipo DATE* |
+
+---
+
+**Dimensión de paciente**
+
+```sql
+CREATE TABLE dim_paciente (
+    id_paciente    INTEGER  PRIMARY KEY,
+    patient_gender CHAR(1)  NOT NULL
+);
+```
+
+```sql
+INSERT INTO dim_paciente (id_paciente, patient_gender)
+SELECT DISTINCT patient_id, patient_gender
+FROM salud
+ORDER BY patient_id;
+```
+
+| ![Contenido de dim_paciente](capturas/dim_paciente.png) |
+|:--:|
+| *Figura 6: Contenido de `dim_paciente` con 97 pacientes únicos* |
+
+---
+
+**Dimensión de especialidad**
+
+```sql
+CREATE TABLE dim_especialidad (
+    id_especialidad  SERIAL       PRIMARY KEY,
+    specialty        VARCHAR(20)  NOT NULL UNIQUE
+);
+```
+
+```sql
+INSERT INTO dim_especialidad (specialty)
+SELECT DISTINCT specialty FROM salud ORDER BY specialty;
+```
+
+| ![Contenido de dim_especialidad](capturas/dim_especialidad.png) |
+|:--:|
+| *Figura 7: Contenido de `dim_especialidad` con 6 especialidades médicas* |
+
+---
+
+**Dimensión de departamento**
+
+```sql
+CREATE TABLE dim_departamento (
+    id_departamento     SERIAL       PRIMARY KEY,
+    hospital_department VARCHAR(20)  NOT NULL UNIQUE
+);
+```
+
+```sql
+INSERT INTO dim_departamento (hospital_department)
+SELECT DISTINCT hospital_department FROM salud ORDER BY hospital_department;
+```
+
+| ![Contenido de dim_departamento](capturas/dim_departamento.png) |
+|:--:|
+| *Figura 8: Contenido de `dim_departamento` con 5 departamentos hospitalarios* |
+
+---
+
+**Dimensión de ciudad**
+
+```sql
+CREATE TABLE dim_ciudad (
+    id_ciudad  SERIAL       PRIMARY KEY,
+    city       VARCHAR(15)  NOT NULL UNIQUE
+);
+```
+
+```sql
+INSERT INTO dim_ciudad (city)
+SELECT DISTINCT city FROM salud ORDER BY city;
+```
+
+| ![Contenido de dim_ciudad](capturas/dim_ciudad.png) |
+|:--:|
+| *Figura 9: Contenido de `dim_ciudad` con 5 ciudades* |
+
+---
+
+**Dimensión de seguro**
+
+```sql
+CREATE TABLE dim_seguro (
+    id_seguro      SERIAL       PRIMARY KEY,
+    insurance_type VARCHAR(15)  NOT NULL UNIQUE
+);
+```
+
+```sql
+INSERT INTO dim_seguro (insurance_type)
+SELECT DISTINCT insurance_type FROM salud ORDER BY insurance_type;
+```
+
+| ![Contenido de dim_seguro](capturas/dim_seguro.png) |
+|:--:|
+| *Figura 10: Contenido de `dim_seguro` con 4 tipos de cobertura* |
+
+---
+
+**Dimensión de diagnóstico**
+
+```sql
+CREATE TABLE dim_diagnostico (
+    id_diagnostico  SERIAL       PRIMARY KEY,
+    diagnosis_group VARCHAR(20)  NOT NULL UNIQUE
+);
+```
+
+```sql
+INSERT INTO dim_diagnostico (diagnosis_group)
+SELECT DISTINCT diagnosis_group FROM salud ORDER BY diagnosis_group;
+```
+
+| ![Contenido de dim_diagnostico](capturas/dim_diagnostico.png) |
+|:--:|
+| *Figura 11: Contenido de `dim_diagnostico` con 7 grupos diagnósticos* |
+
+---
+
+**Dimensión de procedimiento**
+
+```sql
+CREATE TABLE dim_procedimiento (
+    id_procedimiento  SERIAL       PRIMARY KEY,
+    procedure_type    VARCHAR(20)  NOT NULL UNIQUE
+);
+```
+
+```sql
+INSERT INTO dim_procedimiento (procedure_type)
+SELECT DISTINCT procedure_type FROM salud ORDER BY procedure_type;
+```
+
+| ![Contenido de dim_procedimiento](capturas/dim_procedimiento.png) |
+|:--:|
+| *Figura 12: Contenido de `dim_procedimiento` con 5 tipos de procedimiento* |
+
+---
+
+| Dimensión | Registros |
+|---|---|
+| `dim_tiempo` | 55 |
+| `dim_paciente` | 97 |
+| `dim_especialidad` | 6 |
+| `dim_departamento` | 5 |
+| `dim_ciudad` | 5 |
+| `dim_seguro` | 4 |
+| `dim_diagnostico` | 7 |
+| `dim_procedimiento` | 5 |
+
+| *Tabla 4: Conteo de registros esperados por tabla dimensión* |
+| :--- |
+
+---
+
 ### 4.3 Tabla de Hechos y Carga ETL
+
+La tabla `fact_visita` es el núcleo del modelo estrella. Contiene una fila por cada visita médica del dataset con las 8 claves foráneas hacia las dimensiones, 4 atributos degenerados y 4 medidas. Su clave primaria es `visit_id`, que proviene directamente del CSV y es única en los 100 registros, por lo que no requiere un surrogate key adicional.
+
+```sql
+CREATE TABLE fact_visita (
+    visit_id              INTEGER       PRIMARY KEY,
+    id_tiempo             INTEGER       NOT NULL REFERENCES dim_tiempo(id_tiempo),
+    id_paciente           INTEGER       NOT NULL REFERENCES dim_paciente(id_paciente),
+    id_especialidad       INTEGER       NOT NULL REFERENCES dim_especialidad(id_especialidad),
+    id_departamento       INTEGER       NOT NULL REFERENCES dim_departamento(id_departamento),
+    id_ciudad             INTEGER       NOT NULL REFERENCES dim_ciudad(id_ciudad),
+    id_seguro             INTEGER       NOT NULL REFERENCES dim_seguro(id_seguro),
+    id_diagnostico        INTEGER       NOT NULL REFERENCES dim_diagnostico(id_diagnostico),
+    id_procedimiento      INTEGER       NOT NULL REFERENCES dim_procedimiento(id_procedimiento),
+    doctor_id             SMALLINT      NOT NULL,
+    patient_age           SMALLINT      NOT NULL,
+    is_emergency          SMALLINT      NOT NULL,
+    outcome               VARCHAR(15)   NOT NULL,
+    length_of_stay_days   SMALLINT      NOT NULL,
+    cost_medicine         NUMERIC(8,2)  NOT NULL,
+    cost_procedure        NUMERIC(8,2)  NOT NULL,
+    total_cost            NUMERIC(8,2)  NOT NULL
+);
+```
+
+La Figura 13 muestra la estructura de `fact_visita` con sus respectivas columnas.
+
+| ![Estructura de fact_visita en pgAdmin](capturas/fact_visita.png) |
+|:--:|
+| *Figura 13: Estructura de la tabla `fact_visita` con claves foráneas y medidas* |
+
+---
+
+**Carga ETL desde staging**
+
+Se pobla `fact_visita` vinculando cada registro del staging con los surrogate keys de las dimensiones mediante ocho JOINs. Los campos numéricos se castean a sus tipos definitivos.
+
+```sql
+INSERT INTO fact_visita (
+    visit_id, id_tiempo, id_paciente, id_especialidad,
+    id_departamento, id_ciudad, id_seguro, id_diagnostico,
+    id_procedimiento, doctor_id, patient_age, is_emergency,
+    outcome, length_of_stay_days, cost_medicine, cost_procedure, total_cost
+)
+SELECT
+    s.visit_id::INTEGER,
+    t.id_tiempo,
+    p.id_paciente,
+    e.id_especialidad,
+    d.id_departamento,
+    c.id_ciudad,
+    sg.id_seguro,
+    dg.id_diagnostico,
+    pr.id_procedimiento,
+    s.doctor_id::SMALLINT,
+    s.patient_age::SMALLINT,
+    s.is_emergency::SMALLINT,
+    s.outcome,
+    s.length_of_stay_days::SMALLINT,
+    s.cost_medicine::NUMERIC,
+    s.cost_procedure::NUMERIC,
+    s.total_cost::NUMERIC
+FROM salud s
+JOIN dim_tiempo        t  ON t.fecha                = TO_DATE(s.visit_date, 'MM/DD/YYYY')
+JOIN dim_paciente      p  ON p.id_paciente          = s.patient_id::INTEGER
+JOIN dim_especialidad  e  ON e.specialty            = s.specialty
+JOIN dim_departamento  d  ON d.hospital_department  = s.hospital_department
+JOIN dim_ciudad        c  ON c.city                 = s.city
+JOIN dim_seguro        sg ON sg.insurance_type      = s.insurance_type
+JOIN dim_diagnostico   dg ON dg.diagnosis_group     = s.diagnosis_group
+JOIN dim_procedimiento pr ON pr.procedure_type      = s.procedure_type;
+```
+
+---
+
+**Verificación del modelo realizado en postgresql**
+
+| ![Verificación del modelo estrella](capturas/estructura_postgresql.png) |
+|:--:|
+| *Figura 14: Verificación del modelo estrella mediante `fact_visita` y las dimensiones* |
+
+
 
 ---
 
