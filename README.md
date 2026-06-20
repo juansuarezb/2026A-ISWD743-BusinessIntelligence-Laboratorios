@@ -470,7 +470,7 @@ CREATE TABLE fact_visita (
 );
 ```
 
-La Figura 13 muestra la estructura de `fact_visita` con sus respectivas columnas.
+La siguiente figura muestra la estructura de `fact_visita` con sus respectivas columnas.
 
 | ![Estructura de fact_visita en pgAdmin](capturas/fact_visita.png) |
 |:--:|
