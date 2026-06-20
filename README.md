@@ -536,11 +536,116 @@ JOIN dim_procedimiento pr ON pr.procedure_type      = s.procedure_type;
 
 ## 6. Consultas MOLAP y Preguntas de Negocio
 
-### 6.1 Q1 — Costo Total por Especialidad, Ciudad y Mes
+## 6.1 Q1 — Costo total por especialidad, ciudad y mes
 
-### 6.2 Q2 — Emergencias por Ciudad, Mes y Género
+### Enunciado
 
-### 6.3 Q3 — Costo Promedio por Diagnóstico, Seguro y Ciudad
+¿Cuál es el costo total de atención médica agrupado por especialidad, ciudad y mes?
+
+### Consulta SQL
+
+```sql
+SELECT
+    specialty AS especialidad,
+    city AS ciudad,
+    mes,
+    SUM(total_cost) AS costo_total
+FROM mv_visitas
+GROUP BY specialty, city, mes
+ORDER BY costo_total DESC;
+```
+
+### Resultado obtenido
+
+| ![Resultado Q1](capturas/q1_resultado.png) |
+|:--:|
+| *Figura 15. Resultado de la consulta Q1* |
+
+### Interpretación
+
+A partir de la agregación de los costos médicos por especialidad, ciudad y mes, se identificó la combinación que presenta el mayor costo acumulado de atención. Esta información permite reconocer áreas médicas y ubicaciones geográficas que concentran una mayor demanda de recursos económicos.
+
+### Operación OLAP aplicada
+
+**Roll-Up**
+
+Se realiza una agregación de los datos mediante la función `SUM(total_cost)`, consolidando la información por especialidad, ciudad y mes para obtener una visión resumida del comportamiento de los costos.
+
+---
+
+## 6.2 Q2 — Emergencias por ciudad, mes y género
+
+### Enunciado
+
+¿Cuántas atenciones de emergencia se registraron por ciudad, mes y género?
+
+### Consulta SQL
+
+```sql
+SELECT
+    city AS ciudad,
+    mes,
+    patient_gender AS genero,
+    SUM(is_emergency) AS total_emergencias
+FROM mv_visitas
+WHERE is_emergency = 1
+GROUP BY city, mes, patient_gender
+ORDER BY total_emergencias DESC;
+```
+
+### Resultado obtenido
+
+| ![Resultado Q2](capturas/q2_resultado.png) |
+|:--:|
+| *Figura 16. Resultado de la consulta Q2* |
+
+### Interpretación
+
+Al analizar únicamente los registros clasificados como emergencias, se identifican las ciudades, meses y grupos de género con mayor cantidad de atenciones urgentes. Esto facilita la evaluación de la demanda hospitalaria y la planificación de recursos médicos.
+
+### Operación OLAP aplicada
+
+**Slice + Roll-Up**
+
+- Slice: se fija la dimensión emergencia mediante la condición `WHERE is_emergency = 1`.
+- Roll-Up: posteriormente se agregan los registros utilizando `SUM(is_emergency)` agrupados por ciudad, mes y género.
+
+---
+
+## 6.3 Q3 — Costo promedio por diagnóstico, seguro y ciudad
+
+### Enunciado
+
+¿Cuál es el costo promedio de atención médica según diagnóstico, tipo de seguro y ciudad?
+
+### Consulta SQL
+
+```sql
+SELECT
+    diagnosis_group AS diagnostico,
+    insurance_type AS tipo_seguro,
+    city AS ciudad,
+    ROUND(AVG(total_cost), 2) AS costo_promedio
+FROM mv_visitas
+GROUP BY diagnosis_group, insurance_type, city
+ORDER BY costo_promedio DESC;
+```
+
+### Resultado obtenido
+
+| ![Resultado Q3](capturas/q3_resultado.png) |
+|:--:|
+| *Figura 17. Resultado de la consulta Q3* |
+
+### Interpretación
+
+El análisis permite identificar qué combinaciones de diagnóstico, tipo de seguro y ciudad presentan mayores costos promedio de atención médica. Esta información puede ser utilizada para evaluar patrones de gasto y apoyar la toma de decisiones en gestión hospitalaria.
+
+### Operación OLAP aplicada
+
+**Dice**
+
+La consulta analiza simultáneamente múltiples dimensiones (diagnóstico, seguro y ciudad), obteniendo un subconjunto multidimensional de información y calculando el costo promedio para cada combinación.
 
 ---
 
