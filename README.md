@@ -169,7 +169,7 @@ La implementación sigue el flujo definido en el diseño: primero se crea la bas
 
 ### 4.1 Base de Datos y Tabla Staging
 
-Se crea la base de datos dentro de PostgreSQL con el nombre `dbSalud`, como se observa en la Figura 2.
+Se crea la base de datos dentro de PostgreSQL con el nombre `dbSalud`, como se observa en la siguiente figura.
 
 
 | ![Base de datos dbSalud en pgAdmin](capturas/fig_02.png) |
@@ -194,7 +194,7 @@ Se corrigió directamente en el CSV dejando un único género por paciente, como
 
 **Tabla staging**
 
-Se crea la tabla `salud` como área de staging. Contiene todos los datos del CSV. Los tipos de dato se definen con precisión desde esta etapa según el análisis del archivo fuente. La única excepción es `visit_date`, que se almacena como `VARCHAR(10)` porque el formato del CSV (`M/D/YYYY`) no es compatible con el tipo `DATE` de PostgreSQL durante la importación; la conversión se realiza en el ETL con `TO_DATE()`. La Tabla 3 detalla la justificación de cada tipo asignado.
+Se crea la tabla `salud` como área de staging. Contiene todos los datos del CSV. Los tipos de dato se definen con precisión desde esta etapa según el análisis del archivo fuente. La única excepción es `visit_date`, que se almacena como `VARCHAR(10)` porque el formato del CSV (`M/D/YYYY`) no es compatible con el tipo `DATE` de PostgreSQL durante la importación; la conversión se realiza en el ETL con `TO_DATE()`. La siguiente tabla detalla la justificación de cada tipo asignado.
 
 | Columna | Tipo PostgreSQL | Justificación |
 |---|---|---|
