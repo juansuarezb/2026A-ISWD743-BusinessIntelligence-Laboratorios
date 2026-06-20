@@ -3,7 +3,7 @@
 <img src="capturas/logo_epn.png" height="80" align="left"/>
 <img src="capturas/logo_fis.png" height="80" align="right"/>
 
-<p style="font-size: 2em; font-weight: bold; margin-top: 0;">Escuela Politécnica Nacional</p>
+<p style="font-size: 4em; font-weight: bold; margin-top: 0;">Escuela Politécnica Nacional</p>
 
 ### Facultad de Ingeniería de Sistemas
 
@@ -42,9 +42,8 @@ Juan Suarez
 
 ---
 
-## Índice
+<h2><strong>Índice</strong></h2>
 
-- [Índice](#índice)
 - [Desarrollo](#desarrollo)
 - [1. Introducción](#1-introducción)
 - [2. Descripción del Dataset](#2-descripción-del-dataset)
