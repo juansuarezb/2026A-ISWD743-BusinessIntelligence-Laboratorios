@@ -134,6 +134,7 @@ La Tabla 2 resume las 18 columnas del dataset con su nombre, tipo de dato inferi
 
 </div>
 
+---
 
 ### 2.1 Correcciones de Calidad de Datos
 
