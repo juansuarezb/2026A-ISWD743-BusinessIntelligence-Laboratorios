@@ -562,7 +562,11 @@ ORDER BY costo_total DESC;
 
 | ![Q1](capturas/q1_resultado.png) |
 |:--:|
-| *Figura 1. Ejecución de la consulta Roll-Up sobre la vista materializada mv_visitas.* |
+| *Figura 16. Ejecución de la consulta Roll-Up sobre la vista materializada mv_visitas.* |
+
+### Respuesta
+
+> La especialidad con mayor costo total de atención fue **Traumatología** en la ciudad de **Ambato** durante el mes **2**, con un total de **$16001.00**.
 
 
 ### Análisis
@@ -597,7 +601,11 @@ ORDER BY total_emergencias DESC;
 
 | ![](capturas/q2_resultado.png) |
 |:--:|
-| *Figura 2. Ejecución de la consulta Slice sobre la vista materializada mv_visitas.* |
+| *Figura 17. Ejecución de la consulta Slice sobre la vista materializada mv_visitas.* |
+
+### Respuesta
+
+> La ciudad con más emergencias por mes y género fue **Quito** en el mes **2** con género **M**, registrando **5** emergencias.
 
 ### Análisis
 
@@ -630,7 +638,11 @@ ORDER BY costo_promedio DESC;
 
 | ![](capturas/q3_resultado.png) |
 |:--:|
-| *Figura 3. Ejecución de la consulta Dice sobre la vista materializada mv_visitas.* |
+| *Figura 18. Ejecución de la consulta Dice sobre la vista materializada mv_visitas.* |
+
+### Respuesta
+
+> El costo promedio más alto por visita corresponde al diagnóstico **Cáncer** con seguro **Mixto** en la ciudad de **Ambato**, con un promedio de **$4350.00**.
 
 ### Análisis
 
