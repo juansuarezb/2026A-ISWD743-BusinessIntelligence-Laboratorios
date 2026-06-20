@@ -178,7 +178,7 @@ Para construir el modelo estrella se revisó cada una de las 18 columnas del dat
 | 17 | `total_cost` | Medida calculada | `fact_visita` | Suma de `cost_medicine` + `cost_procedure`; medida aditiva principal del modelo. |
 | 18 | `outcome` | Atributo del hecho | `fact_visita` | Resultado clínico de baja cardinalidad pero sin atributos adicionales que enriquezcan una dimensión separada; se trata como dimensión degenerada. |
 
-*Tabla : Decisiones de modelado columna por columna del dataset `salud.csv`*
+*Tabla 3: Decisiones de modelado columna por columna del dataset `salud.csv`*
 
 ---
 
@@ -277,7 +277,7 @@ Esta se realiza mediante la creación de la tabla `salud`. Para definir los tipo
 | `total_cost` | `NUMERIC(8,2)` | Rango 135.50–4930.00 |
 | `outcome` | `VARCHAR(15)` | Máximo 10 caracteres |
 
-| *Tabla 3: Tipos de datos definidos para la tabla staging `salud`* |
+| *Tabla 4: Tipos de datos definidos para la tabla staging `salud`* |
 | :--- |
 
 ```sql
@@ -499,7 +499,7 @@ SELECT DISTINCT procedure_type FROM salud ORDER BY procedure_type;
 | `dim_diagnostico` | 7 |
 | `dim_procedimiento` | 5 |
 
-| *Tabla 4: Conteo de registros esperados por tabla dimensión* |
+| *Tabla 5: Conteo de registros esperados por tabla dimensión* |
 | :--- |
 
 ---
