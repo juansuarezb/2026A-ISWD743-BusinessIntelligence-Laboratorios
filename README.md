@@ -664,3 +664,5 @@ La consulta analiza simultáneamente múltiples dimensiones (diagnóstico, segur
 ---
 
 ## Declaración de Porcentaje de Uso de IA
+50%
+Se usó la IA en este informe para estructurar la práctica y como guía para realizar el llenado de las tablas, en especial el de la tabla de hechos. Además, se utilizó para comparar resultados en las consultas OLAP conforme a lo que se encontró en el CSV.
