@@ -593,6 +593,79 @@ Después de haber realizado dentro de postgresql la creación y el llenado de la
 
 ## 5. Vista Materializada MOLAP
 
+Para optimizar la ejecución de las consultas analíticas multidimensionales (Q1, Q2 y Q3) y simular el comportamiento de un cubo de datos MOLAP dentro de un entorno relacional, se diseñó e implementó una vista materializada denominada `mv_visitas`. 
+
+El propósito principal de este objeto es consolidar la tabla de hechos central junto con sus ocho dimensiones descriptivas en una única estructura física. A diferencia de una vista estándar o lógica —la cual ejecuta todas las operaciones de unión (`JOIN`) en tiempo real cada vez que es invocada—, una vista materializada calcula y almacena físicamente el conjunto de resultados directamente en el disco duro [[2]](#referencias). En arquitecturas de Business Intelligence y Data Warehouse, esta estrategia reduce drásticamente el uso de memoria y CPU al suprimir la sobrecarga de procesamiento asociada con el cruce repetitivo de múltiples índices relacionales, garantizando tiempos de respuesta mínimos en tableros de visualización masivos.
+
+```sql
+CREATE MATERIALIZED VIEW mv_visitas AS
+SELECT 
+    f.visit_id,
+    t.anio,
+    t.mes,
+    t.dia,
+    p.patient_gender,
+    e.specialty,
+    d.hospital_department,
+    c.city,
+    sg.insurance_type,
+    dg.diagnosis_group,
+    pr.procedure_type,
+    f.doctor_id,
+    f.patient_age,
+    f.is_emergency,
+    f.outcome,
+    f.length_of_stay_days,
+    f.cost_medicine,
+    f.cost_procedure,
+    f.total_cost
+FROM fact_visita f
+JOIN dim_tiempo        t  ON f.id_tiempo        = t.id_tiempo
+JOIN dim_paciente      p  ON f.id_paciente      = p.id_paciente
+JOIN dim_especialidad  e  ON f.id_especialidad  = e.id_especialidad
+JOIN dim_departamento  d  ON f.id_departamento  = d.id_departamento
+JOIN dim_ciudad        c  ON f.id_ciudad        = c.id_ciudad
+JOIN dim_seguro        sg ON f.id_seguro        = sg.id_seguro
+JOIN dim_diagnostico   dg ON f.id_diagnostico   = dg.id_diagnostico
+JOIN dim_procedimiento pr ON f.id_procedimiento = pr.id_procedimiento;
+```
+
+La correcta declaración del bloque DDL y la posterior instanciación física del espacio indexado dentro del motor relacional de PostgreSQL se evidencian en la siguiente captura del entorno de desarrollo.
+
+| ![Creación de la vista materializada](capturas/Tarea%20MOLAP%20creacion%20vista%20materializada.png) |
+|:--:|
+| *Figura 15: Sentencia de creación de la vista materializada `mv_visitas` ejecutada con éxito en pgAdmin* |
+
+---
+
+**Verificación de consistencia del hipercubo**
+
+Una vez materializada la estructura, se procedió a auditar la integridad analítica del conjunto resultante mediante una consulta de proyección general. Al tratarse de una consolidación directa de la tabla de hechos relacional, la vista materializada debe mantener la granularidad exacta del negocio, exponiendo en un plano plano los 100 registros originales transformados y limpios.
+
+```sql
+SELECT * FROM mv_visitas;
+```
+
+| ![Verificación mediante SELECT](capturas/Tarea%20MOLAP%20select.png) |
+|:--:|
+| *Figura 16: Inspección del contenido de `mv_visitas` mostrando la correcta desnormalización de los atributos en un formato multidimensional plano* |
+
+---
+
+**Mantenimiento y sincronización de datos**
+
+La ganancia en velocidad de lectura que ofrecen las vistas materializadas introduce un compromiso técnico: los datos almacenados se vuelven estáticos y pierden sincronía inmediata si ocurren modificaciones o inserciones directas sobre las tablas fuente relacionales operativas (*Staging* o *Fact*). 
+
+Para solventar esta pérdida de frescura en los datos analíticos y asegurar que el cubo refleje de manera fidedigna la realidad del repositorio central, se debe programar o invocar explícitamente el comando de mantenimiento provisto por el motor de PostgreSQL. La ejecución de esta directiva de actualización reconstruye de manera eficiente los registros precalculados en disco, garantizando la consistencia y la exactitud matemática de las métricas agregadas.
+
+```sql
+REFRESH MATERIALIZED VIEW mv_visitas;
+```
+
+| ![Refresco de la vista materializada](capturas/Tarea%20MOLAP%20refresh.png) |
+|:--:|
+| *Figura 17: Comando de refresco `REFRESH MATERIALIZED VIEW` aplicado sobre `mv_visitas` para actualizar la persistencia física de los datos* |
+
 ---
 
 ## 6. Consultas MOLAP y Preguntas de Negocio
