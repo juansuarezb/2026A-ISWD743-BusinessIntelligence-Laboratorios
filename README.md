@@ -566,7 +566,7 @@ ORDER BY costo_total DESC;
 
 ### Resultado obtenido
 
-| ![](capturas/q1_resultado.png) |
+| ![](capturas/resultado1.png) |
 |:--:|
 | *Figura 2. Resultado de costo total agrupado por especialidad, ciudad y mes.* |
 
@@ -606,7 +606,7 @@ ORDER BY total_emergencias DESC;
 
 ### Resultado obtenido
 
-| ![](capturas/q2_resultado.png) |
+| ![](capturas/resultado2.png) |
 |:--:|
 | *Figura 4. Total de emergencias por ciudad, mes y género.* |
 
@@ -645,7 +645,7 @@ ORDER BY costo_promedio DESC;
 
 ### Resultado obtenido
 
-| ![](capturas/q3_resultado.png) |
+| ![](capturas/resultado3.png) |
 |:--:|
 | *Figura 6. Costo promedio por diagnóstico, tipo de seguro y ciudad.* |
 
