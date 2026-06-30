@@ -91,6 +91,32 @@ Juan Suarez
 
 ### 2.1 Preparación de Datos
 
+Weka trabaja sobre archivos en formato `.arff` (*Attribute-Relation File Format*), donde cada atributo se declara con su tipo —nominal o numérico— y la clase a predecir queda definida como el último atributo de la relación. La práctica recurre a tres conjuntos de datos distintos, cada uno asociado a un clasificador o caso de aplicación específico.
+
+El dataset `iris.arff` reúne 150 instancias de flores de tres especies (Iris-setosa, Iris-versicolor e Iris-virginica), descritas mediante cuatro atributos numéricos: `sepallength`, `sepalwidth`, `petallength` y `petalwidth`. Este conjunto se utiliza para construir el árbol de decisión J48 en la sección 2.2, ya que sus atributos continuos permiten observar cómo el algoritmo calcula los umbrales de corte en cada nodo.
+
+Por su parte, `weather.nominal.arff` contiene apenas 14 instancias, pero todos sus atributos son nominales: `outlook`, `temperature`, `humidity` y `windy`, con `play` como clase a predecir. Es decir, a diferencia de iris, aquí no hay umbrales numéricos que calcular sino frecuencias de ocurrencia por categoría, lo que lo convierte en el dataset adecuado para introducir Naive Bayes en la sección 2.3.
+
+El tercer dataset, `loan_risk_dataset.arff`, corresponde al caso de estudio de la sección 2.4. Reúne 340 instancias de clientes bancarios, descritas mediante tres atributos nominales (`Loan_History`, `Income` y `Age`) y la clase `Loan_Decision`, que clasifica a cada cliente como `risky` o `safe`. Al contar con muchas más instancias que los dos datasets anteriores, permite evaluar el comportamiento del árbol J48 sobre un volumen de datos más representativo de un escenario real de negocio.
+
+La Tabla 1 resume los tres datasets utilizados a lo largo de la práctica.
+
+<div align="center">
+
+| Dataset | Atributos | Clase | N.º de instancias | Clasificador asociado |
+|---|---|---|---|---|
+| `iris.arff` | `sepallength`, `sepalwidth`, `petallength`, `petalwidth` (numéricos) | `class` (Iris-setosa / Iris-versicolor / Iris-virginica) | 150 | J48 |
+| `weather.nominal.arff` | `outlook`, `temperature`, `humidity`, `windy` (nominales) | `play` (yes / no) | 14 | Naive Bayes |
+| `loan_risk_dataset.arff` | `Loan_History`, `Income`, `Age` (nominales) | `Loan_Decision` (risky / safe) | 340 | J48 (caso de estudio) |
+
+*Tabla 1: Resumen de los datasets utilizados en la práctica*
+
+</div>
+
+Además de los tres datasets anteriores, la sección 2.6 utiliza un cuarto archivo, `test.arff`, derivado de `weather.nominal.arff` mediante la herramienta ArffViewer de Weka. A diferencia de los datasets previos, `test.arff` no es un conjunto de entrada original sino una instancia de prueba con el atributo `play` en blanco, construida específicamente para que los clasificadores J48 y Naive Bayes ya entrenados prediga su valor.
+
+Con los datasets caracterizados, las siguientes secciones detallan la construcción de cada clasificador y su aplicación sobre nuevas instancias.
+
 ---
 
 ### 2.2 Clasificación con Árbol de Decisión J48
