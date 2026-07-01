@@ -85,6 +85,19 @@ Juan Suarez
 
 ### 1.3 Clasificador Naive Bayes (Teorema de Bayes)
 
+El **Teorema de Bayes** calcula la probabilidad de un evento $A_i$ dado que se observó otro evento $B$, a partir de la relación:
+ 
+$$P(A_i|B) = \frac{P(A_i) \cdot P(B|A_i)}{P(B)}$$
+ 
+Donde $P(A_i)$ es la probabilidad *a priori* (la probabilidad del evento antes de considerar la evidencia), $P(B|A_i)$ es la verosimilitud (qué tan probable es la evidencia $B$ si $A_i$ es cierto), y $P(A_i|B)$ es la probabilidad *a posteriori*, es decir, la probabilidad actualizada de $A_i$ una vez incorporada la evidencia [[1]](#referencias)[[2]](#referencias).
+ 
+En clasificación, $A_i$ representa una clase (por ejemplo, "jugar" o "no jugar") y $B$ representa los atributos observados (clima, temperatura, etc.). Calcular la verosimilitud conjunta de todos los atributos resulta costoso, por lo que el clasificador **Naive Bayes** incorpora el **supuesto de independencia condicional**: asume que, fijada la clase, cada atributo aporta información de forma independiente respecto a los demás ($P(A \cap B) = P(A) \cdot P(B)$) [[3]](#referencias). Esto permite descomponer la verosimilitud conjunta en el producto de las probabilidades individuales de cada atributo, simplificando notablemente el cálculo. Aunque este supuesto rara vez se cumple estrictamente en datos reales, el clasificador conserva un buen rendimiento predictivo con bajo costo computacional.
+
+ 
+| ![Teorema de Bayes](capturas/teorema_bayes.png) |
+|:--:|
+| *Figura 1: Representación esquemática del Teorema de Bayes [[4]](#referencias)* |
+
 ---
 
 ## 2. Desarrollo de la Práctica
@@ -164,6 +177,13 @@ Con los datasets caracterizados, las siguientes secciones detallan la construcci
 ## Referencias Bibliográficas
 <a name="referencias"></a>
 
+[1] "13.4: Regla Bayes, probabilidad condicional e independencia," *LibreTexts*. [En línea]. Disponible en: https://espanol.libretexts.org/Bookshelves/Ingenieria/Ingenieria_Industrial_y_de_Sistemas/Libro%3A_Din%C3%A1mica_y_Controles_de_Procesos_Qu%C3%ADmicos_(Woolf)/13%3A_Estad%C3%ADsticas_y_antecedentes_probabil%C3%ADsticos/13.04%3A_Regla_Bayes%2C_probabilidad_condicional_e_independencia. [Accedido: 30-jun-2026].
+ 
+[2] J. Joyce, "Bayes' Theorem," *Stanford Encyclopedia of Philosophy*, 2003. [En línea]. Disponible en: https://plato.stanford.edu/entries/bayes-theorem/. [Accedido: 30-jun-2026].
+ 
+[3] J. Ortega, "Capítulo 3: Probabilidad Condicional e Independencia," *CIMAT*. [En línea]. Disponible en: https://www.cimat.mx/~jortega/MaterialDidactico/EPyE14/Cap3.pdf. [Accedido: 30-jun-2026].
+ 
+[4] Libélula - ciencia, ingeniería y cultura, "Teorema de Bayes fácil y rápido," *YouTube*. [En línea]. Disponible en: https://www.youtube.com/watch?v=9TTx9H9CwhA. [Accedido: 30-jun-2026].
 
 ---
 
