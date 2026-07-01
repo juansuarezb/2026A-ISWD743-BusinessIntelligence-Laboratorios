@@ -98,6 +98,7 @@ En clasificación, $A_i$ representa una clase (por ejemplo, "jugar" o "no jugar"
 |:--:|
 | *Figura 1: Representación esquemática del Teorema de Bayes [[4]](#referencias)* |
 
+
 ---
 
 ## 2. Desarrollo de la Práctica
@@ -143,8 +144,134 @@ Con los datasets caracterizados, las siguientes secciones detallan la construcci
 ### 2.3 Clasificación con Naive Bayes
 
 #### 2.3.1 Construcción y Evaluación del Modelo en Weka
+Para esta sección se utilizó el dataset `weather.nominal.arff`, compuesto por 14 instancias y 5 atributos (`outlook`, `temperature`, `humidity`, `windy` y la clase `play`). 
+
+En primer lugar, se abrió Weka Explorer y se cargó el archivo desde la pestaña *Preprocess*. 
+
+| ![Carga del dataset weather.nominal.arff en Weka](capturas/carga_weather_nominal.png) |
+|:--:|
+| *Figura 2: Carga del dataset weather.nominal.arff en Weka Explorer* |
+
+
+| ![Pantalla de Weka Explorer con el dataset weather.nominal.arff cargado](capturas/weather_nominal.png) |
+|:--:|
+| *Figura 3: Pantalla de Weka Explorer con el dataset weather.nominal.arff cargado* |
+
+
+A continuación, en la pestaña *Classify* se seleccionó el clasificador **NaiveBayes**.
+| ![Selección del clasificador NaiveBayes en Weka](capturas/seleccion_naive_bayes.png) |
+|:--:|
+| *Figura 4: Selección del clasificador NaiveBayes en Weka Explorer* |
+
+
+Se mantuvieron los valores por defecto en *More Options* y se eligió la opción **Use training set** como modo de evaluación. 
+
+| ![Configuración de evaluación del clasificador NaiveBayes en Weka](capturas/config_naive_bayes.png) |
+|:--:|
+| *Figura 5: Configuración de evaluación del clasificador NaiveBayes en Weka Explorer* |
+
+Finalmente, se ejecutó el clasificador haciendo clic en *Start*.
+
+| ![Resultados del clasificador NaiveBayes en Weka](capturas/resultados_naive_bayes.png) |
+|:--:|
+| *Figura 6: Resultados del clasificador NaiveBayes en Weka Explorer* |
+
+
+
+
+ 
+A partir del resultado generado en el cuadro *Classifier output*, se interpretaron las tablas de probabilidad condicional construidas por el modelo para cada atributo, en relación con las clases `yes` y `no`:
+ 
+<div align="center">
+
+| Atributo | Valor | P(valor &#124; yes) | P(valor &#124; no) |
+|:---:|:---:|:---:|:---:|
+| `outlook` | sunny | 3.0 / 12.0 | 4.0 / 8.0 |
+| `outlook` | overcast | 5.0 / 12.0 | 1.0 / 8.0 |
+| `outlook` | rainy | 4.0 / 12.0 | 3.0 / 8.0 |
+| `temperature` | hot | 3.0 / 12.0 | 3.0 / 8.0 |
+| `temperature` | mild | 5.0 / 12.0 | 3.0 / 8.0 |
+| `temperature` | cool | 4.0 / 12.0 | 2.0 / 8.0 |
+| `humidity` | high | 4.0 / 11.0 | 5.0 / 7.0 |
+| `humidity` | normal | 7.0 / 11.0 | 2.0 / 7.0 |
+| `windy` | TRUE | 4.0 / 11.0 | 4.0 / 7.0 |
+| `windy` | FALSE | 7.0 / 11.0 | 3.0 / 7.0 |
+ 
+*Tabla 2: Probabilidades condicionales por atributo generadas por el clasificador NaiveBayes (probabilidades previas: P(yes)=0.63, P(no)=0.38)*
+ 
+</div>
+
+Se observó que el modelo clasificó correctamente 13 de las 14 instancias del conjunto de entrenamiento (92.8571 % de exactitud), con una matriz de confusión de 9 verdaderos positivos y 4 verdaderos negativos para la clase `no`, y un único error de clasificación.
+ 
+| ![Matriz de confusión y métricas de evaluación NaiveBayes](capturas/matriz_confusion_naive_bayes.png) |
+|:--:|
+| *Figura 8: Matriz de confusión y métricas de evaluación NaiveBayes sobre weather.nominal.arff* |
 
 #### 2.3.2 Predicción de Nuevas Instancias con Código Python
+A partir de las tablas de probabilidad condicional obtenidas en Weka, se trasladaron manualmente los valores a una función en Python denominada `naive_bayes_play()`, la cual recibe como parámetros los cuatro atributos del clima (`outlook`, `temperature`, `humidity`, `windy`) y calcula la probabilidad *a posteriori* de cada clase aplicando el Teorema de Bayes bajo el supuesto de independencia condicional descrito en la sección 1.3.
+ 
+```python
+def naive_bayes_play(outlook, temperature, humidity, windy):
+    # Probabilidades a priori
+    P_yes = 0.63
+    P_no = 0.38
+    total_yes = 12.0
+    total_no = 8.0
+
+    # Tabla de verosimilitudes (Likelihood)
+    probs = {
+        'yes': {
+            'outlook': {'sunny': 3.0 / total_yes, 'overcast': 5.0 / total_yes, 'rainy': 4.0 / total_yes},
+            'temperature': {'hot': 3.0 / total_yes, 'mild': 5.0 / total_yes, 'cool': 4.0 / total_yes},
+            'humidity': {'high': 4.0 / 11.0, 'normal': 7.0 / 11.0},
+            'windy': {'true': 4.0 / 11.0, 'false': 7.0 / 11.0},
+        },
+        'no': {
+            'outlook': {'sunny': 4.0 / total_no, 'overcast': 1.0 / total_no, 'rainy': 3.0 / total_no},
+            'temperature': {'hot': 3.0 / total_no, 'mild': 3.0 / total_no, 'cool': 2.0 / total_no},
+            'humidity': {'high': 5.0 / 7.0, 'normal': 2.0 / 7.0},
+            'windy': {'true': 4.0 / 7.0, 'false': 3.0 / 7.0},
+        }
+    }
+
+    # Función interna para calcular la probabilidad por clase
+    def calc_prob(clase):
+        prior = P_yes if clase == 'yes' else P_no
+        return (
+            prior *
+            probs[clase]['outlook'][outlook] *
+            probs[clase]['temperature'][temperature] *
+            probs[clase]['humidity'][humidity] *
+            probs[clase]['windy'][windy]
+        )
+
+    # Cálculo de probabilidades posteriores sin normalizar
+    prob_yes = calc_prob('yes')
+    prob_no = calc_prob('no')
+    
+    # Normalización para que sumen 1 (100%)
+    total = prob_yes + prob_no
+    prob_yes /= total
+    prob_no /= total
+
+    print(f"\n🔍 Resultados:")
+    print(f"Probabilidad de SÍ jugar: {prob_yes:.4f}")
+    print(f"Probabilidad de NO jugar: {prob_no:.4f}")
+
+    return 'yes' if prob_yes > prob_no else 'no'
+```
+ 
+Como primer caso de prueba se utilizó la instancia **(outlook = sunny, temperature = hot, humidity = high, windy = true)**. Al ejecutar la función con estos valores, se obtuvo una probabilidad de jugar de aproximadamente **15.18 %** frente a una probabilidad de no jugar de aproximadamente **84.82 %**, por lo que el modelo predijo la clase **`no` (NO JUGAR)** para esta instancia.
+ 
+| ![Ejecución del código naive_bayes_play con caso de prueba con resultado 'no'](capturas/ejecucion1_naive_bayes.png) |
+|:--:|
+| *Figura 9: Salida del código `naive_bayes_play()` para el caso de prueba con resultado 'no'* |
+
+Como segundo caso de prueba se utilizó la instancia **(outlook = overcast, temperature = mild, humidity = high, windy = false)**. Al ejecutar la función con estos valores, se obtuvo una probabilidad de jugar de aproximadamente **82.27 %** frente a una probabilidad de no jugar de aproximadamente **17.73 %**, por lo que el modelo predijo la clase **`yes` (JUGAR)** para esta instancia.
+
+| ![Ejecución del código naive_bayes_play con caso de prueba con resultado 'yes'](capturas/ejecucion2_naive_bayes.png) |
+|:--:|
+| *Figura 10: Salida del código `naive_bayes_play()` para el caso de prueba con resultado 'yes'* |
 
 ---
 
