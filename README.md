@@ -580,9 +580,35 @@ El caso de estudio de la sección 2.4 refuerza esta idea: al aplicar J48 sobre `
 
 #### 2.6.1 Preparación del Conjunto de Prueba con ArffViewer
 
+Para realizar predicciones sobre nuevos datos empíricos, primero se construyó un archivo de prueba. Desde el menú *Tools* de Weka, se accedió a la herramienta **ArffViewer** y se cargó el dataset original `weather.nominal.arff`[cite: 1]. 
+
+Para aislar un único caso de prueba, se seleccionaron todas las instancias menos una y se eliminaron mediante la opción *Edit → Delete Instances*[cite: 1]. A continuación, se modificaron los valores de los atributos de la instancia restante para definir las condiciones del clima que se deseaban evaluar, estableciendo los valores: `overcast`, `mild`, `high` y `TRUE`[cite: 1]. Es importante destacar que el atributo de clase (`play`) se dejó completamente en blanco, ya que este es el valor desconocido que los modelos deberán predecir[cite: 1]. Finalmente, el archivo resultante se guardó con el nombre `test.arff`[cite: 1].
+
+| ![Preparación del archivo test.arff en ArffViewer](capturas/2.6.1.png) |
+|:--:|
+| *Figura 26: Creación de la instancia de prueba en ArffViewer dejando la clase en blanco* |
+
 #### 2.6.2 Predicción con Naive Bayes
 
+Con el archivo de prueba creado, se procedió a evaluarlo. En la pestaña *Preprocess* de Weka Explorer, se cargó nuevamente el dataset original (`weather.nominal.arff`) para establecer el conjunto de entrenamiento y en la pestaña *Classify* se seleccionó el clasificador **Naive Bayes**[cite: 1].
+
+En la sección de opciones de evaluación (*Test options*), se marcó la opción **Supplied test set**, se hizo clic en *Set...* y se cargó el archivo `test.arff`[cite: 1]. Para observar el resultado detallado de la predicción, en *More options...* se cambió *Output predictions* a **PlainText**[cite: 1]. Al ejecutar el proceso (*Start*), el modelo construido con Naive Bayes evaluó la instancia desconocida y emitió su predicción[cite: 1]. El resultado en la columna `prediction` fue de `1:yes` con una probabilidad de 0.667[cite: 1].
+
+| ![Predicción de la instancia de prueba con Naive Bayes](capturas/2.6.2.png) |
+|:--:|
+| *Figura 27: Resultado de la predicción utilizando el clasificador Naive Bayes sobre test.arff* |
+
 #### 2.6.3 Predicción con J48
+
+Para comparar el comportamiento de distintos algoritmos ante el mismo caso, se repitió el proceso de predicción utilizando un árbol de decisión[cite: 1]. Manteniendo la configuración del conjunto de prueba (*Supplied test set*), se cambió el clasificador a **J48** con sus parámetros por defecto y se volvió a ejecutar (*Start*)[cite: 1]. Al igual que en el caso anterior, el clasificador generó una tabla con los resultados en la columna `actual/predicted/error/prediction`[cite: 1]. El árbol de decisión predijo el valor `1:yes` con un valor de confianza de 1[cite: 1].
+
+| ![Predicción de la instancia de prueba con J48](capturas/2.6.3.png) |
+|:--:|
+| *Figura 28: Resultado de la predicción utilizando el clasificador J48 sobre test.arff* |
+
+**Comparación de resultados:**
+
+Al analizar las salidas emitidas por ambos clasificadores, se observa que tanto Naive Bayes como J48 coincidieron en predecir que la clase para esta instancia desconocida es `yes` (Play: Yes)[cite: 1]. Sin embargo, difieren en el nivel de certeza reportado: el modelo Naive Bayes asignó una probabilidad de 0.667 (66.7%)[cite: 1], reflejando la estimación probabilística basada en el teorema de Bayes y la combinación de todos los atributos. Por otro lado, el algoritmo J48 asignó un nivel de confianza de 1 (100%)[cite: 1], lo que indica que, de acuerdo a las reglas estrictas formadas en las ramas del árbol de decisión para el atributo de perspectiva nublada (`outlook = overcast`), la decisión conduce unívocamente a jugar, sin margen de duda dentro de los datos de entrenamiento observados. Esto demuestra consistencia en la toma de decisión final entre ambos enfoques, a pesar de usar mecanismos matemáticos distintos.
 
 ---
 
