@@ -81,6 +81,13 @@ Juan Suarez
 
 ### 1.1 Aprendizaje Supervisado: Clasificación y Predicción
 
+El aprendizaje supervisado es una rama del aprendizaje automático en la que un modelo aprende a partir de un conjunto de datos etiquetados, es decir, datos donde la respuesta correcta ya es conocida para cada instancia. El modelo analiza estos ejemplos previos para identificar patrones entre los atributos de entrada y la clase de salida, con el objetivo de generalizar ese conocimiento y responder correctamente ante datos que no ha visto antes [[5]](#referencias).
+
+Dentro del aprendizaje supervisado, la clasificación es la tarea que consiste en asignar una etiqueta o categoría a una nueva instancia a partir de lo aprendido durante el entrenamiento. El clasificador no calcula un valor continuo sino que determina a cuál de las clases predefinidas pertenece el dato de entrada. Asimismo, los algoritmos de clasificación pueden representar ese conocimiento de formas distintas: como un árbol de reglas de decisión, como un conjunto de probabilidades condicionales, entre otras, lo que da origen a los diferentes clasificadores que existen [[6]](#referencias).
+
+La predicción, en el contexto de esta práctica, complementa la clasificación: una vez que el modelo ha sido construido y evaluado sobre datos históricos, se aplica sobre nuevas instancias cuya clase se desconoce para obtener una respuesta concreta. Es decir, la predicción no implica construir un modelo nuevo sino utilizar uno ya entrenado para responder ante datos reales, lo que representa la aplicación práctica del proceso de clasificación.
+
+
 ### 1.2 Árboles de Decisión y Algoritmo J48 (C4.5)
 
 ### 1.3 Clasificador Naive Bayes (Teorema de Bayes)
@@ -277,9 +284,138 @@ Como segundo caso de prueba se utilizó la instancia **(outlook = overcast, temp
 
 ### 2.4 Caso de Estudio Aplicado: Evaluación de Riesgo Crediticio
 
+Un banco necesita determinar si es seguro o riesgoso otorgar un préstamo a un cliente, basándose en su historial crediticio, nivel de ingresos y edad. Para automatizar esta decisión, se construye un árbol de decisión J48 sobre el dataset `loan_risk_dataset.arff`, que contiene 340 instancias de clientes con sus respectivas decisiones de crédito históricas.
+
 #### 2.4.1 Construcción del Árbol de Decisión en Weka
 
+Siguiendo el mismo procedimiento descrito en la sección 2.2.1, se cargó `loan_risk_dataset.arff` en Weka y se configuró el clasificador J48 con los parámetros por defecto (`-C 0.25 -M 2`) usando *percentage split* al 66%. 
+
+| ![Carga del dataset loan_risk_dataset.arff en Weka](capturas/cargaDataset.png) |
+|:--:|
+| *Figura 11: Carga del dataset `loan_risk_dataset.arff` en Weka Explorer* |
+
+| ![Pantalla de Weka Explorer con el dataset loan_risk_dataset.arff cargado](capturas/24cargaDataset.png) |
+|:--:|
+| *Figura 12: Pantalla de Weka Explorer con el dataset `loan_risk_dataset.arff` cargado* |
+
+| ![Configuración J48 para loan_risk](capturas/loan_risk_config.png) |
+|:--:|
+| *Figura 13: Configuración del clasificador J48 con Percentage split 66%* |
+
+La siguiente figura muestra los resultados obtenidos en el panel *Classifier output*.
+
+| ![Resultados del clasificador J48 sobre loan_risk_dataset](capturas/loan_risk_resultado.png) |
+|:--:|
+| *Figura 14: Resultados de clasificación J48 sobre `loan_risk_dataset.arff` con accuracy del 100%* |
+
+El clasificador logra una precisión perfecta sobre el conjunto de prueba: las 340 instancias son clasificadas correctamente, con un Kappa de 1 y un error absoluto de 0, lo que indica que el árbol captura de forma exacta las reglas de decisión presentes en los datos históricos. La matriz de confusión confirma que ningún cliente fue clasificado de forma incorrecta: 174 instancias corresponden a `risky` y 166 a `safe`.
+
+El árbol generado, revela que `Loan_History` es el nodo raíz, es decir, el atributo que mejor separa las clases en el primer nivel. De esta variable se desprenden tres ramas directas: si el historial es `good`, el crédito es siempre `safe`; si es `poor`, el crédito es siempre `risky`. Únicamente cuando el historial es `average`, el árbol desciende al segundo nivel y evalúa el nivel de ingresos (`Income`), que a su vez puede derivar en un tercer nivel de decisión basado en la edad (`Age`) del cliente.
+
+| ![Árbol de decisión sobre loan_risk_dataset](capturas/loan_risk_arbol.png) |
+|:--:|
+| *Figura 15: Árbol de decisión J48 generado sobre `loan_risk_dataset.arff`* |
+
 #### 2.4.2 Predicción de Riesgo con Código Python
+
+A partir de las reglas del árbol anterior, se implementó la función `predecir_riesgo()` en Python, que recibe los tres atributos del cliente y retorna si el crédito es `risky` o `safe`.
+
+```python
+def predecir_riesgo(loan_history, income, age):
+    # Nodo raíz: Loan_History
+    if loan_history == "good":
+        return "safe"
+    elif loan_history == "poor":
+        return "risky"
+    elif loan_history == "average":
+        # Segundo nivel: Income
+        if income == "low":
+            return "risky"
+        elif income == "high":
+            # Tercer nivel bajo Income = high: Age
+            if age == "middle-aged":
+                return "safe"
+            elif age == "senior":
+                return "safe"
+            elif age == "young":
+                return "risky"
+        elif income == "medium":
+            # Tercer nivel bajo Income = medium: Age
+            if age == "middle-aged":
+                return "safe"
+            elif age == "senior":
+                return "safe"
+            elif age == "young":
+                return "risky"
+```
+
+Para facilitar la interacción con el modelo, se implementó una interfaz mediante `ipywidgets` que permite ingresar los atributos del cliente mediante menús desplegables y obtener la predicción al instante.
+
+```python
+from IPython.display import display
+import ipywidgets as widgets
+
+lh_input = widgets.Dropdown(
+    options=['average', 'good', 'poor'],
+    value='average',
+    description='Historial:'
+)
+
+inc_input = widgets.Dropdown(
+    options=['high', 'low', 'medium'],
+    value='medium',
+    description='Ingresos:'
+)
+
+age_input = widgets.Dropdown(
+    options=['middle-aged', 'senior', 'young'],
+    value='young',
+    description='Edad:'
+)
+
+btn = widgets.Button(description="Predecir riesgo")
+output = widgets.Output()
+
+def on_button_clicked(b):
+    with output:
+        output.clear_output()
+        resultado = predecir_riesgo(lh_input.value, inc_input.value, age_input.value)
+        print(f"Predicción: {resultado}")
+
+btn.on_click(on_button_clicked)
+display(lh_input, inc_input, age_input, btn, output)
+```
+| ![Código en google colab del loan_risk dataset](capturas/loan_risk_codigo.png) |
+|:--:|
+| *Figura 16: Código funcional en Google Colab* |
+
+La siguiente tabla recoge cinco casos de prueba que recorren distintas ramas del árbol, verificando que la función reproduce fielmente las reglas aprendidas por J48.
+
+<div align="center">
+
+| # | `Loan_History` | `Income` | `Age` | Predicción esperada | Resultado obtenido |
+|---|---|---|---|---|---|
+| 1 | `poor` | `high` | `senior` | `risky` | `risky` ✓ |
+| 2 | `average` | `high` | `senior` | `safe` | `safe` ✓ |
+| 3 | `good` | `low` | `young` | `safe` | `safe` ✓ |
+| 4 | `average` | `low` | `middle-aged` | `risky` | `risky` ✓ |
+| 5 | `average` | `medium` | `young` | `risky` | `risky` ✓ |
+
+*Tabla 3: Casos de prueba para la función `predecir_riesgo()`*
+
+</div>
+
+Los casos 1 y 2 corresponden a los ejemplos ejecutados durante la práctica de clase, cuyas capturas se muestran a continuación:
+
+| ![Predicción caso riesgoso](capturas/loan_risk_riesgoso.png) |
+|:--:|
+| *Figura 17: Predicción `risky` para cliente con historial `poor`, ingresos `high` y edad `senior`* |
+
+| ![Predicción caso seguro](capturas/loan_risk_seguro.png) |
+|:--:|
+| *Figura 18: Predicción `safe` para cliente con historial `average`, ingresos `high` y edad `senior`* |
+
+De los cinco casos, el árbol muestra que `Loan_History` es el atributo determinante: un historial `good` o `poor` define la decisión de forma directa sin necesidad de evaluar los demás atributos. Asimismo, cuando el historial es `average`, la edad `young` resulta desfavorable independientemente del nivel de ingresos, mientras que los clientes `middle-aged` o `senior` con ingresos `high` o `medium` son clasificados como `safe`.
 
 ---
 
@@ -311,6 +447,10 @@ Como segundo caso de prueba se utilizó la instancia **(outlook = overcast, temp
 [3] J. Ortega, "Capítulo 3: Probabilidad Condicional e Independencia," *CIMAT*. [En línea]. Disponible en: https://www.cimat.mx/~jortega/MaterialDidactico/EPyE14/Cap3.pdf. [Accedido: 30-jun-2026].
  
 [4] Libélula - ciencia, ingeniería y cultura, "Teorema de Bayes fácil y rápido," *YouTube*. [En línea]. Disponible en: https://www.youtube.com/watch?v=9TTx9H9CwhA. [Accedido: 30-jun-2026].
+
+[5] T. M. Mitchell, *Machine Learning*. New York, NY, USA: McGraw-Hill, 1997.
+
+[6] I. H. Witten, E. Frank, M. A. Hall, y C. J. Pal, *Data Mining: Practical Machine Learning Tools and Techniques*, 4ta ed. Burlington, MA, USA: Morgan Kaufmann, 2016.
 
 ---
 
