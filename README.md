@@ -548,6 +548,32 @@ De los cinco casos, el árbol muestra que `Loan_History` es el atributo determin
 
 ### 2.5 Comparación y Análisis de Resultados
 
+Una vez aplicados ambos clasificadores sobre sus respectivos datasets, es posible contrastar su comportamiento en términos de precisión, tipo de atributos que manejan y qué tan interpretable resulta el modelo generado. La Tabla resume los resultados obtenidos en las secciones 2.2 y 2.3.
+
+<div align="center">
+
+| Criterio | J48 (iris) | Naive Bayes (weather.nominal) |
+|---|---|---|
+| Instancias totales | 150 | 14 |
+| Método de evaluación | Percentage split 66% | Use training set |
+| Instancias correctamente clasificadas | 49/51 (96.08%) | 13/14 (92.86%) |
+| Kappa | 0.9408 | 0.8372 |
+| Tipo de atributos | Numéricos | Nominales |
+| Representación del modelo | Árbol de reglas de decisión | Tabla de probabilidades condicionales |
+| Interpretabilidad | Alta — las reglas son legibles directamente | Media — requiere interpretar probabilidades |
+
+<br>
+
+Tabla 5: Comparación de resultados entre J48 y Naive Bayes
+
+</div>
+
+Ambos clasificadores alcanzan una precisión alta, aunque no es del todo justo compararlos directamente porque fueron evaluados sobre datasets distintos y con métodos de evaluación diferentes. J48 se evaluó sobre instancias que no participaron en el entrenamiento (*percentage split*), mientras que Naive Bayes se evaluó sobre los mismos datos con los que fue entrenado (*use training set*), lo que naturalmente favorece sus métricas. De igual forma, el dataset de Naive Bayes tiene apenas 14 instancias, por lo que un solo error ya representa casi el 7% de los datos.
+
+En cuanto al tipo de atributos, J48 maneja bien atributos numéricos porque calcula umbrales de corte en cada nodo, como se observa en el árbol de iris (`petalwidth <= 0.6`, `petalwidth <= 1.7`). Naive Bayes, por su parte, trabaja sobre atributos nominales calculando frecuencias de ocurrencia por categoría, sin necesidad de umbrales. Asimismo, el árbol de decisión tiene la ventaja de que sus reglas son directamente legibles — se puede seguir el camino desde la raíz hasta una hoja y entender exactamente por qué el modelo tomó una decisión. Las tablas de probabilidades de Naive Bayes, en cambio, requieren un paso adicional de interpretación para llegar a esa misma conclusión.
+
+El caso de estudio de la sección 2.4 refuerza esta idea: al aplicar J48 sobre `loan_risk_dataset.arff`, el árbol resultante identifica de forma clara que `Loan_History` es el atributo más determinante, lo que aporta información útil para el negocio más allá de la clasificación en sí misma.
+
 ---
 
 ### 2.6 Predicción de Nuevas Instancias en Weka (ArffViewer)
@@ -561,6 +587,19 @@ De los cinco casos, el árbol muestra que `Loan_History` es el atributo determin
 ---
 
 ## 3. Conclusiones
+
+A lo largo de esta práctica se construyeron y evaluaron dos clasificadores de aprendizaje supervisado en Weka, se implementaron sus reglas en Python y se aplicaron sobre nuevas instancias, tanto desde código como desde el entorno nativo de Weka.
+
+En cuanto al primer objetivo, el árbol de decisión J48 sobre `iris.arff` logró un accuracy del 96.08%, clasificando correctamente 49 de las 51 instancias del conjunto de prueba. El modelo resultó altamente interpretable: con únicamente dos atributos (`petalwidth` y `petallength`), fue posible separar las tres especies de iris con una confusión mínima entre *Iris-versicolor* e *Iris-virginica* en valores intermedios de `petalwidth`.
+
+Respecto al segundo objetivo, el clasificador Naive Bayes sobre `weather.nominal.arff` alcanzó un accuracy del 92.86% evaluado sobre el conjunto de entrenamiento. Aunque la comparación directa con J48 no es del todo justa por las diferencias en el método de evaluación y el tamaño del dataset, el modelo demostró ser efectivo para atributos nominales, calculando las probabilidades condicionales de cada categoría por atributo para determinar si se debe jugar o no.
+
+En relación al tercer objetivo, la implementación en Python de ambos clasificadores (`predecir_iris()`, `naive_bayes_play()` y `predecir_riesgo()`) reprodujo fielmente las reglas aprendidas por Weka, lo que confirma que la traducción del modelo a código es directa cuando se parte de un árbol de decisión o de una tabla de probabilidades bien definida.
+
+Finalmente, el caso de estudio de riesgo crediticio, que corresponde al cuarto objetivo, mostró que J48 puede alcanzar una precisión perfecta cuando los datos históricos contienen patrones claros y bien diferenciados. Asimismo, el árbol generado aportó información útil más allá de la clasificación: identificó `Loan_History` como el atributo más determinante, lo que representa un insumo concreto para la toma de decisiones del banco.
+
+Como resultado general, la predicción de la instancia de prueba mediante ArffViewer coincidió en ambos clasificadores (`play = yes`), lo que refuerza que, independientemente del mecanismo interno de cada algoritmo, ambos modelos capturaron correctamente los patrones del dataset `weather.nominal`.
+
 
 ---
 
@@ -582,3 +621,5 @@ De los cinco casos, el árbol muestra que `Loan_History` es el atributo determin
 ---
 
 ## Declaración de Porcentaje de Uso de IA
+
+Para el desarrollo de este informe se utilizaron herramientas de inteligencia artificial en un **60%** del trabajo total. El uso de IA se concentró principalmente en la redacción y documentación del informe: estructuración de secciones, formato de tablas y figuras en Markdown, y organización del contenido según la rúbrica de evaluación. La práctica en sí, es decir, la ejecución de los clasificadores en Weka, la generación de los árboles de decisión, la obtención de métricas y la implementación del código Python, fue realizada de forma autónoma por los integrantes del grupo.
