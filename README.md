@@ -90,6 +90,22 @@ La predicción, en el contexto de esta práctica, complementa la clasificación:
 
 ### 1.2 Árboles de Decisión y Algoritmo J48 (C4.5)
 
+Un **árbol de decisión** es una estructura jerárquica que representa el conocimiento aprendido a partir de un conjunto de instancias de entrenamiento en forma de reglas de clasificación. Cada nodo interno del árbol evalúa un atributo, cada rama representa el resultado de esa evaluación (un valor nominal o un umbral, en el caso de atributos numéricos) y cada hoja asigna una clase. Para clasificar una nueva instancia basta con recorrer el árbol desde la raíz, siguiendo en cada nodo la rama correspondiente al valor del atributo evaluado, hasta alcanzar una hoja [[5]](#referencias).
+
+La construcción del árbol es un proceso recursivo de tipo *divide y vencerás*: en cada nodo se selecciona el atributo que mejor separa las instancias según su clase, se particiona el conjunto de datos según los valores de ese atributo, y el procedimiento se repite sobre cada subconjunto hasta que las hojas resultantes sean puras (o casi puras) [[6]](#referencias). El criterio para elegir el atributo de partición en cada nodo se basa en la **entropía**, una medida de la impureza o desorden de un conjunto de instancias:
+
+$$Entropía(S) = -\sum_{i=1}^{n} p_i \log_2(p_i)$$
+
+Donde $p_i$ es la proporción de instancias de la clase $i$ dentro del conjunto $S$. A partir de la entropía se calcula la **ganancia de información** que aporta dividir el conjunto según un atributo $A$:
+
+$$Ganancia(S,A) = Entropía(S) - \sum_{v \in Valores(A)} \frac{|S_v|}{|S|} \cdot Entropía(S_v)$$
+
+El algoritmo **C4.5**, propuesto por Quinlan [[7]](#referencias) como sucesor de ID3, introduce mejoras sobre este esquema básico: en lugar de maximizar directamente la ganancia de información —que favorece injustamente a atributos con muchos valores distintos—, utiliza la **razón de ganancia** ($GainRatio = Ganancia(S,A) / SplitInfo(S,A)$), que normaliza la ganancia respecto a la cantidad de particiones que genera cada atributo. Además, C4.5 permite trabajar con atributos numéricos determinando dinámicamente un umbral de corte óptimo en cada nodo, maneja valores perdidos, y aplica una fase de **poda posterior** (post-pruning) sobre el árbol completamente desarrollado para reducir el sobreajuste, reemplazando subárboles poco confiables por hojas cuando esto no incrementa significativamente el error estimado.
+
+**J48** es la implementación que ofrece Weka del algoritmo C4.5. Sus parámetros más relevantes son `-C` (factor de confianza usado en la poda; valores menores generan más poda) y `-M` (número mínimo de instancias por hoja), cuyos valores por defecto son 0.25 y 2 respectivamente. En las secciones siguientes se construye un árbol J48 sobre el dataset `iris.arff`, aprovechando que sus cuatro atributos son numéricos para ilustrar cómo el algoritmo determina los umbrales de corte en cada nodo.
+
+---
+
 ### 1.3 Clasificador Naive Bayes (Teorema de Bayes)
 
 El **Teorema de Bayes** calcula la probabilidad de un evento $A_i$ dado que se observó otro evento $B$, a partir de la relación:
@@ -144,7 +160,120 @@ Con los datasets caracterizados, las siguientes secciones detallan la construcci
 
 #### 2.2.1 Construcción y Evaluación del Modelo en Weka
 
+Para esta sección se utilizó el dataset `iris.arff`, compuesto por 150 instancias y 5 atributos (`sepallength`, `sepalwidth`, `petallength`, `petalwidth` y la clase `class`).
+
+En primer lugar, se abrió Weka Explorer y se cargó el archivo desde la pestaña *Preprocess*.
+
+| ![Carga del dataset iris.arff en Weka](capturas/carga_iris.png) |
+|:--:|
+| *Figura 2: Carga del dataset iris.arff en Weka Explorer* |
+
+A continuación, en la pestaña *Classify* se seleccionó el clasificador **J48**, ubicado dentro de la categoría *trees*.
+
+| ![Selección del clasificador J48 en Weka](capturas/seleccion_j48.png) |
+|:--:|
+| *Figura 3: Selección del clasificador J48 en Weka Explorer* |
+
+Se mantuvieron los parámetros por defecto del clasificador (`-C 0.25 -M 2`) en el *GenericObjectEditor*.
+
+| ![Configuración de parámetros del clasificador J48](capturas/configuracion_j48.png) |
+|:--:|
+| *Figura 4: Configuración de parámetros del clasificador J48 (confidence factor 0.25, minimum 2 instances per leaf)* |
+
+Como modo de evaluación se eligió la opción **Percentage split**, fijando el porcentaje en 66% (99 instancias para entrenamiento y 51 para prueba).
+
+| ![Configuración de opciones de evaluación](capturas/configuracion_opciones_evaluacion.png) |
+|:--:|
+| *Figura 5: Configuración de opciones de evaluación con Percentage split al 66%* |
+
+Finalmente, se ejecutó el clasificador haciendo clic en *Start*.
+
+| ![Resultados del clasificador J48 en Weka](capturas/ejecucion_j48.png) |
+|:--:|
+| *Figura 6: Resultados del clasificador J48 en Weka Explorer sobre iris.arff* |
+
+Sobre el 34% de instancias reservado para prueba (51 instancias), el modelo clasificó correctamente 49 de ellas, alcanzando una exactitud de **96.0784 %** y un coeficiente Kappa de **0.9412**. La matriz de confusión muestra que la totalidad de los errores se concentra entre las clases `Iris-versicolor` e `Iris-virginica`, que son las especies morfológicamente más parecidas dentro del dataset:
+
+<div align="center">
+
+| | Iris-setosa | Iris-versicolor | Iris-virginica |
+|:---:|:---:|:---:|:---:|
+| **Iris-setosa** | 17 | 0 | 0 |
+| **Iris-versicolor** | 0 | 16 | 1 |
+| **Iris-virginica** | 0 | 1 | 16 |
+
+*Tabla 2: Matriz de confusión del clasificador J48 sobre iris.arff (Percentage split 66%, exactitud = 96.0784 %, Kappa = 0.9412)*
+
+</div>
+
+Al visualizar el árbol generado (*clic derecho sobre el resultado → Visualize tree*), se observó que únicamente los atributos `petallength` y `petalwidth` participan en las reglas de decisión; los atributos `sepallength` y `sepalwidth` no aportan suficiente ganancia de información como para ser seleccionados en ningún nodo, lo cual es consistente con el hecho de que las tres especies de iris se distinguen mucho más claramente por el tamaño de sus pétalos que por el de sus sépalos.
+
+| ![Árbol de decisión J48 sobre iris.arff](capturas/vista_arbolj48.png) |
+|:--:|
+| *Figura 7: Árbol de decisión J48 generado sobre iris.arff (Visualize tree)* |
+
+
+El nodo raíz evalúa `petalwidth <= 0.6`, umbral que separa perfectamente a `Iris-setosa` del resto de especies sin ningún error. Cuando el ancho del pétalo supera 0.6, el árbol vuelve a dividir según `petalwidth <= 1.7`: dentro de esta rama, `petallength` distingue la mayoría de los casos de `Iris-versicolor` (cuando es menor o igual a 4.9) de un pequeño grupo de instancias límite donde vuelve a evaluarse `petalwidth` con un umbral de 1.5 para decidir entre `Iris-virginica` y `Iris-versicolor`. Finalmente, cuando `petalwidth > 1.7`, el árbol asigna directamente la clase `Iris-virginica`.
+
 #### 2.2.2 Predicción de Nuevas Instancias con Código Python
+
+A partir del árbol obtenido en Weka, se implementó en Python la función `predecir_iris()`, que replica las reglas de decisión aprendidas. La función recibe los cuatro atributos de la instancia (`sepallength`, `sepalwidth`, `petallength`, `petalwidth`), aunque —consistente con lo observado en el árbol de la sección 2.2.1— únicamente `petallength` y `petalwidth` intervienen en las condiciones de decisión.
+
+```python
+def predecir_iris(petal_width, petal_length):
+    if petal_width <= 0.6:
+        return "Iris-setosa"
+    else:
+        if petal_width <= 1.7:
+            if petal_length <= 4.9:
+                return "Iris-versicolor"
+            else:
+                if petal_width <= 1.5:
+                    return "Iris-virginica"
+                else:
+                    return "Iris-versicolor"
+        else:
+            return "Iris-virginica"
+```
+
+Para facilitar la interacción con el modelo, se implementó una interfaz mediante `ipywidgets`, que permite ingresar los cuatro atributos de la flor mediante controles deslizantes y obtener la predicción al instante.
+
+```python
+from IPython.display import display
+import ipywidgets as widgets
+
+pw_input = widgets.FloatText(
+    value=1.0,
+    description='Ancho pétalo:',
+    step=0.1
+)
+pl_input = widgets.FloatText(
+    value=4.5,
+    description='Largo pétalo:',
+    step=0.1
+)
+btn = widgets.Button(description="Predecir especie")
+output = widgets.Output()
+
+def on_button_clicked(b):
+    with output:
+        output.clear_output()
+        especie = predecir_iris(pw_input.value, pl_input.value)
+        print(f"Predicción: {especie}")
+
+btn.on_click(on_button_clicked)
+display(pw_input, pl_input, btn, output)
+```
+
+| ![Código en Google Colab con la función predecir_iris() ejecutado](capturas/codigo_arbol_ejecutado.png) |
+|:--:|
+| *Figura 8: Código funcional de predecir_iris() en Google Colab* |
+
+Como caso de prueba se utilizó la instancia con **petalwidth (ancho) = 1.6** y **petallength (largo) = 5.0**. Siguiendo el árbol, esta instancia cae en la rama `petalwidth > 0.6` → `petalwidth <= 1.7` → `petallength > 4.9` → `petalwidth > 1.5`, por lo que la función retorna la clase **`Iris-versicolor`**. Este resultado corresponde precisamente a la hoja con soporte `(2.0/1.0)` del árbol, es decir, una de las hojas donde el modelo presenta menor certeza (un error de entrenamiento sobre solo 2 instancias), lo cual es coherente con que este caso se ubique en la zona de solapamiento entre `Iris-versicolor` e `Iris-virginica` identificada también en la matriz de confusión de la Tabla 2.
+
+| ![Predicción para el caso de prueba petalwidth=1.6, petallength=5.0](capturas/prueba_j48.png) |
+|:--:|
+| *Figura 9: Salida de predecir_iris() para el caso de prueba (ancho = 1.6, largo = 5.0), resultado 'Iris-versicolor'* |
 
 ---
 
@@ -157,31 +286,31 @@ En primer lugar, se abrió Weka Explorer y se cargó el archivo desde la pestañ
 
 | ![Carga del dataset weather.nominal.arff en Weka](capturas/carga_weather_nominal.png) |
 |:--:|
-| *Figura 2: Carga del dataset weather.nominal.arff en Weka Explorer* |
+| *Figura 10: Carga del dataset weather.nominal.arff en Weka Explorer* |
 
 
 | ![Pantalla de Weka Explorer con el dataset weather.nominal.arff cargado](capturas/weather_nominal.png) |
 |:--:|
-| *Figura 3: Pantalla de Weka Explorer con el dataset weather.nominal.arff cargado* |
+| *Figura 11: Pantalla de Weka Explorer con el dataset weather.nominal.arff cargado* |
 
 
 A continuación, en la pestaña *Classify* se seleccionó el clasificador **NaiveBayes**.
 | ![Selección del clasificador NaiveBayes en Weka](capturas/seleccion_naive_bayes.png) |
 |:--:|
-| *Figura 4: Selección del clasificador NaiveBayes en Weka Explorer* |
+| *Figura 12: Selección del clasificador NaiveBayes en Weka Explorer* |
 
 
 Se mantuvieron los valores por defecto en *More Options* y se eligió la opción **Use training set** como modo de evaluación. 
 
 | ![Configuración de evaluación del clasificador NaiveBayes en Weka](capturas/config_naive_bayes.png) |
 |:--:|
-| *Figura 5: Configuración de evaluación del clasificador NaiveBayes en Weka Explorer* |
+| *Figura 13: Configuración de evaluación del clasificador NaiveBayes en Weka Explorer* |
 
 Finalmente, se ejecutó el clasificador haciendo clic en *Start*.
 
 | ![Resultados del clasificador NaiveBayes en Weka](capturas/resultados_naive_bayes.png) |
 |:--:|
-| *Figura 6: Resultados del clasificador NaiveBayes en Weka Explorer* |
+| *Figura 14: Resultados del clasificador NaiveBayes en Weka Explorer* |
 
 
 
@@ -204,7 +333,7 @@ A partir del resultado generado en el cuadro *Classifier output*, se interpretar
 | `windy` | TRUE | 4.0 / 11.0 | 4.0 / 7.0 |
 | `windy` | FALSE | 7.0 / 11.0 | 3.0 / 7.0 |
  
-*Tabla 2: Probabilidades condicionales por atributo generadas por el clasificador NaiveBayes (probabilidades previas: P(yes)=0.63, P(no)=0.38)*
+*Tabla 3: Probabilidades condicionales por atributo generadas por el clasificador NaiveBayes (probabilidades previas: P(yes)=0.63, P(no)=0.38)*
  
 </div>
 
@@ -212,7 +341,7 @@ Se observó que el modelo clasificó correctamente 13 de las 14 instancias del c
  
 | ![Matriz de confusión y métricas de evaluación NaiveBayes](capturas/matriz_confusion_naive_bayes.png) |
 |:--:|
-| *Figura 8: Matriz de confusión y métricas de evaluación NaiveBayes sobre weather.nominal.arff* |
+| *Figura 15: Matriz de confusión y métricas de evaluación NaiveBayes sobre weather.nominal.arff* |
 
 #### 2.3.2 Predicción de Nuevas Instancias con Código Python
 A partir de las tablas de probabilidad condicional obtenidas en Weka, se trasladaron manualmente los valores a una función en Python denominada `naive_bayes_play()`, la cual recibe como parámetros los cuatro atributos del clima (`outlook`, `temperature`, `humidity`, `windy`) y calcula la probabilidad *a posteriori* de cada clase aplicando el Teorema de Bayes bajo el supuesto de independencia condicional descrito en la sección 1.3.
@@ -272,13 +401,13 @@ Como primer caso de prueba se utilizó la instancia **(outlook = sunny, temperat
  
 | ![Ejecución del código naive_bayes_play con caso de prueba con resultado 'no'](capturas/ejecucion1_naive_bayes.png) |
 |:--:|
-| *Figura 9: Salida del código `naive_bayes_play()` para el caso de prueba con resultado 'no'* |
+| *Figura 16: Salida del código `naive_bayes_play()` para el caso de prueba con resultado 'no'* |
 
 Como segundo caso de prueba se utilizó la instancia **(outlook = overcast, temperature = mild, humidity = high, windy = false)**. Al ejecutar la función con estos valores, se obtuvo una probabilidad de jugar de aproximadamente **82.27 %** frente a una probabilidad de no jugar de aproximadamente **17.73 %**, por lo que el modelo predijo la clase **`yes` (JUGAR)** para esta instancia.
 
 | ![Ejecución del código naive_bayes_play con caso de prueba con resultado 'yes'](capturas/ejecucion2_naive_bayes.png) |
 |:--:|
-| *Figura 10: Salida del código `naive_bayes_play()` para el caso de prueba con resultado 'yes'* |
+| *Figura 17: Salida del código `naive_bayes_play()` para el caso de prueba con resultado 'yes'* |
 
 ---
 
@@ -292,21 +421,21 @@ Siguiendo el mismo procedimiento descrito en la sección 2.2.1, se cargó `loan_
 
 | ![Carga del dataset loan_risk_dataset.arff en Weka](capturas/cargaDataset.png) |
 |:--:|
-| *Figura 11: Carga del dataset `loan_risk_dataset.arff` en Weka Explorer* |
+| *Figura 18: Carga del dataset `loan_risk_dataset.arff` en Weka Explorer* |
 
 | ![Pantalla de Weka Explorer con el dataset loan_risk_dataset.arff cargado](capturas/24cargaDataset.png) |
 |:--:|
-| *Figura 12: Pantalla de Weka Explorer con el dataset `loan_risk_dataset.arff` cargado* |
+| *Figura 19: Pantalla de Weka Explorer con el dataset `loan_risk_dataset.arff` cargado* |
 
 | ![Configuración J48 para loan_risk](capturas/loan_risk_config.png) |
 |:--:|
-| *Figura 13: Configuración del clasificador J48 con Percentage split 66%* |
+| *Figura 20: Configuración del clasificador J48 con Percentage split 66%* |
 
 La siguiente figura muestra los resultados obtenidos en el panel *Classifier output*.
 
 | ![Resultados del clasificador J48 sobre loan_risk_dataset](capturas/loan_risk_resultado.png) |
 |:--:|
-| *Figura 14: Resultados de clasificación J48 sobre `loan_risk_dataset.arff` con accuracy del 100%* |
+| *Figura 21: Resultados de clasificación J48 sobre `loan_risk_dataset.arff` con accuracy del 100%* |
 
 El clasificador logra una precisión perfecta sobre el conjunto de prueba: las 340 instancias son clasificadas correctamente, con un Kappa de 1 y un error absoluto de 0, lo que indica que el árbol captura de forma exacta las reglas de decisión presentes en los datos históricos. La matriz de confusión confirma que ningún cliente fue clasificado de forma incorrecta: 174 instancias corresponden a `risky` y 166 a `safe`.
 
@@ -314,7 +443,7 @@ El árbol generado, revela que `Loan_History` es el nodo raíz, es decir, el atr
 
 | ![Árbol de decisión sobre loan_risk_dataset](capturas/loan_risk_arbol.png) |
 |:--:|
-| *Figura 15: Árbol de decisión J48 generado sobre `loan_risk_dataset.arff`* |
+| *Figura 22: Árbol de decisión J48 generado sobre `loan_risk_dataset.arff`* |
 
 #### 2.4.2 Predicción de Riesgo con Código Python
 
@@ -387,7 +516,7 @@ display(lh_input, inc_input, age_input, btn, output)
 ```
 | ![Código en google colab del loan_risk dataset](capturas/loan_risk_codigo.png) |
 |:--:|
-| *Figura 16: Código funcional en Google Colab* |
+| *Figura 23: Código funcional en Google Colab* |
 
 La siguiente tabla recoge cinco casos de prueba que recorren distintas ramas del árbol, verificando que la función reproduce fielmente las reglas aprendidas por J48.
 
@@ -401,7 +530,7 @@ La siguiente tabla recoge cinco casos de prueba que recorren distintas ramas del
 | 4 | `average` | `low` | `middle-aged` | `risky` | `risky` ✓ |
 | 5 | `average` | `medium` | `young` | `risky` | `risky` ✓ |
 
-*Tabla 3: Casos de prueba para la función `predecir_riesgo()`*
+*Tabla 4: Casos de prueba para la función `predecir_riesgo()`*
 
 </div>
 
@@ -409,15 +538,13 @@ Los casos 1 y 2 corresponden a los ejemplos ejecutados durante la práctica de c
 
 | ![Predicción caso riesgoso](capturas/loan_risk_riesgoso.png) |
 |:--:|
-| *Figura 17: Predicción `risky` para cliente con historial `poor`, ingresos `high` y edad `senior`* |
+| *Figura 24: Predicción `risky` para cliente con historial `poor`, ingresos `high` y edad `senior`* |
 
 | ![Predicción caso seguro](capturas/loan_risk_seguro.png) |
 |:--:|
-| *Figura 18: Predicción `safe` para cliente con historial `average`, ingresos `high` y edad `senior`* |
+| *Figura 25: Predicción `safe` para cliente con historial `average`, ingresos `high` y edad `senior`* |
 
 De los cinco casos, el árbol muestra que `Loan_History` es el atributo determinante: un historial `good` o `poor` define la decisión de forma directa sin necesidad de evaluar los demás atributos. Asimismo, cuando el historial es `average`, la edad `young` resulta desfavorable independientemente del nivel de ingresos, mientras que los clientes `middle-aged` o `senior` con ingresos `high` o `medium` son clasificados como `safe`.
-
----
 
 ### 2.5 Comparación y Análisis de Resultados
 
