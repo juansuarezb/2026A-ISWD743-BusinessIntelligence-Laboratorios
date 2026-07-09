@@ -38,9 +38,9 @@ Juan Suarez
 >
 > Objetivos específicos:
 > * Aplicar el algoritmo Apriori en Weka sobre datasets transaccionales de distinto tamaño, configurando adecuadamente los parámetros de soporte y confianza mínimos.
-> * Aplicar el algoritmo Predictive Apriori sobre un dataset numérico de rendimiento estudiantil, empleando discretización automática y manual como paso de preprocesamiento.
+> * Aplicar el algoritmo Predictive Apriori sobre un dataset numérico, empleando discretización automática y manual como paso de preprocesamiento.
 > * Comparar los resultados obtenidos mediante discretización automática (equal frequency) frente a la discretización manual basada en percentiles (20%-60%-20%).
-> * Analizar cómo el uso de la opción *Class Association Rules* (CAR) y el tratamiento de valores medios como datos perdidos ("?") afecta la calidad e interpretabilidad de las reglas generadas.
+> * Analizar cómo el uso de la opción *Class Association Rules* (CAR) y el tratamiento de valores medios como datos perdidos afecta la calidad e interpretabilidad de las reglas generadas.
 
 ---
 
@@ -204,13 +204,6 @@ Tras la ejecución, Weka generó la siguiente salida en el panel *Associator out
 
 </div>
 
-Se registró además la información de ejecución reportada por Weka:
-
-- Soporte mínimo: 0.5 (2 instancias)
-- Confianza mínima: 0.75
-- Número de ciclos ejecutados: 10
-- Tamaño del conjunto de itemsets grandes L(1): 4
-- Tamaño del conjunto de itemsets grandes L(2): 2
 
 ### 2.5. Análisis e interpretación de resultados
 La única regla encontrada, **Jam=1 → Cornflake=1**, tiene un soporte de 2 transacciones (50%) y una confianza del 100%, lo que indica que cada vez que un cliente compró mermelada, también compró hojuelas de maíz. Esto se debe a que Jam solo aparece en 2 de las 4 transacciones, y en ambas también está presente Cornflake.
