@@ -433,25 +433,151 @@ Las reglas obtenidas permiten realizar las siguientes observaciones:
 
 ### 6.1. Comparación entre algoritmos (Apriori vs. Predictive Apriori)
 
+En esta sección se realizará una comparación entre los algoritmos **Apriori** y **Predictive Apriori**, considerando los resultados obtenidos en los ejercicios 10.6, 10.7, 10.8 y 10.9.
 
+Apriori fue aplicado sobre los datasets transaccionales **DailyItem** y **DailyItem2**, mientras que Predictive Apriori fue utilizado sobre el dataset de rendimiento académico previamente discretizado.
+
+La comparación deberá considerar los siguientes aspectos:
+
+* Parámetros requeridos por cada algoritmo.
+* Cantidad de reglas obtenidas.
+* Métrica utilizada para ordenar las reglas.
+* Facilidad de interpretación de los resultados.
+* Tipo de dataset sobre el cual fue aplicado cada algoritmo.
+
+<div align="center">
+
+| Criterio | Apriori | Predictive Apriori |
+|:---|:---|:---|
+| Parámetros principales | Soporte mínimo y confianza mínima | Número de reglas y precisión predictiva |
+| Tipo de datos | Datos nominales o transaccionales | Datos nominales o numéricos discretizados |
+| Ordenamiento de reglas | Confianza, lift u otra métrica | Precisión predictiva |
+| Ejercicios aplicados | 10.6 y 10.7 | 10.8 y 10.9 |
+| Resultado principal | [Completar con resultados] | [Completar con resultados] |
+
+*Tabla X: Comparación entre Apriori y Predictive Apriori*
+
+</div>
+
+A partir de los resultados obtenidos, se observó que [completar comparación utilizando los resultados de todos los ejercicios].
+
+---
 
 ### 6.2. Impacto del tipo de datos en la minería de asociación
 
+Los ejercicios desarrollados utilizaron dos tipos principales de datos: datos transaccionales binarios y datos numéricos correspondientes al rendimiento académico.
 
+Los datasets **DailyItem** y **DailyItem2** representan la presencia o ausencia de productos dentro de cada transacción. Estos datos pueden convertirse directamente a atributos nominales mediante el filtro `NumericToNominal`.
+
+Por otro lado, el dataset de rendimiento académico contiene atributos numéricos continuos, como **MST**, **Quiz**, **Lab**, **ENDSEM** y **Total**. Debido a que los algoritmos de asociación de Weka no trabajan directamente con este tipo de atributos, fue necesario aplicar un proceso de discretización.
+
+<div align="center">
+
+| Tipo de datos | Dataset | Preprocesamiento requerido | Ejemplo de regla |
+|:---|:---|:---|:---|
+| Transaccionales binarios | DailyItem / DailyItem2 | NumericToNominal | Jam=1 → Cornflakes=1 |
+| Numéricos | MARKS_org | Discretize | Total=Alto → Grade=B |
+
+*Tabla X: Influencia del tipo de datos en el proceso de minería de asociación*
+
+</div>
+
+Los datos transaccionales producen reglas directas relacionadas con la presencia conjunta de productos, mientras que los datos académicos generan reglas relacionadas con intervalos de rendimiento y categorías de calificación.
+
+En consecuencia, el tipo de dato influye directamente en el preprocesamiento necesario, en la forma de las reglas obtenidas y en su posterior interpretación.
+
+---
 
 ### 6.3. Influencia de la discretización en la calidad de las reglas
 
+La discretización fue un proceso fundamental para aplicar Predictive Apriori sobre el dataset de rendimiento académico.
 
+En el ejercicio 10.8 se utilizó una discretización automática mediante el filtro `Discretize` de Weka, mientras que en el ejercicio 10.9 se realizó una discretización manual basada en la distribución:
+
+* 20% inferior: categoría **L**.
+* 60% intermedio: categoría **M**.
+* 20% superior: categoría **H**.
+
+<div align="center">
+
+| Criterio | Discretización automática | Discretización manual |
+|:---|:---|:---|
+| Definición de intervalos | Generada automáticamente por Weka | Definida mediante percentiles |
+| Categorías obtenidas | Intervalos numéricos | H, M y L |
+| Control del analista | Menor | Mayor |
+| Interpretación | Puede ser menos intuitiva | Más directa |
+| Resultado obtenido | [Completar] | [Completar] |
+
+*Tabla X: Comparación entre discretización automática y manual*
+
+</div>
+
+La discretización automática permitió [completar con resultados del ejercicio 10.8].
+
+La discretización manual permitió [completar con resultados del ejercicio 10.9].
+
+También se evaluó el efecto de activar la opción `CAR=true`, con el objetivo de generar reglas cuyo consecuente estuviera relacionado con la clase seleccionada.
+
+Asimismo, se reemplazó la categoría media **M** por valores perdidos (`?`) para analizar si la eliminación de los valores intermedios producía reglas más específicas.
+
+<div align="center">
+
+| Variante | Cantidad de reglas | Precisión predictiva | Observación principal |
+|:---|:---:|:---:|:---|
+| Discretización automática | [Completar] | [Completar] | [Completar] |
+| Discretización manual | [Completar] | [Completar] | [Completar] |
+| CAR=true | [Completar] | [Completar] | [Completar] |
+| Sin valores medios | [Completar] | [Completar] | [Completar] |
+
+*Tabla X: Resultados de las variantes de discretización y generación de reglas*
+
+</div>
+
+En general, los resultados muestran que la forma en que se discretizan los datos modifica la cantidad, precisión e interpretabilidad de las reglas obtenidas.
+
+---
 
 ### 6.4. Aplicabilidad de las reglas encontradas
 
+Las reglas obtenidas mediante minería de asociación pueden utilizarse como apoyo para la toma de decisiones en distintos contextos.
 
+En los datasets transaccionales, las reglas permiten identificar productos que suelen comprarse conjuntamente. Esta información podría utilizarse para:
+
+* Diseñar promociones combinadas.
+* Organizar productos relacionados dentro de una tienda.
+* Crear sistemas de recomendación.
+* Analizar hábitos de compra.
+
+En el dataset académico, las reglas permiten relacionar las evaluaciones parciales con el puntaje total y la calificación final. Estas asociaciones podrían utilizarse para:
+
+* Identificar patrones de rendimiento académico.
+* Detectar estudiantes con posibles dificultades.
+* Analizar qué evaluaciones influyen con mayor frecuencia en la nota final.
+* Diseñar estrategias de acompañamiento académico.
+
+Sin embargo, las reglas deben interpretarse con cautela. Una asociación entre dos variables no significa necesariamente que una cause directamente a la otra.
+
+Además, los datasets DailyItem y DailyItem2 contienen pocas transacciones, por lo que sus resultados no pueden generalizarse a escenarios comerciales reales sin utilizar una muestra más amplia.
 
 ---
 
 ## 7. Conclusiones
 
+* Los algoritmos Apriori y Predictive Apriori permitieron identificar relaciones frecuentes entre los atributos de los diferentes datasets analizados.
 
+* Apriori fue adecuado para analizar datos transaccionales, debido a que permite controlar directamente los valores mínimos de soporte y confianza.
+
+* Predictive Apriori facilitó la identificación de reglas sobre el dataset académico, ordenándolas según su precisión predictiva.
+
+* Los atributos numéricos tuvieron que ser discretizados antes de aplicar los algoritmos de asociación, demostrando que el preprocesamiento depende directamente del tipo de datos utilizado.
+
+* La discretización automática permitió generar intervalos de manera rápida, mientras que la discretización manual ofreció un mayor control sobre el significado de las categorías.
+
+* La utilización de reglas CAR permitió orientar los resultados hacia una variable de clase específica, facilitando la interpretación de las asociaciones relacionadas con la calificación final.
+
+* La eliminación de los valores medios permitió obtener reglas más enfocadas en casos extremos, aunque redujo la cantidad de datos disponibles para el análisis.
+
+* Las reglas obtenidas pueden utilizarse como apoyo en contextos comerciales y educativos, pero deben analizarse considerando el tamaño del dataset, el soporte de cada regla y el hecho de que una asociación no implica causalidad.
 
 ---
 
@@ -459,12 +585,12 @@ Las reglas obtenidas permiten realizar las siguientes observaciones:
 
 <a name="referencias"></a>
 
-[1] Oracle, "Apriori," Oracle Machine Learning for SQL, 2023. [En línea]. Disponible en: https://docs.oracle.com/en/database/oracle/machine-learning/oml4sql/23/dmcon/apriori.html#GUID-B7D12599-FB4C-45E3-BCE4-E54A3C6F0E64. [Accedido: 09-jul-2026].
+[1] Oracle, "Apriori," Oracle Machine Learning for SQL, 2023. [En línea]. Disponible en: https://docs.oracle.com/en/database/oracle/machine-learning/oml4sql/23/dmcon/apriori.html. [Accedido: 09-jul-2026].
 
-[2] IBM, "Pasos fáciles para minar asociaciones," IBM Db2 11.1.0 Documentation, 2021. [En línea]. Disponible en: https://www.ibm.com/docs/es/db2/11.1.0?topic=steps-easy-mining-procedures-associations-mining. [Accedido: 09-jul-2026].
+[2] IBM, "Pasos fáciles para minar asociaciones," IBM Db2 Documentation, 2021. [En línea]. Disponible en: https://www.ibm.com/docs/es/db2/11.1.0. [Accedido: 09-jul-2026].
 
-[3] DataSource.ai, "Métricas de evaluación de modelos en el aprendizaje automático," DataSource.ai, 2023. [En línea]. Disponible en: https://www.datasource.ai/es/data-science-articles/metricas-de-evaluacion-de-modelos-en-el-aprendizaje-automatico. [Accedido: 09-jul-2026].
+[3] Google Developers, "Datos numéricos: agrupamiento en buckets," Machine Learning Crash Course, 2024. [En línea]. Disponible en: https://developers.google.com/machine-learning/crash-course/numerical-data/binning?hl=es-419. [Accedido: 09-jul-2026].
 
-[4] M. Bharathi and D. Sharma, "Evaluating the performance of apriori and predictive apriori algorithm to find new association rules based on the statistical measures of datasets," ResearchGate, 2013. [En línea]. Disponible en: https://www.researchgate.net/publication/262979804_Evaluating_the_performance_of_apriori_and_predictive_apriori_algorithm_to_find_new_association_rules_based_on_the_statistical_measures_of_datasets. [Accedido: 09-jul-2026].
+[4] University of Waikato, "Weka Documentation," Weka Machine Learning Project. [En línea]. Disponible en: https://weka.sourceforge.io/doc.dev/. [Accedido: 10-jul-2026].
 
-[5] Google Developers, "Datos numéricos: agrupamiento en buckets (binning)," Google Machine Learning Crash Course, 2024. [En línea]. Disponible en: https://developers.google.com/machine-learning/crash-course/numerical-data/binning?hl=es-419. [Accedido: 09-jul-2026].
+[5] M. Bharathi and D. Sharma, "Evaluating the performance of Apriori and Predictive Apriori algorithm to find new association rules based on the statistical measures of datasets," 2013.
