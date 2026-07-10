@@ -375,20 +375,172 @@ Las reglas obtenidas permiten realizar las siguientes observaciones:
 
 ### 5.1. Objetivo
 
-
+Categorizar las notas en Excel mediante intervención y criterio humano donde el 20% con notas más altas será **"H"(High/Alto)**, el 20% más bajo será **"L(Low/Bajo)"** y el 60% restante será **"M"(Medium/Medio)**. Esto con el fin de demostrar que el conocimiento humano sobre el problema puede sacar conclusiones más lógicas.
 
 ### 5.2. Proceso de discretización manual (H, M, L)
 
 #### 5.2.1. Criterio de segmentación (20% – 60% – 20%)
 
+- Se abrió el archivo Excel del rendimiento estudiantil y se eliminaron las columnas: **Roll No.** y **Name**, esto debido a que no aportan nada para el proceso de minería.
+
+| ![Dataset en Excel](capturas/10_9_eliminarColumnas.png) |
+|:--:|
+| *Figura : Eliminación de las columnas Roll No. y Name en el dataset original para preparar los datos para la minería* |
+
+
+1. **Columna MST**
+
+- Se realizó un ordenamiento en el dataset por el atributo **MST**. Dentro del excel se seleccionan todos los datos del dataset y se va a la opción de **Sort & Filter** y se realiza por MST de mayor a menor.
+
+| ![Ordenamiento de datos](capturas/10_9_PasosOrdenarMST.png) |
+|:--:|
+| *Figura : Proceso de ordenamiento de los registros basado en el atributo MST* |
+
+- Se clasificaron los registros manualmente de la siguiente manera:
+
+    - Primeros 12 registros: Reemplaza sus campos de MST con **H**
+
+        | ![Clasificación de valores altos](capturas/10_9_ClasifAlto.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en MST* |
+
+    - Los registros de las filas 50 al 61 se reemplazan sus campos de MST con **L**
+
+        | ![Clasificación de valores bajos](capturas/10_9_ClasifBajo.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en MST* |
+
+    - Los registros restantes en la columna de MST se reemplazan sus notas con **M**
+
+        | ![Clasificación de valores medios](capturas/10_9_ClasifMedio.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
+
+
+2. **Columna Quiz**
+
+- Se realizó un ordenamiento en el dataset por el atributo **Quiz** igual que el anterior de mayor a menor.
+
+| ![Ordenamiento de datos](capturas/10_9_PasosOrdenarQuiz.png) |
+|:--:|
+| *Figura : Proceso de ordenamiento de los registros basado en el atributo Quiz* |
+
+- Se clasificaron los registros manualmente de la siguiente manera:
+
+    - Primeros 12 registros: Reemplaza sus campos de Quiz con **H**
+
+        | ![Clasificación de valores altos](capturas/10_9_ClasifAltoQuiz.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en Quiz* |
+
+    - Los registros de las filas 50 al 61 se reemplazan sus campos de Quiz con **L**
+
+        | ![Clasificación de valores bajos](capturas/10_9_ClasifBajoQuiz.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en Quiz* |
+
+    - Los registros restantes en la columna de Quiz se reemplazan las notas con **M**
+
+        | ![Clasificación de valores medios](capturas/10_9_ClasifMedioQuiz.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
+
+3. **Columna Lab**
+
+- Se realizó un ordenamiento en el dataset por el atributo **Lab** de mayor a menor.
+
+| ![Ordenamiento de datos](capturas/10_9_PasosOrdenarLAB.png) |
+|:--:|
+| *Figura : Proceso de ordenamiento de los registros basado en el atributo lAB* |
+
+- Se verificaron los puntos de corte debido a que en esta columna, en los extremos superiores e inferiores los valores eran los mismos. En el borde de H se tenía repetido el 18 y en el borde de L estaba repetido el 13.5. Por lo tanto, ambos valores se van a categorizar como M.
+
+| ![Valores duplicados LAB](capturas/10_9_DuplicadosLAB.png) |
+|:--:|
+| *Figura : Valores duplicados en los puntos de corte* |
+
+- Entonces se clasificaron los registros manualmente de la siguiente manera:
+
+    - Primeros 10 registros: Reemplaza sus campos de Lab con **H**
+
+        | ![Clasificación de valores altos](capturas/10_9_ClasifAltoLab.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en Lab* |
+
+    - Los registros de las filas 51 al 61 se reemplazan sus campos de Lab con **L**
+
+        | ![Clasificación de valores bajos](capturas/10_9_ClasifBajoLab.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en Lab* |
+
+    - Los registros restantes en la columna de Lab se reemplazan las notas con **M**
+
+        | ![Clasificación de valores medios](capturas/10_9_ClasifMedioLab.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
+
+4. **Columna ENDSEM**
+
+- Se realizó un ordenamiento en el dataset por el atributo **ENDSEM** de mayor a menor.
+
+| ![Ordenamiento de datos](capturas/10_9_PasosOrdenarENDSEM.png) |
+|:--:|
+| *Figura : Proceso de ordenamiento de los registros basado en el atributo ENDSEM* |
+
+- Se verificaron los puntos de corte debido a que en esta columna, en el extremo superior los valores eran los mismos en la fila 12 y 13. Por lo tanto, estos valores repetidos se van a categorizar con M.
+
+| ![Valores duplicados LAB](capturas/10_9_DuplicadosENDSEM.png) |
+|:--:|
+| *Figura : Valores duplicados en los puntos de corte* |
+
+- Entonces se clasificaron los registros manualmente de la siguiente manera:
+
+    - Primeros 11 registros: Reemplaza sus campos de ENDSEM con **H**
+
+        | ![Clasificación de valores altos](capturas/10_9_ClasifAltoENDSEM.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en ENDSEM* |
+
+    - Los registros de las filas 50 al 61 se reemplazan sus campos de ENDSEM con **L**
+
+        | ![Clasificación de valores bajos](capturas/10_9_ClasifBajoENDSEM.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en ENDSEM* |
+
+    - Los registros restantes en la columna de ENDSEM se reemplazan las notas con **M**
+
+        | ![Clasificación de valores medios](capturas/10_9_ClasifMedioENDSEM.png) |
+        |:--:|
+        | *Figura : Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
 
 
 #### 5.2.2. Tratamiento de valores duplicados en puntos de corte
 
+Antes de asignar las categorías H, M y L en cada columna, se verificaron los valores en los dos puntos de corte del ordenamiento descendente: la frontera entre la posición 12 y la 13 (límite H/M) y la frontera entre la posición 48 y la 49 (límite M/L). El criterio adoptado es que un mismo valor numérico no puede quedar asignado a dos categorías distintas; cuando esto ocurre, todos los registros con ese valor se desplazan hacia la categoría central (M) y el límite de la categoría extrema (H o L) se contrae al siguiente valor distinto.
 
+* **MST (20.0)**
+Al ordenar de mayor a menor, el valor en la posición 12 fue 17.0 y en la posición 13 fue 16.0 (frontera H/M); el valor en la posición 48 fue 10.5 y en la posición 49 fue 10.0 (frontera M/L). Todos distintos. Sin ajuste.
+Resultado: L (≤ 10.0, 12 registros) · M (10.5 – 16.0, 36 registros) · H (≥ 17.0, 12 registros).
+
+* **Quiz (15)**
+Al ordenar de mayor a menor, el valor en la posición 12 fue 9.5 y en la posición 13 fue 9.0 (frontera H/M); el valor en la posición 48 fue 6.5 y en la posición 49 fue 6.0 (frontera M/L). Todos distintos. Sin ajuste.
+Resultado: L (≤ 6.0, 12 registros) · M (6.5 – 9.0, 36 registros) · H (≥ 9.5, 12 registros).
+
+* **Lab (20.0)**
+Al ordenar de mayor a menor, el valor en la **posición 12 fue 18.0** y en la **posición 13 también fue 18.0** (duplicado en frontera H/M). Aplicando el criterio de contracción, todos los registros con **Lab = 18.0 se asignaron a M**; la categoría H quedó restringida a valores ≥ 18.5 (10 registros). En la frontera opuesta, el valor en la **posición 48 fue 13.5** y en la **posición 49 también fue 13.5** (duplicado en frontera M/L). Todos los registros con **Lab = 13.5 se asignaron a M**; la categoría L quedó restringida a valores ≤ 13.0 (11 registros).
+Resultado: L (≤ 13.0, 11 registros) · M (13.5 – 18.0, 39 registros) · H (≥ 18.5, 10 registros).
+
+* **ENDSEM (45.0)**
+Al ordenar de mayor a menor, el valor en la **posición 12 fue 26.0** y en la **posición 13 también fue 26.0** (duplicado en frontera H/M). Todos los registros con ENDSEM = 26.0 se asignaron a M; la categoría H quedó restringida a valores ≥ 27.0 (11 registros). La frontera M/L (posición 48 vs 49) mostró valores 15.5 y 14.5, distintos entre sí. Sin ajuste en ese extremo.
+Resultado: L (≤ 14.5, 12 registros) · M (15.5 – 26.0, 37 registros) · H (≥ 27.0, 11 registros).
 
 #### 5.2.3. Dataset resultante
 
+ La columna Total, se elimina también de este dataset y la columna Grade se deja tal como está desde un inicio. Por lo tanto, el dataset con la discretización manual queda de la siguiente manera:
+
+| ![Clasificación final](capturas/10_9_ClasifFinalDataset.png) |
+|:--:|
+| *Figura : Dataset con discretización manual aplicada* |
 
 
 ### 5.3. Ejecución del Predictive Apriori sobre datos discretizados manualmente
