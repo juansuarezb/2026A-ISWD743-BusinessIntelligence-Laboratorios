@@ -603,13 +603,47 @@ ENDSEM aparece como el atributo con mayor poder predictivo, presente en 8 de las
 
 ### 5.6. Variante: Exclusión de valores medios (reemplazo de M por ?)
 
+El objetivo de esta variante es eliminar reglas con patrones mixtos, es decir, ambigüedades.
+
 #### 5.6.1. Procedimiento
 
+Se abre el dataset discretizado en excel. Dentro del csv se van a reemplazar todos los datos que se categorizaron con M se reemplazan por '?'. El proceso realizó 148 reemplazos en total: 36 en MST, 36 en Quiz, 39 en Lab y 37 en ENDSEM.
+
+| ![Dataset con reemplazo de M](capturas/10_9_MReplace.png) |
+|:--:|
+| *Figura : Dataset con valores M reemplazados por ? para excluir perfiles medios del análisis de asociación* |
+
+Se guarda este CSV con el nombre: *MARKS_org_MReplace.csv* y se cargó en Weka siguiendo el mismo procedimiento anterior. Se ejecutó PredictiveApriori con los mismos parámetros (car=True, numRules=100).
+
+| ![Dataset con reemplazo de M en WEKA](capturas/10_9_MWeka.png) |
+|:--:|
+| *Figura : Dataset cargado en WEKA* |
 
 
 #### 5.6.2. Resultados obtenidos
 
+El algoritmo generó 27 reglas, frente a las 88 de la versión completa. La reducción se debe directamente a que los registros con valores M quedan excluidos, dejando únicamente los perfiles claramente extremos (H o L) para construir asociaciones.
 
+| ![Output variante sin M](capturas/10_9_WekaOutputNoM.png) |
+|:--:|
+| *Figura : Reglas generadas por PredictiveApriori tras excluir los valores medios del dataset* |
+
+Las cinco reglas de mayor precisión obtenidas son:
+
+| # | Antecedente | Consecuente | Soporte | acc |
+|---|-------------|-------------|---------|-----|
+| 1 | Quiz=H ∧ ENDSEM=H | Grade=B | 3/60 | 0.969 |
+| 2 | Quiz=L ∧ Lab=L | Grade=D | 3/60 | 0.969 |
+| 3 | Quiz=L ∧ ENDSEM=L | Grade=D | 3/60 | 0.969 |
+| 4 | MST=L ∧ ENDSEM=H | Grade=B | 2/60 | 0.948 |
+| 5 | Lab=L ∧ ENDSEM=L | Grade=D | 2/60 | 0.948 |
+
+**Comparación con la versión completa:**
+Las reglas equivalentes que aparecen en ambas variantes presentan una precisión sistemáticamente mayor en la versión sin M. Por ejemplo, la regla Quiz=H ∧ ENDSEM=H → Grade=B pasó de acc=0.932 a acc=0.969, y la regla MST=L ∧ ENDSEM=H → Grade=B pasó de acc=0.892 a acc=0.948.
+
+Este incremento se explica porque al eliminar los perfiles medios, el algoritmo trabaja exclusivamente con estudiantes en los extremos del rendimiento, donde los patrones son más consistentes y predecibles.Como contrapartida, las reglas resultantes tienen menor cobertura: la mayor parte del dataset (los estudiantes con desempeño M) queda fuera del análisis, lo que limita la generalización de las reglas a solo una fracción de la población estudiantil.
+
+En ambas variantes, ENDSEM (45.0) se confirma como el atributo con mayor poder predictivo, apareciendo en las reglas de mayor precisión de los dos experimentos. Su peso relativo del 45% en la calificación final explica su dominancia en los patrones de asociación identificados.
 
 ### 5.7. Análisis comparativo
 
