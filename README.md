@@ -252,39 +252,120 @@ En general, en este ejercicio, debido al tamaño tan pequeño del dataset, pocos
 
 ---
 
-## 4. Ejercicio 10.8 — Minería de asociación sobre datos numéricos (Discretización automática)
+---
 
-### 4.1. Objetivo
+# 4. Ejercicio 10.8 — Minería de asociación sobre datos numéricos (Discretización automática)
+
+## 4.1. Objetivo
+
+Aplicar el algoritmo **Predictive Apriori** sobre el conjunto de datos **MARKS_org.csv**, demostrando cómo la discretización automática en Weka convierte atributos numéricos en categorías nominales, permitiendo la generación de reglas de asociación significativas sobre el rendimiento académico.
+
+---
+
+## 4.2. Descripción del dataset
+
+Se utilizó un dataset de **60 instancias** con los siguientes atributos:
+
+| Atributo | Rango Máximo |
+|----------|--------------:|
+| MST | 20.0 |
+| Quiz | 15 |
+| Lab | 20.0 |
+| ENDSEM | 45.0 |
+| Total | 100.0 |
+| Grade | Categoría |
+
+---
+
+## 4.3. Procedimiento paso a paso
+
+### 4.3.1. Carga y preprocesamiento
+
+**Carga del dataset**
+
+Se importó el archivo **MARKS_org.csv**. En la pestaña **Preprocess** se eliminaron los atributos **Roll No.** y **Name**, con el objetivo de centrar el análisis únicamente en las variables académicas.
+
+![Carga de dataset](capturas/cargar_dataset.png)
+
+![Eliminación de atributos](capturas/eliminacion_rollandname.png)
+
+**Discretización**
+
+Posteriormente se aplicó el filtro **Discretize** utilizando **10 bins**. Este paso es indispensable debido a que el algoritmo **Predictive Apriori** únicamente trabaja con atributos nominales. La discretización transforma automáticamente los valores numéricos en intervalos, permitiendo ejecutar el algoritmo de reglas de asociación.
+
+![Selecion del filtro Discretize](capturas/selecionar_discretizer.png)
+
+![Configuración del filtro Discretize](capturas/configuracion_discretize.png)
 
 
+![Aplicación del filtro Discretize](capturas/discretize_aplicado.png)
 
-### 4.2. Descripción del dataset (Rendimiento estudiantil)
+---
 
+### 4.3.2. Ejecución del algoritmo
 
+Una vez discretizados los datos, se seleccionó el algoritmo **Predictive Apriori** desde la pestaña **Associate** de Weka y se configuró para generar un máximo de **100 reglas de asociación**.
 
-### 4.3. Procedimiento paso a paso
+![Selecion de algoritmo Associate](capturas/seleccion_predictiveapriori.png)
 
-#### 4.3.1. Carga del dataset y eliminación de atributos irrelevantes
+![Ejecución y resultado de Associate](capturas/resultado_predictiveapriori.png)
+---
 
+## 4.4. Resultados obtenidos
 
+Una vez aplicado el filtro **Discretize** con **10 intervalos (bins)** y ejecutado el algoritmo **Predictive Apriori**, Weka generó un conjunto de **100 reglas de asociación**, ordenadas de acuerdo con su precisión predictiva (*acc*).
 
-#### 4.3.2. Aplicación del filtro Discretize (equal frequency, 3 bins)
+Las reglas con mayor precisión se presentan en la siguiente tabla:
 
+| Regla                   | Instancias | Consecuente | Precisión (acc) |
+| ----------------------- | ---------: | ----------- | --------------: |
+| Total = '(53.25–54.75]' |          8 | Grade = C   |         0.98064 |
+| Total = '(57.25–59.75]' |          6 | Grade = C   |         0.97227 |
+| Total = '(59.75–61.25]' |          6 | Grade = B   |         0.97227 |
+| Total = '(61.25–64.25]' |          6 | Grade = B   |         0.97227 |
+| Total = '(64.25–67.25]' |          6 | Grade = B   |         0.97227 |
+| Total = '(45.75–49.25]' |          5 | Grade = D   |         0.96499 |
+| Total = '(54.75–57.25]' |          5 | Grade = C   |         0.96499 |
 
+Además de estas reglas, el algoritmo identificó asociaciones entre las evaluaciones parciales (**MST**, **Quiz**, **Lab** y **ENDSEM**) y la calificación final, así como reglas que relacionan simultáneamente varios atributos con intervalos específicos del puntaje total.
 
-#### 4.3.3. Ejecución del algoritmo Predictive Apriori
+En conjunto, las reglas obtenidas muestran que la discretización permitió descubrir patrones de comportamiento entre los distintos componentes de evaluación y el rendimiento académico de los estudiantes.
 
+---
 
+## 4.5. Análisis e interpretación de resultados
 
-### 4.4. Resultados obtenidos
+Las reglas obtenidas evidencian una fuerte asociación entre el atributo **Total** y la variable **Grade**. Las cinco reglas con mayor precisión utilizan únicamente el puntaje total como antecedente, alcanzando valores de precisión entre **0.96499** y **0.98064**, lo que indica que los intervalos generados mediante la discretización representan adecuadamente las categorías de calificación.
 
+Asimismo, el algoritmo identifica claramente los umbrales asociados al rendimiento académico. Por ejemplo, la regla:
 
+> **Total = '(-inf–45.75]' ⇒ Grade = D**
 
-### 4.5. Análisis e interpretación de resultados
+permite identificar un rango de puntaje que se encuentra fuertemente asociado con un bajo desempeño académico, constituyendo un posible indicador de riesgo para los estudiantes.
 
+Además del puntaje total, Predictive Apriori descubrió reglas que relacionan distintas evaluaciones parciales. Un ejemplo es la siguiente asociación:
 
+> **MST = '(-inf–7.25]' y Quiz = '(5.25–6.25]' ⇒ Total = '(53.25–54.75]' y Grade = C**
 
-### 4.6. Observaciones sobre las reglas generadas
+Esta regla muestra que determinadas combinaciones de evaluaciones parciales conducen tanto a un intervalo específico del puntaje total como a una calificación final determinada, evidenciando la influencia conjunta de los diferentes componentes de evaluación.
+
+En general, los resultados muestran que la discretización automática permitió transformar variables numéricas en intervalos significativos, facilitando el descubrimiento de patrones que no serían obtenidos directamente sobre datos continuos mediante este algoritmo.
+
+---
+
+## 4.6. Observaciones sobre las reglas generadas
+
+Las reglas obtenidas permiten realizar las siguientes observaciones:
+
+* Las reglas con mayor precisión están dominadas por el atributo **Total**, lo que evidencia que este constituye el principal indicador del rendimiento académico dentro del conjunto de datos.
+
+* La discretización en **10 intervalos** produjo reglas altamente específicas, permitiendo identificar con precisión los puntos de corte entre las diferentes categorías de calificación.
+
+* El soporte de las reglas varía considerablemente. Mientras las reglas más representativas abarcan entre **5 y 8 estudiantes**, otras reglas describen patrones muy específicos presentes únicamente en **2 instancias**, por lo que deben interpretarse con mayor cautela.
+
+* Los atributos **MST**, **Quiz**, **Lab** y **ENDSEM** aparecen principalmente en reglas compuestas, complementando la explicación del desempeño académico cuando se analizan en conjunto y no de forma individual.
+
+* La elevada precisión de las primeras reglas confirma que la discretización automática realizada por Weka generó intervalos adecuados para aplicar **Predictive Apriori**, permitiendo obtener reglas de asociación claras, interpretables y útiles para comprender la relación entre las calificaciones parciales y la nota final de los estudiantes.
 
 
 
