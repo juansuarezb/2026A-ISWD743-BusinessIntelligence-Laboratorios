@@ -545,14 +545,60 @@ Resultado: L (≤ 14.5, 12 registros) · M (15.5 – 26.0, 37 registros) · H (�
 
 ### 5.3. Ejecución del Predictive Apriori sobre datos discretizados manualmente
 
+1. En WEKA se carga el csv discretizado y en el panel se muestran los 5 atributos pertenecientes a las columnas del csv, en deonde todas estas son de tipo nominal. Además, se muestra que hay 60 datos en la sección de *Instances*
+
+| ![Dataset en Weka](capturas/10_9_SubirCSVWeka.png) |
+|:--:|
+| *Figura : Carga del Dataset en Weka* |
+
+2. A continuación se accedió a la pestaña Associate y se seleccionó el algoritmo PredictiveApriori.
+El parámetro `car` se mantuvo en `True` para generar Class Association Rules (CAR), es decir, reglas cuyo consecuente es siempre la variable Grade. El parámetro `numRules` se dejó en su valor por defecto de 100. Se ejecutó el algoritmo con el botón Start.
+
+| ![Predictive Apriori](capturas/10_9_WekaPredAP.png) |
+|:--:|
+| *Figura : Configuración del algoritmo PredictiveApriori en Weka* |
 
 
 ### 5.4. Resultados obtenidos
 
+El algoritmo generó 88 reglas ordenadas de mayor a menor precisión predictiva (acc). La Tabla siguiente resume las 10 reglas con mayor confiabilidad:
+
+| # | Antecedente | Consecuente | Soporte | acc |
+|---|-------------|-------------|---------|-----|
+| 1 | Lab=M ∧ ENDSEM=H | Grade=B | 7/60 | 0.983 |
+| 2 | MST=M ∧ Quiz=M ∧ ENDSEM=L | Grade=D | 4/60 | 0.956 |
+| 3 | Quiz=H ∧ ENDSEM=H | Grade=B | 3/60 | 0.932 |
+| 4 | Quiz=L ∧ Lab=L | Grade=D | 3/60 | 0.932 |
+| 5 | Quiz=L ∧ ENDSEM=L | Grade=D | 3/60 | 0.932 |
+| 6 | MST=L ∧ Quiz=M ∧ ENDSEM=M | Grade=C | 3/60 | 0.932 |
+| 7 | MST=M ∧ Quiz=L ∧ Lab=M ∧ ENDSEM=M | Grade=C | 3/60 | 0.932 |
+| 8 | MST=L ∧ ENDSEM=H | Grade=B | 2/60 | 0.892 |
+| 9 | Lab=L ∧ ENDSEM=L | Grade=D | 2/60 | 0.892 |
+| 10 | MST=L ∧ Lab=L ∧ ENDSEM=M | Grade=D | 2/60 | 0.892 |
+
+| ![Output de PredictiveApriori](capturas/10_9_WekaOutput.png) |
+|:--:|
+| *Figura : Primeras reglas generadas por PredictiveApriori ordenadas por precisión predictiva descendente* |
 
 
 ### 5.5. Generación de reglas con CAR (Class Association Rules)
 
+El uso del parámetro `car=True` restringe el consecuente de todas las reglas a la variable clase Grade. Esto convierte el problema de association mining en un problema de clasificación basada en reglas, donde cada regla describe un perfil de estudiante y predice su calificación final.
+
+Del análisis de las reglas obtenidas se identifican tres patrones principales:
+
+**Predicción de Grade=B (alto rendimiento):**
+La regla de mayor precisión (acc=0.983) establece que un estudiante con Lab medio y ENDSEM alto obtendrá con casi total certeza una B. Esto sugiere que un desempeño alto en el examen final compensa niveles medios en los demás componentes. 
+La regla 8 (acc=0.892) refuerza esta idea: incluso con MST bajo, un ENDSEM alto lleva al estudiante a grado B.
+
+**Predicción de Grade=D (bajo rendimiento):**
+Las reglas 2, 4, 5, 9 y 10 convergen en un patrón claro: cualquier combinación de dos o más componentes en categoría L, especialmente cuando ENDSEM=L, predice con alta precisión una D. ENDSEM resulta ser el factor más determinante del rendimiento final, lo que es coherente con su peso de 45 puntos sobre 100.
+
+**Predicción de Grade=C (rendimiento medio):**
+Los perfiles con MST bajo o Quiz bajo combinados con ENDSEM medio tienden a resultar en grado C, como muestran las reglas 6 y 7. Esto indica que un desempeño inconsistente entre componentes posiciona al estudiante en el rango medio.
+
+**Hallazgo transversal:** 
+ENDSEM aparece como el atributo con mayor poder predictivo, presente en 8 de las 10 reglas principales. Su peso relativo de 45% en la nota final explica esta dominancia en las reglas de asociación generadas.
 
 
 ### 5.6. Variante: Exclusión de valores medios (reemplazo de M por ?)
