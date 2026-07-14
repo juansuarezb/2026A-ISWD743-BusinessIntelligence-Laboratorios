@@ -285,20 +285,30 @@ Se utilizó un dataset de **60 instancias** con los siguientes atributos:
 
 Se importó el archivo **MARKS_org.csv**. En la pestaña **Preprocess** se eliminaron los atributos **Roll No.** y **Name**, con el objetivo de centrar el análisis únicamente en las variables académicas.
 
-![Carga de dataset](capturas/cargar_dataset.png)
+| ![Carga de dataset](capturas/cargar_dataset.png) |
+|:--:|
+| *Figura 18: Dataset MARKS_org cargado en Weka Explorer mostrando los 8 atributos originales y 60 instancias* |
 
-![Eliminación de atributos](capturas/eliminacion_rollandname.png)
+| ![Eliminación de atributos](capturas/eliminacion_rollandname.png) |
+|:--:|
+| *Figura 19: Selección y eliminación de los atributos Roll No. y Name del dataset* |
 
 **Discretización**
 
 Posteriormente se aplicó el filtro **Discretize** utilizando **10 bins**. Este paso es indispensable debido a que el algoritmo **Predictive Apriori** únicamente trabaja con atributos nominales. La discretización transforma automáticamente los valores numéricos en intervalos, permitiendo ejecutar el algoritmo de reglas de asociación.
 
-![Selecion del filtro Discretize](capturas/selecionar_discretizer.png)
+| ![Selecion del filtro Discretize](capturas/selecionar_discretizer.png) |
+|:--:|
+| *Figura 20: Selección del filtro Discretize desde el árbol de filtros no supervisados de Weka* |
 
-![Configuración del filtro Discretize](capturas/configuracion_discretize.png)
+| ![Configuración del filtro Discretize](capturas/configuracion_discretize.png) |
+|:--:|
+| *Figura 21: Configuración del filtro Discretize con 10 bins y useEqualFrequency activado* |
 
+| ![Aplicación del filtro Discretize](capturas/discretize_aplicado.png) |
+|:--:|
+| *Figura 22: Resultado de la discretización aplicada sobre el dataset, mostrando los 10 intervalos generados para el atributo MST* |
 
-![Aplicación del filtro Discretize](capturas/discretize_aplicado.png)
 
 ---
 
@@ -306,9 +316,15 @@ Posteriormente se aplicó el filtro **Discretize** utilizando **10 bins**. Este 
 
 Una vez discretizados los datos, se seleccionó el algoritmo **Predictive Apriori** desde la pestaña **Associate** de Weka y se configuró para generar un máximo de **100 reglas de asociación**.
 
-![Selecion de algoritmo Associate](capturas/seleccion_predictiveapriori.png)
 
-![Ejecución y resultado de Associate](capturas/resultado_predictiveapriori.png)
+| ![Selecion de algoritmo Associate](capturas/seleccion_predictiveapriori.png) |
+|:--:|
+| *Figura 23: Selección del algoritmo Predictive Apriori en la pestaña Associate de Weka* |
+
+| ![Ejecución y resultado de Associate](capturas/resultado_predictiveapriori.png) |
+|:--:|
+| *Figura 24: Resultado obtenido por el algoritmo Predictive Apriori mostrando las mejores reglas de asociación encontradas* |
+
 ---
 
 ## 4.4. Resultados obtenidos
@@ -385,7 +401,7 @@ Categorizar las notas en Excel mediante intervención y criterio humano donde el
 
 | ![Dataset en Excel](capturas/10_9_eliminarColumnas.png) |
 |:--:|
-| *Figura : Eliminación de las columnas Roll No. y Name en el dataset original para preparar los datos para la minería* |
+| *Figura 25: Eliminación de las columnas Roll No. y Name en el dataset original para preparar los datos para la minería* |
 
 
 1. **Columna MST**
@@ -394,7 +410,7 @@ Categorizar las notas en Excel mediante intervención y criterio humano donde el
 
 | ![Ordenamiento de datos](capturas/10_9_PasosOrdenarMST.png) |
 |:--:|
-| *Figura : Proceso de ordenamiento de los registros basado en el atributo MST* |
+| *Figura 26: Proceso de ordenamiento de los registros basado en el atributo MST* |
 
 - Se clasificaron los registros manualmente de la siguiente manera:
 
@@ -402,19 +418,19 @@ Categorizar las notas en Excel mediante intervención y criterio humano donde el
 
         | ![Clasificación de valores altos](capturas/10_9_ClasifAlto.png) |
         |:--:|
-        | *Figura : Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en MST* |
+        | *Figura 27: Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en MST* |
 
     - Los registros de las filas 50 al 61 se reemplazan sus campos de MST con **L**
 
         | ![Clasificación de valores bajos](capturas/10_9_ClasifBajo.png) |
         |:--:|
-        | *Figura : Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en MST* |
+        | *Figura 28: Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en MST* |
 
     - Los registros restantes en la columna de MST se reemplazan sus notas con **M**
 
         | ![Clasificación de valores medios](capturas/10_9_ClasifMedio.png) |
         |:--:|
-        | *Figura : Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
+        | *Figura 29: Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
 
 
 2. **Columna Quiz**
@@ -423,7 +439,7 @@ Categorizar las notas en Excel mediante intervención y criterio humano donde el
 
 | ![Ordenamiento de datos](capturas/10_9_PasosOrdenarQuiz.png) |
 |:--:|
-| *Figura : Proceso de ordenamiento de los registros basado en el atributo Quiz* |
+| *Figura 30: Proceso de ordenamiento de los registros basado en el atributo Quiz* |
 
 - Se clasificaron los registros manualmente de la siguiente manera:
 
@@ -431,19 +447,19 @@ Categorizar las notas en Excel mediante intervención y criterio humano donde el
 
         | ![Clasificación de valores altos](capturas/10_9_ClasifAltoQuiz.png) |
         |:--:|
-        | *Figura : Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en Quiz* |
+        | *Figura 31: Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en Quiz* |
 
     - Los registros de las filas 50 al 61 se reemplazan sus campos de Quiz con **L**
 
         | ![Clasificación de valores bajos](capturas/10_9_ClasifBajoQuiz.png) |
         |:--:|
-        | *Figura : Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en Quiz* |
+        | *Figura 32: Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en Quiz* |
 
     - Los registros restantes en la columna de Quiz se reemplazan las notas con **M**
 
         | ![Clasificación de valores medios](capturas/10_9_ClasifMedioQuiz.png) |
         |:--:|
-        | *Figura : Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
+        | *Figura 33: Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
 
 3. **Columna Lab**
 
@@ -451,13 +467,13 @@ Categorizar las notas en Excel mediante intervención y criterio humano donde el
 
 | ![Ordenamiento de datos](capturas/10_9_PasosOrdenarLAB.png) |
 |:--:|
-| *Figura : Proceso de ordenamiento de los registros basado en el atributo lAB* |
+| *Figura 34: Proceso de ordenamiento de los registros basado en el atributo lAB* |
 
 - Se verificaron los puntos de corte debido a que en esta columna, en los extremos superiores e inferiores los valores eran los mismos. En el borde de H se tenía repetido el 18 y en el borde de L estaba repetido el 13.5. Por lo tanto, ambos valores se van a categorizar como M.
 
 | ![Valores duplicados LAB](capturas/10_9_DuplicadosLAB.png) |
 |:--:|
-| *Figura : Valores duplicados en los puntos de corte* |
+| *Figura 35: Valores duplicados en los puntos de corte* |
 
 - Entonces se clasificaron los registros manualmente de la siguiente manera:
 
@@ -465,19 +481,19 @@ Categorizar las notas en Excel mediante intervención y criterio humano donde el
 
         | ![Clasificación de valores altos](capturas/10_9_ClasifAltoLab.png) |
         |:--:|
-        | *Figura : Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en Lab* |
+        | *Figura 36: Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en Lab* |
 
     - Los registros de las filas 51 al 61 se reemplazan sus campos de Lab con **L**
 
         | ![Clasificación de valores bajos](capturas/10_9_ClasifBajoLab.png) |
         |:--:|
-        | *Figura : Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en Lab* |
+        | *Figura 37: Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en Lab* |
 
     - Los registros restantes en la columna de Lab se reemplazan las notas con **M**
 
         | ![Clasificación de valores medios](capturas/10_9_ClasifMedioLab.png) |
         |:--:|
-        | *Figura : Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
+        | *Figura 38: Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
 
 4. **Columna ENDSEM**
 
@@ -485,13 +501,13 @@ Categorizar las notas en Excel mediante intervención y criterio humano donde el
 
 | ![Ordenamiento de datos](capturas/10_9_PasosOrdenarENDSEM.png) |
 |:--:|
-| *Figura : Proceso de ordenamiento de los registros basado en el atributo ENDSEM* |
+| *Figura 39: Proceso de ordenamiento de los registros basado en el atributo ENDSEM* |
 
 - Se verificaron los puntos de corte debido a que en esta columna, en el extremo superior los valores eran los mismos en la fila 12 y 13. Por lo tanto, estos valores repetidos se van a categorizar con M.
 
 | ![Valores duplicados LAB](capturas/10_9_DuplicadosENDSEM.png) |
 |:--:|
-| *Figura : Valores duplicados en los puntos de corte* |
+| *Figura 40: Valores duplicados en los puntos de corte* |
 
 - Entonces se clasificaron los registros manualmente de la siguiente manera:
 
@@ -499,19 +515,19 @@ Categorizar las notas en Excel mediante intervención y criterio humano donde el
 
         | ![Clasificación de valores altos](capturas/10_9_ClasifAltoENDSEM.png) |
         |:--:|
-        | *Figura : Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en ENDSEM* |
+        | *Figura 41: Asignación de la categoría H (Alto) a los estudiantes con mejor rendimiento en ENDSEM* |
 
     - Los registros de las filas 50 al 61 se reemplazan sus campos de ENDSEM con **L**
 
         | ![Clasificación de valores bajos](capturas/10_9_ClasifBajoENDSEM.png) |
         |:--:|
-        | *Figura : Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en ENDSEM* |
+        | *Figura 42: Asignación de la categoría L (Bajo) a los estudiantes con menor rendimiento en ENDSEM* |
 
     - Los registros restantes en la columna de ENDSEM se reemplazan las notas con **M**
 
         | ![Clasificación de valores medios](capturas/10_9_ClasifMedioENDSEM.png) |
         |:--:|
-        | *Figura : Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
+        | *Figura 43: Asignación de la categoría M (Medio) a la mayoría de los estudiantes según la segmentación establecida* |
 
 
 #### 5.2.2. Tratamiento de valores duplicados en puntos de corte
@@ -540,7 +556,7 @@ Resultado: L (≤ 14.5, 12 registros) · M (15.5 – 26.0, 37 registros) · H (�
 
 | ![Clasificación final](capturas/10_9_ClasifFinalDataset.png) |
 |:--:|
-| *Figura : Dataset con discretización manual aplicada* |
+| *Figura 44: Dataset con discretización manual aplicada* |
 
 
 ### 5.3. Ejecución del Predictive Apriori sobre datos discretizados manualmente
@@ -549,14 +565,14 @@ Resultado: L (≤ 14.5, 12 registros) · M (15.5 – 26.0, 37 registros) · H (�
 
 | ![Dataset en Weka](capturas/10_9_SubirCSVWeka.png) |
 |:--:|
-| *Figura : Carga del Dataset en Weka* |
+| *Figura 45: Carga del Dataset en Weka* |
 
 2. A continuación se accedió a la pestaña Associate y se seleccionó el algoritmo PredictiveApriori.
 El parámetro `car` se mantuvo en `True` para generar Class Association Rules (CAR), es decir, reglas cuyo consecuente es siempre la variable Grade. El parámetro `numRules` se dejó en su valor por defecto de 100. Se ejecutó el algoritmo con el botón Start.
 
 | ![Predictive Apriori](capturas/10_9_WekaPredAP.png) |
 |:--:|
-| *Figura : Configuración del algoritmo PredictiveApriori en Weka* |
+| *Figura 46: Configuración del algoritmo PredictiveApriori en Weka* |
 
 
 ### 5.4. Resultados obtenidos
@@ -578,7 +594,7 @@ El algoritmo generó 88 reglas ordenadas de mayor a menor precisión predictiva 
 
 | ![Output de PredictiveApriori](capturas/10_9_WekaOutput.png) |
 |:--:|
-| *Figura : Primeras reglas generadas por PredictiveApriori ordenadas por precisión predictiva descendente* |
+| *Figura 47: Primeras reglas generadas por PredictiveApriori ordenadas por precisión predictiva descendente* |
 
 
 ### 5.5. Generación de reglas con CAR (Class Association Rules)
@@ -611,13 +627,13 @@ Se abre el dataset discretizado en excel. Dentro del csv se van a reemplazar tod
 
 | ![Dataset con reemplazo de M](capturas/10_9_MReplace.png) |
 |:--:|
-| *Figura : Dataset con valores M reemplazados por ? para excluir perfiles medios del análisis de asociación* |
+| *Figura 48: Dataset con valores M reemplazados por ? para excluir perfiles medios del análisis de asociación* |
 
 Se guarda este CSV con el nombre: *MARKS_org_MReplace.csv* y se cargó en Weka siguiendo el mismo procedimiento anterior. Se ejecutó PredictiveApriori con los mismos parámetros (car=True, numRules=100).
 
 | ![Dataset con reemplazo de M en WEKA](capturas/10_9_MWeka.png) |
 |:--:|
-| *Figura : Dataset cargado en WEKA* |
+| *Figura 49: Dataset cargado en WEKA* |
 
 
 #### 5.6.2. Resultados obtenidos
@@ -626,7 +642,7 @@ El algoritmo generó 27 reglas, frente a las 88 de la versión completa. La redu
 
 | ![Output variante sin M](capturas/10_9_WekaOutputNoM.png) |
 |:--:|
-| *Figura : Reglas generadas por PredictiveApriori tras excluir los valores medios del dataset* |
+| *Figura 50: Reglas generadas por PredictiveApriori tras excluir los valores medios del dataset* |
 
 Las cinco reglas de mayor precisión obtenidas son:
 
