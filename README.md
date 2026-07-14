@@ -707,13 +707,13 @@ La comparación deberá considerar los siguientes aspectos:
 | Tipo de datos | Datos nominales o transaccionales | Datos nominales o numéricos discretizados |
 | Ordenamiento de reglas | Confianza, lift u otra métrica | Precisión predictiva |
 | Ejercicios aplicados | 10.6 y 10.7 | 10.8 y 10.9 |
-| Resultado principal | [Completar con resultados] | [Completar con resultados] |
+| Resultado principal | 1 regla (DailyItem) y 4 reglas (DailyItem2) con confianza entre 0.75 y 1.0 | Hasta 100 reglas (ej. 10.8) y 88 reglas CAR (ej. 10.9) con precisión entre 0.892 y 0.983 |
 
-*Tabla X: Comparación entre Apriori y Predictive Apriori*
+*Tabla 4: Comparación entre Apriori y Predictive Apriori*
 
 </div>
 
-A partir de los resultados obtenidos, se observó que [completar comparación utilizando los resultados de todos los ejercicios].
+A partir de los resultados obtenidos, se observó que Apriori resulta más adecuado para datasets transaccionales pequeños donde el analista desea controlar directamente los umbrales de soporte y confianza, mientras que Predictive Apriori es más conveniente para datasets de mayor tamaño con múltiples atributos, ya que ajusta automáticamente el balance entre soporte y confianza mediante la precisión predictiva. En los ejercicios 10.6 y 10.7, Apriori generó pocas reglas pero de fácil interpretación, debido al reducido número de transacciones e ítems. En cambio, en los ejercicios 10.8 y 10.9, Predictive Apriori logró descubrir patrones complejos entre las evaluaciones parciales y la calificación final, algo que habría requerido múltiples ejecuciones manuales de Apriori con distintos umbrales.
 
 ---
 
@@ -730,9 +730,9 @@ Por otro lado, el dataset de rendimiento académico contiene atributos numérico
 | Tipo de datos | Dataset | Preprocesamiento requerido | Ejemplo de regla |
 |:---|:---|:---|:---|
 | Transaccionales binarios | DailyItem / DailyItem2 | NumericToNominal | Jam=1 → Cornflakes=1 |
-| Numéricos | MARKS_org | Discretize | Total=Alto → Grade=B |
+| Numéricos | MARKS_org | Discretize | Total='(53.25–54.75]' → Grade=C |
 
-*Tabla X: Influencia del tipo de datos en el proceso de minería de asociación*
+*Tabla 5: Influencia del tipo de datos en el proceso de minería de asociación*
 
 </div>
 
@@ -757,18 +757,18 @@ En el ejercicio 10.8 se utilizó una discretización automática mediante el fil
 | Criterio | Discretización automática | Discretización manual |
 |:---|:---|:---|
 | Definición de intervalos | Generada automáticamente por Weka | Definida mediante percentiles |
-| Categorías obtenidas | Intervalos numéricos | H, M y L |
+| Categorías obtenidas | Intervalos numéricos (10 bins) | H, M y L |
 | Control del analista | Menor | Mayor |
 | Interpretación | Puede ser menos intuitiva | Más directa |
-| Resultado obtenido | [Completar] | [Completar] |
+| Resultado obtenido | 100 reglas dominadas por el atributo Total con precisión máxima de 0.98064 | 88 reglas CAR basadas en evaluaciones parciales con precisión máxima de 0.983 |
 
-*Tabla X: Comparación entre discretización automática y manual*
+*Tabla 6: Comparación entre discretización automática y manual*
 
 </div>
 
-La discretización automática permitió [completar con resultados del ejercicio 10.8].
+La discretización automática permitió generar 100 reglas de asociación, donde las de mayor precisión vinculaban directamente intervalos del puntaje Total con la calificación final (por ejemplo, Total='(53.25–54.75]' ⇒ Grade=C con acc=0.98064). Sin embargo, estas reglas reflejan una relación casi determinista entre el puntaje acumulado y la nota, aportando poca información nueva sobre los factores individuales del rendimiento.
 
-La discretización manual permitió [completar con resultados del ejercicio 10.9].
+La discretización manual permitió generar 88 reglas CAR que asocian directamente las evaluaciones parciales con la calificación final, sin depender del atributo Total. La regla de mayor precisión, Lab=M ∧ ENDSEM=H ⇒ Grade=B (acc=0.983), demuestra que perfiles específicos de rendimiento parcial pueden predecir la nota final con alta confiabilidad, lo cual resulta más útil para la toma de decisiones académicas.
 
 También se evaluó el efecto de activar la opción `CAR=true`, con el objetivo de generar reglas cuyo consecuente estuviera relacionado con la clase seleccionada.
 
@@ -778,16 +778,15 @@ Asimismo, se reemplazó la categoría media **M** por valores perdidos (`?`) par
 
 | Variante | Cantidad de reglas | Precisión predictiva | Observación principal |
 |:---|:---:|:---:|:---|
-| Discretización automática | [Completar] | [Completar] | [Completar] |
-| Discretización manual | [Completar] | [Completar] | [Completar] |
-| CAR=true | [Completar] | [Completar] | [Completar] |
-| Sin valores medios | [Completar] | [Completar] | [Completar] |
+| Discretización automática | 100 | 0.96499 – 0.98064 | Reglas dominadas por el atributo Total; alta precisión pero baja utilidad interpretativa |
+| Discretización manual (CAR) | 88 | 0.892 – 0.983 | Reglas basadas en evaluaciones parciales; mayor valor explicativo para perfiles estudiantiles |
+| Sin valores medios (M → ?) | 27 | 0.948 – 0.969 | Reglas más precisas en perfiles extremos pero con menor cobertura poblacional |
 
-*Tabla X: Resultados de las variantes de discretización y generación de reglas*
+*Tabla 7: Resultados de las variantes de discretización y generación de reglas*
 
 </div>
 
-En general, los resultados muestran que la forma en que se discretizan los datos modifica la cantidad, precisión e interpretabilidad de las reglas obtenidas.
+En general, los resultados muestran que la forma en que se discretizan los datos modifica la cantidad, precisión e interpretabilidad de las reglas obtenidas. La discretización automática maximiza la cantidad de reglas y su precisión numérica, pero la discretización manual produce reglas con mayor significado práctico. La eliminación de valores medios aumenta la precisión individual de cada regla a costa de reducir la cobertura del análisis.
 
 ---
 
