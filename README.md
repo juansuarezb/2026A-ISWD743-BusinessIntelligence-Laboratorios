@@ -214,40 +214,50 @@ En general, en este ejercicio, debido al tamaño tan pequeño del dataset, pocos
 
 ---
 
-## 3. Ejercicio 10.7 — Algoritmo Apriori sobre un dataset más grande (DailyItem2)
+## 3. Ejercicio 10.7: Aplicación del algoritmo Apriori en un dataset más grande
 
-### 3.1. Objetivo
+**Objetivo:** Ejecutar el algoritmo Apriori en un dataset dado con soporte y confianza predefinidos, para luego interpretar la salida[cite: 1].
 
+### 3.1 Creación del Dataset
+Para este ejercicio se utiliza el dataset `DailyItem2`, el cual consta de cinco transacciones y seis productos (Bread, Cornflakes, Eggs, Jam, Milk, Tea)[cite: 1].
+* Se tabularon los datos en MS Excel[cite: 1].
+* El archivo fue guardado con el nombre `DailyItem2 Dataset` utilizando el formato CSV (delimitado por comas)[cite: 1].
 
+### 3.2 Carga de datos en Weka
+* Se abrió el panel Weka GUI Chooser y se seleccionó la opción **Explorer**[cite: 1].
+* En la pestaña **Preprocess**, se utilizó el botón **Open file...** para cargar el archivo CSV previamente creado[cite: 1].
 
-### 3.2. Descripción del dataset
+### 3.3 Preprocesamiento: Filtro NumericToNominal
+Dado que Weka identifica inicialmente las columnas como numéricas y el algoritmo Apriori no trabaja directamente con datos numéricos, fue necesario convertirlos a formato nominal[cite: 1].
+* Se seleccionó el botón **Choose** debajo de la sección Filter[cite: 1].
+* Se navegó por la ruta: `filters -> unsupervised -> attribute -> NumericToNominal`[cite: 1].
+* Se aplicó el filtro haciendo clic en el botón **Apply**[cite: 1].
 
+### 3.4 Eliminación del atributo Transaction
+El atributo de transacción no tiene un rol en la minería de asociación, por lo que debe ser eliminado antes de ejecutar el algoritmo[cite: 1].
+* Se seleccionó el atributo `Transaction` en el panel izquierdo y se presionó el botón **Remove**[cite: 1].
 
+### 3.5 Configuración y Ejecución del Algoritmo Apriori
+* En la pestaña **Associate**, se dio clic en **Choose** y se seleccionó **Apriori**[cite: 1].
+* Se abrió el **Generic Object Editor** haciendo clic sobre el nombre del algoritmo para configurar los parámetros requeridos[cite: 1]:
+    * **lowerBoundMinSupport:** Se estableció en `0.5` (soporte mínimo del 50%)[cite: 1].
+    * **metricType:** Se configuró en `Confidence`[cite: 1].
+    * **minMetric:** Se estableció en `0.75` (confianza mínima del 75%)[cite: 1].
+* Se guardó la configuración y se presionó el botón **Start** para ejecutar el algoritmo[cite: 1].
 
-### 3.3. Procedimiento paso a paso
+### 3.6 Resultados e Interpretación
+El algoritmo Apriori generó las siguientes 4 mejores reglas de asociación[cite: 1]:
 
-#### 3.3.1. Creación del dataset
+1. `Cornflakes=1 3 ==> Jam=1 3 conf:(1)`[cite: 1]
+2. `Jam=1 4 ==> Bread=1 3 conf:(0.75)`[cite: 1]
+3. `Bread=1 4 ==> Jam=1 3 conf:(0.75)`[cite: 1]
+4. `Jam=1 4 ==> Cornflakes=1 3 conf:(0.75)`[cite: 1]
 
-
-
-#### 3.3.2. Carga y preprocesamiento en Weka
-
-
-
-#### 3.3.3. Configuración y ejecución del algoritmo Apriori
-
-
-
-### 3.4. Resultados obtenidos
-
-
-
-### 3.5. Análisis e interpretación de resultados
-
-
-
-### 3.6. Comparación con resultados teóricos del Capítulo 9
-
+**Análisis de resultados:**
+* La confianza de estas reglas se obtiene dividiendo el soporte de ambos ítems en la regla por el soporte del ítem en el lado izquierdo de la regla[cite: 1].
+* Los valores de confianza resultantes para las cuatro reglas son $3/3 = 100\%$, $3/4 = 75\%$, $3/4 = 75\%$ y $3/4 = 75\%$ respectivamente[cite: 1].
+* Dado que todas cumplen con el umbral mínimo de confianza del 75%, todas son válidas y califican[cite: 1].
+* **Validación Teórica:** Se verifica que Weka produjo exactamente las mismas reglas de asociación que se obtuvieron manualmente al aplicar el algoritmo Apriori sobre el mismo dataset en los cálculos teóricos previos (Sección 9.7.2 del Capítulo 9)[cite: 1].
 
 
 ---
